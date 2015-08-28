@@ -1,7 +1,10 @@
-﻿using System;
+﻿using OpenNETCF.IO.Ports;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO.Ports;
+// Using alternative to SIP
+// using System.IO.Ports;
+
 using System.Threading;
 
 namespace Apex7000_BillValidator
