@@ -53,6 +53,7 @@ namespace Apex7000_BillValidator_Test
         void validator_OnEscrow(object sender, int denomination)
         {
             validator.Stack();
+            Console.WriteLine("${0}", denomination);
         }
 
         void validator_PowerUp(object sender, EventArgs e)

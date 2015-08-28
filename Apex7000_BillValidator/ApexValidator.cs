@@ -213,6 +213,7 @@ namespace Apex7000_BillValidator
                 byte[] buffer = new byte[11];
 
                 port.Read(buffer, 0, 11);
+                port.DiscardInBuffer();
 
                 byte t3 = buffer[3];
                 byte t4 = buffer[4];
