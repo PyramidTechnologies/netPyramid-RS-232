@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using System.IO;
-using System.IO.Ports;
 using System.Globalization;
+using System.IO.Ports;
+using System.Threading;
 
 namespace Apex7000_BillValidator
 {
