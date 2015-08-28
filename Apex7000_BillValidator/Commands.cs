@@ -6,14 +6,14 @@ namespace Apex7000_BillValidator
     {
         public void Stack()
         {
-            escrowTimeout = DateTime.MinValue;
-            Write(Request.Stack);
+            // Set flag to accept
+            this.escrowCommand = EscrowCommands.Stack;
         }
 
         public void Reject()
         {
-            escrowTimeout = DateTime.MinValue;
-            Write(Request.Reject);
+            // Set flag to reject
+            this.escrowCommand = EscrowCommands.Reject;
         }
     }
 }

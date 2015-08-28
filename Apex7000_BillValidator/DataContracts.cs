@@ -38,19 +38,30 @@ namespace Apex7000_BillValidator
         PortError
     }
 
-    public struct Response
+    [System.Flags]
+    public enum Response : byte
     {
-        public static readonly byte Idle = 0x01;
-        public static readonly byte Accepting = 0x02;
-        public static readonly byte Escrow = 0x04;
-        public static readonly byte Stacking = 0x08;
-        public static readonly byte Returned = 0x20;
+        Idle = 1,
+        Accepting = 2,
+        Escrow = 4,
+        Stacking = 8,
+        Stacked = 16,
+        Returning = 32,
+        Returned = 64
+    }
 
-        public static readonly byte CassetteRemoved = 0x00;
+    public enum EscrowCommands
+    {
+        None,
+        Pending,
+        Stack,
+        Reject
     }
 
     public struct Request
     {
+                                //   basic message   0      1      2      3      4      5    6      7
+                                //                   start, len,  ack, bills,escrow,resv'd,end, checksum
         public static readonly byte[] BaseMessage = { 0x02, 0x08, 0x10, 0x7F, 0x10, 0x00, 0x03 };
         public static readonly byte[] Ack = { 0x02, 0x08, 0x11, 0x7F, 0x10, 0x00, 0x03 };
         public static readonly byte[] Escrow = { 0x02, 0x08, 0x11, 0x7F, 0x10, 0x00, 0x03 };

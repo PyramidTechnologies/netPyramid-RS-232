@@ -1,5 +1,6 @@
 ﻿using Apex7000_BillValidator;
 using System;
+using System.Globalization;
 using System.Windows;
 
 namespace Apex7000_BillValidator_Test
@@ -18,10 +19,12 @@ namespace Apex7000_BillValidator_Test
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //validator = new ApexValidator(COMPort.COM10, "en-US");
-            validator = new ApexValidator(COMPort.COM2);
+            // Testing on CAN firmware using escrow mode
+            validator = new ApexValidator(COMPort.COM4, new CultureInfo("en-CA"), true);
+            //validator = new ApexValidator(COMPort.COM4);
             validator.PowerUp += validator_PowerUp;
             validator.OnEscrow += validator_OnEscrow;
+            validator.OnCredit += validator_OnCredit;
             validator.BillStacked += validator_BillStacked;
             validator.OnError += validator_OnError;
             validator.CashboxAttached += validator_CashboxAttached;
@@ -53,7 +56,12 @@ namespace Apex7000_BillValidator_Test
         void validator_OnEscrow(object sender, int denomination)
         {
             validator.Stack();
-            Console.WriteLine("${0}", denomination);
+            Console.WriteLine("Escrowed ${0}", denomination);
+        }
+
+        private void validator_OnCredit(object sender, int denomination)
+        {
+            Console.WriteLine("Credited ${0}", denomination);
         }
 
         void validator_PowerUp(object sender, EventArgs e)
