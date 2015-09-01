@@ -42,6 +42,7 @@ namespace PTI.Serial
 
             try
             {
+                port.Open();
                 this._internalSerialStream = port.BaseStream;
                 this._serialPort = port;
                 this._serialPort.DiscardInBuffer();

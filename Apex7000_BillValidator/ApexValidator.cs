@@ -93,6 +93,10 @@ namespace Apex7000_BillValidator
             ackThread.Start();
         }
 
+        /// <summary>
+        /// Write data to port and notify client of any errors they should know about.
+        /// </summary>
+        /// <param name="data">byte[]</param>
         private void WriteWrapper(byte[] data)
         {
             try
@@ -112,6 +116,10 @@ namespace Apex7000_BillValidator
             }
         }
 
+        /// <summary>
+        /// Read data from the port and notify client of any errors they should know about.
+        /// </summary>
+        /// <returns></returns>
         private byte[] ReadWrapper()
         {
             try
@@ -169,10 +177,10 @@ namespace Apex7000_BillValidator
            
             // Attempt to write data to slave
             config.pushDebugEntry(DebugBufferEntry.DebugBufferEntryAsMaster(data, Thread.CurrentThread.ManagedThreadId));
-            port.Write(data);
+            WriteWrapper(data);
 
             // Blocks until all 11 bytes are read or we give up
-            var resp = port.Read();
+            var resp = ReadWrapper();
             config.pushDebugEntry(DebugBufferEntry.DebugBufferEntryAsSlave(resp, Thread.CurrentThread.ManagedThreadId));
             
             // POSSIBLE FUNCTION EXIT!!
