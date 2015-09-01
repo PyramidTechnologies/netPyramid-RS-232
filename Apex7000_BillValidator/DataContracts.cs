@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -27,6 +28,8 @@ namespace Apex7000_BillValidator
         BillJam,
         BillRemove,
         StackerOpen,
+        CashboxFull,
+        CashboxMissing,
         SensorProblem,
         BillFish,
         StackerProblem,
@@ -78,37 +81,31 @@ namespace Apex7000_BillValidator
 
     public class BillParser
     {
-        public static int getDenomFromByte(byte b, CultureInfo currentCulture)
+        public static object getCurrencyMap(CultureInfo currentCulture)
         {
             if (currentCulture != null)
             {
                 var r = new RegionInfo(currentCulture.LCID);
                 string region = r.TwoLetterISORegionName;
 
-                CurrencyMap m = new CurrencyMap();
-                var currencyMaps = m.GetType().GetFields().ToList();
+                CurrencyMap m = new CurrencyMap();                
+                var currencyMaps = m.GetType().GetProperties();
                 foreach (var cm in currencyMaps)
                 {
                     if (cm.Name == region)
                     {
 
-                        foreach(var kvp in (Dictionary<byte, int>)cm.GetValue(null))
-                        {
-                            if (b == kvp.Key)
-                                return kvp.Value;
-                        }
-                        break;
+                        return Convert.ChangeType(cm, cm.PropertyType);
                     }
                 }
             }
             else
             {
                 currentCulture = new CultureInfo("en-US");
-                return getDenomFromByte(b, currentCulture);
+                return getCurrencyMap(currentCulture);
             }
 
-            return 0;
-
+            return CurrencyMap.US;
         }
     }
 }

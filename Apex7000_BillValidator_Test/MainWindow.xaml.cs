@@ -10,7 +10,9 @@ namespace Apex7000_BillValidator_Test
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ApexValidator validator;
+        private ApexValidator validator;
+        private RS232Config config;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -20,15 +22,14 @@ namespace Apex7000_BillValidator_Test
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             // Testing on CAN firmware using escrow mode
-            validator = new ApexValidator(COMPort.COM4, new CultureInfo("en-CA"), true);
-            //validator = new ApexValidator(COMPort.COM4);
+            config = new RS232Config("COM4", CultureInfo.CurrentCulture, true);
+            validator = new ApexValidator(config);
             validator.PowerUp += validator_PowerUp;
             validator.OnEscrow += validator_OnEscrow;
             validator.OnCredit += validator_OnCredit;
-            validator.BillStacked += validator_BillStacked;
+            validator.OnBillStacked += validator_BillStacked;
             validator.OnError += validator_OnError;
-            validator.CashboxAttached += validator_CashboxAttached;
-            validator.CashboxRemoved += validator_CashboxRemoved;
+            validator.OnCashboxAttached += validator_CashboxAttached;
 
             validator.Connect();
         }
@@ -36,11 +37,6 @@ namespace Apex7000_BillValidator_Test
         void validator_OnError(object sender, ErrorTypes type)
         {
             Console.WriteLine("Error has occured: {0}", type.ToString());
-        }
-
-        void validator_CashboxRemoved(object sender, EventArgs e)
-        {
-            Console.WriteLine("Box removed");
         }
 
         void validator_CashboxAttached(object sender, EventArgs e)
@@ -66,7 +62,12 @@ namespace Apex7000_BillValidator_Test
 
         void validator_PowerUp(object sender, EventArgs e)
         {
-            
+            Console.WriteLine("Acceptor Powered Up");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Console.Write(config.GetDebugBuffer());
         }
     }
 }
