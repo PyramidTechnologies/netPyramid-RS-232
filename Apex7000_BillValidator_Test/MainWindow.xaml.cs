@@ -1,5 +1,6 @@
 ﻿using Apex7000_BillValidator;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 
@@ -12,6 +13,21 @@ namespace Apex7000_BillValidator_Test
     {
         private ApexValidator validator;
         private RS232Config config;
+
+        private static Dictionary<int, int> currencyMap = new Dictionary<int, int>();
+        private Dictionary<int, long> cashbox = new Dictionary<int, long>();
+
+        // Configure our map
+        static MainWindow()
+        {
+            currencyMap.Add(1, 1);
+            currencyMap.Add(2, 2);
+            currencyMap.Add(3, 5);
+            currencyMap.Add(4, 10);
+            currencyMap.Add(5, 20);
+            currencyMap.Add(6, 50);
+            currencyMap.Add(7, 100);
+        }
 
         public MainWindow()
         {
@@ -52,12 +68,14 @@ namespace Apex7000_BillValidator_Test
         void validator_OnEscrow(object sender, int denomination)
         {
             validator.Stack();
-            Console.WriteLine("Escrowed ${0}", denomination);
+            if(currencyMap.ContainsKey(denomination))
+                Console.WriteLine("Escrowed ${0}", currencyMap[denomination]);
         }
 
         private void validator_OnCredit(object sender, int denomination)
         {
-            Console.WriteLine("Credited ${0}", denomination);
+            if (currencyMap.ContainsKey(denomination))
+                Console.WriteLine("Credited ${0}", currencyMap[denomination]);
         }
 
         void validator_PowerUp(object sender, EventArgs e)
