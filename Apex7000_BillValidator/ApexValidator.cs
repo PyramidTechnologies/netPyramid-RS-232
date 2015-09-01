@@ -1,10 +1,7 @@
-﻿using OpenNETCF.IO.Ports;
+﻿using PTI.Serial;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-// Using alternative to SIP
-// using System.IO.Ports;
-
 using System.Threading;
 
 namespace Apex7000_BillValidator
@@ -15,7 +12,7 @@ namespace Apex7000_BillValidator
         private readonly object mutex = new object();
 
         #region Fields
-        private SerialPort port = null;
+        private StrongPort port = null;
         private RS232Config config;
         #endregion
 
@@ -33,7 +30,7 @@ namespace Apex7000_BillValidator
         /// </summary>
         public void Close()
         {
-            port.Close();
+            port.Disconnect();
         }
 
         /// <summary>
@@ -42,18 +39,19 @@ namespace Apex7000_BillValidator
         public void Connect()
         {
 
+            // Lock so we only have one connection attempt at a time. This protects
+            // from client code behaving badly.
             lock (mutex)
-            {
-                port = new SerialPort(config.CommPortName, 9600, Parity.Even, 7, StopBits.One);
+            {     
+                port = new StrongPort(config.CommPortName);
                 port.ReadTimeout = 500;
 
                 try
                 {
-                    port.Open();
+                    port.Connect();
                 }
                 catch (Exception e)
                 {
-                    //return;
                     if (OnError != null)
                     {
                         NotifyError(ErrorTypes.PortError);
@@ -95,6 +93,48 @@ namespace Apex7000_BillValidator
             ackThread.Start();
         }
 
+        private void WriteWrapper(byte[] data)
+        {
+            try
+            {
+                port.Write(data);
+            } catch(PortException pe)
+            {
+                switch(pe.ErrorType)
+                {
+                    case PortErrors.WriteError:
+                        OnError(this, ErrorTypes.WriteError);
+                        break;
+                    case PortErrors.PortError:
+                        OnError(this, ErrorTypes.PortError);
+                        break;
+                }
+            }
+        }
+
+        private byte[] ReadWrapper()
+        {
+            try
+            {
+                return port.Read();
+
+            } catch(PortException pe)
+            {
+                switch (pe.ErrorType)
+                {
+                    case PortErrors.WriteError:
+                        OnError(this, ErrorTypes.WriteError);
+                        break;
+                    case PortErrors.PortError:
+                        OnError(this, ErrorTypes.PortError);
+                        break;
+                }
+
+                return new byte[0];
+            }
+
+        }
+
         /// <summary>
         /// Safely reconnect to the slave device
         /// </summary>
@@ -103,7 +143,7 @@ namespace Apex7000_BillValidator
 
             // Try to close the port before we re instantiate. If this
             // explodes there are bigger issues
-            port.Close();
+            port.Disconnect();
 
             // Let the port cool off (close base stream, etc.)
             Thread.Sleep(100);
@@ -129,14 +169,12 @@ namespace Apex7000_BillValidator
            
             // Attempt to write data to slave
             config.pushDebugEntry(DebugBufferEntry.DebugBufferEntryAsMaster(data, Thread.CurrentThread.ManagedThreadId));
-            Write(data);
+            port.Write(data);
 
             // Blocks until all 11 bytes are read or we give up
-            var resp = Read();
+            var resp = port.Read();
             config.pushDebugEntry(DebugBufferEntry.DebugBufferEntryAsSlave(resp, Thread.CurrentThread.ManagedThreadId));
-
             
-
             // POSSIBLE FUNCTION EXIT!!
             // No data was read, return!!
             if (resp.Length == 0)
@@ -228,6 +266,10 @@ namespace Apex7000_BillValidator
         }
     
         #region GenerateMsg Read Write Checksum
+        /// <summary>
+        /// Generate the next master message using our given state
+        /// </summary>
+        /// <returns></returns>
         private byte[] GenerateNormalMessage()
         {
             //     # basic message   0      1      2      3      4      5    6      7
@@ -281,86 +323,6 @@ namespace Apex7000_BillValidator
 
             // Set the checksum
             return Checksum(data);
-        }
-
-        /// <summary>
-        /// Synchronous write function that allows for up to 3 attempts to write to port.
-        /// </summary>
-        /// <param name="data"></param>
-        private void Write(byte[] data)
-        {
-            if (port != null)
-            {
-                try
-                {
-                    port.Write(data, 0, data.Length);
-                    config.ReconnectAttempts = 0;
-                }
-                catch (Exception e)
-                {
-                    config.IsConnected = false;
-                    Thread.Sleep(1000);
-                    config.ReconnectAttempts++;
-                    if (config.ReconnectAttempts < 3)
-                    {
-                        Reconnect();
-                        Write(data);
-                    }
-                    else
-                    {
-                        config.ReconnectAttempts = 0;
-                        if (OnError != null)
-                        {
-                            OnError(this, ErrorTypes.WriteError);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                if (OnError != null)
-                {
-                    OnError(this, ErrorTypes.PortError);
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Synchronous read function that allows for up to 3 attempts to read from port.
-        /// </summary>
-        /// <param name="data"></param>
-        private byte[] Read()
-        {
-            // Create empty array to hold incoming data
-            byte[] buffer = new byte[0];
-
-            if (port.IsOpen)
-            {
-                int waitCount = 0;
-                while (port.BytesToRead < 11)
-                {
-                    waitCount++;
-                    if (waitCount >= 5)
-                    {
-                        OnError(this, ErrorTypes.Timeout);
-                        return buffer;
-                    }
-
-                    Thread.Sleep(100);
-                }
-
-                // Resize to 11 bytes since we have data to read
-                buffer = new byte[11];
-
-                port.Read(buffer, 0, 11);
-                port.DiscardInBuffer();
-
-                // Reset the timeout clock
-                config.EscrowTimeout = DateTime.MinValue;
-            }
-
-            return buffer;
         }
 
         /// <summary>
