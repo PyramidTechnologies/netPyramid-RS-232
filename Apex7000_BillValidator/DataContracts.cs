@@ -1,46 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
+﻿
 namespace Apex7000_BillValidator
 {
-    public enum COMPort
-    {
-        COM1,
-        COM2,
-        COM3,
-        COM4,
-        COM5,
-        COM6,
-        COM7,
-        COM8,
-        COM9,
-        COM10,
-        COM11,
-        COM12
-    }
-
+    /// <summary>
+    /// All errors reported by a Pyramid Bill acceptor
+    /// </summary>
     public enum ErrorTypes
     {
-        MotorFailure,
+        /// <summary>
+        /// Slave message has an invalid checksum
+        /// </summary>
         CheckSumError,
+
+        /// <summary>
+        /// Slave reports a bill jam
+        /// </summary>
         BillJam,
-        BillRemove,
-        StackerOpen,
-        CashboxFull,
-        CashboxMissing,
-        SensorProblem,
-        BillFish,
-        StackerProblem,
+
+        /// <summary>
+        /// Slave rejected the note due to validation or feed failure
+        /// </summary>
         BillReject,
+
+        /// <summary>
+        /// Slave reports cashbox is full
+        /// </summary>
+        CashboxFull,
+
+        /// <summary>
+        /// Slave reports that cashbox is missing
+        /// </summary>
+        CashboxMissing,
+
+        /// <summary>
+        /// Slave reports a suspected cheating attempt
+        /// </summary>
+        BillFish,
+
+        /// <summary>
+        /// Slave has sent an invalid command. Note this may occur on power up on some operating systems.
+        /// </summary>
         InvalidCommand,
-        StackFailure,
+
+        /// <summary>
+        /// Serial port communication timeout
+        /// </summary>
         Timeout,
+
+        /// <summary>
+        /// Failed to write to slave
+        /// </summary>
         WriteError,
+
+        /// <summary>
+        /// General error opening, reading, or writing to port
+        /// </summary>
         PortError
     }
 
+    /// <summary>
+    /// Only one state may be reported at a time. Note: Stacked and returned are really
+    /// events but RS-232 spec put them in the State byte so we do to.
+    /// </summary>
     [System.Flags]
     public enum States : byte
     {
@@ -53,59 +73,43 @@ namespace Apex7000_BillValidator
         Returned = 64
     }
 
-    public enum EscrowCommands
+    /// <summary>
+    /// Issue these commands while in escrow mode.
+    /// </summary>
+    internal enum EscrowCommands
     {
+        /// <summary>
+        /// No commands are active or pending
+        /// </summary>
         None,
+
+        /// <summary>
+        /// A command has been issued and is currently being acted upon. This may take multiple
+        /// message cycles to clear.
+        /// </summary>
         Pending,
+
+        /// <summary>
+        /// Issues the stack command during the next message loop
+        /// </summary>
         Stack,
+
+        /// <summary>
+        /// Issues the reject command during the next message loop
+        /// </summary>
         Reject
     }
 
+    /// <summary>
+    /// Base message from which all packets are derived
+    /// </summary>
     public struct Request
     {
                                 //   basic message   0      1      2      3      4      5    6      7
                                 //                   start, len,  ack, bills,escrow,resv'd,end, checksum
         public static readonly byte[] BaseMessage = { 0x02, 0x08, 0x10, 0x7F, 0x10, 0x00, 0x03 };
-        public static readonly byte[] Ack = { 0x02, 0x08, 0x11, 0x7F, 0x10, 0x00, 0x03 };
-        public static readonly byte[] Escrow = { 0x02, 0x08, 0x11, 0x7F, 0x10, 0x00, 0x03 };
-        public static readonly byte[] Stack = { 0x02, 0x08, 0x11, 0x7F, 0x30, 0x00, 0x03 };
-        public static readonly byte[] Reject = { 0x02, 0x08, 0x11, 0x7F, 0x50, 0x00, 0x03 };
-    }
 
-    public struct CurrencyMap
-    {
-        public static readonly Dictionary<byte, int> US = new Dictionary<byte, int>() { { 0x01, 1 }, { 0x03, 5 }, { 0x04, 10 }, { 0x05, 20 }, { 0x06, 50 }, { 0x07, 100 } };
-        public static readonly Dictionary<byte, int> CA = new Dictionary<byte, int>() { { 0x01, 5 }, { 0x02, 10 }, { 0x03, 20 }};
-
-    }
-
-    public class BillParser
-    {
-        public static object getCurrencyMap(CultureInfo currentCulture)
-        {
-            if (currentCulture != null)
-            {
-                var r = new RegionInfo(currentCulture.LCID);
-                string region = r.TwoLetterISORegionName;
-
-                CurrencyMap m = new CurrencyMap();                
-                var currencyMaps = m.GetType().GetProperties();
-                foreach (var cm in currencyMaps)
-                {
-                    if (cm.Name == region)
-                    {
-
-                        return Convert.ChangeType(cm, cm.PropertyType);
-                    }
-                }
-            }
-            else
-            {
-                currentCulture = new CultureInfo("en-US");
-                return getCurrencyMap(currentCulture);
-            }
-
-            return CurrencyMap.US;
-        }
-    }
+        // TODO
+        public static readonly byte[] ResetTarget = { };
+    }  
 }

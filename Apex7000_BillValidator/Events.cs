@@ -7,7 +7,7 @@ namespace Apex7000_BillValidator
         // States, not really events (byte 1)
         public event EventHandler IsIdling;
         public event EventHandler IsAccepting;
-        // Escrow belongs here but requires an arg so it is further down
+        // Escrow belongs here but it requires an arg so it is further down
         public event EventHandler IsStacking;
         public event EventHandler IsReturning;
 
@@ -45,11 +45,19 @@ namespace Apex7000_BillValidator
         public event OnErrorEventHandler OnError;
 
         #region Private
+        /// <summary>
+        /// Safely handle event. If handler is null, event is ignored.
+        /// </summary>
+        /// <param name="eventInst"></param>
         private void HandleEvent(EventHandler eventInst)
         {
             HandleEvent(eventInst, null);
         }
 
+        /// <summary>
+        /// Safely handle event. If handler is null, event is ignored.
+        /// </summary>
+        /// <param name="eventInst"></param>
         private void HandleEvent(EventHandler eventInst, EventArgs e)
         {
             EventHandler exec = eventInst;
