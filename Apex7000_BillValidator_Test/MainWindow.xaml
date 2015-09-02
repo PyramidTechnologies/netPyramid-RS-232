@@ -66,13 +66,13 @@
                 <Label Content="Bill 6" Grid.Row="5"/>
                 <Label Content="Bill 7" Grid.Row="6"/>
 
-                <Label Content="0" Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="0" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="0" Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="0" Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="0" Grid.Column="1" Grid.Row="4" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="0" Grid.Column="1" Grid.Row="5" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="0" Grid.Column="1" Grid.Row="6" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill1,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill2,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill3,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill4,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill5,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="4" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill6,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="5" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill7,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="6" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
             </Grid>
 
             <Grid Name="StateMachine" Grid.Row="1" Grid.ColumnSpan="2">

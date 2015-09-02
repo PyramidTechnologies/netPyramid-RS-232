@@ -31,6 +31,7 @@ namespace Apex7000_BillValidator_Test
 
         public MainWindow()
         {
+            DataContext = this;
             InitializeComponent();
             Loaded += MainWindow_Loaded;
         }
@@ -40,14 +41,48 @@ namespace Apex7000_BillValidator_Test
             // Testing on CAN firmware using escrow mode
             config = new RS232Config("COM4", CultureInfo.CurrentCulture, true);
             validator = new ApexValidator(config);
-            validator.PowerUp += validator_PowerUp;
-            validator.OnEscrow += validator_OnEscrow;
+
+            validator.OnPowerUp += validator_PowerUp;
+            validator.IsIdling += validator_IsIdling;
+            validator.IsAccepting += validator_IsAccepting;
+            validator.IsReturning += validator_IsReturning;
+            validator.IsStacking +=validator_IsStacking;
+
+            validator.IsEscrowed += validator_OnEscrow;
             validator.OnCredit += validator_OnCredit;
+
             validator.OnBillStacked += validator_BillStacked;
+            validator.OnBillReturned += validator_OnBillReturned;
+            
             validator.OnError += validator_OnError;
             validator.OnCashboxAttached += validator_CashboxAttached;
 
             validator.Connect();
+        }
+
+        void validator_OnBillReturned(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void validator_IsStacking(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void validator_IsReturning(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void validator_IsIdling(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        void validator_IsAccepting(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         void validator_OnError(object sender, ErrorTypes type)
@@ -75,7 +110,10 @@ namespace Apex7000_BillValidator_Test
         private void validator_OnCredit(object sender, int denomination)
         {
             if (currencyMap.ContainsKey(denomination))
-                Console.WriteLine("Credited ${0}", currencyMap[denomination]);
+            {
+                var val = currencyMap[denomination];
+                Console.WriteLine("Credited ${0}", AddCredit(val));
+            }
         }
 
         void validator_PowerUp(object sender, EventArgs e)
