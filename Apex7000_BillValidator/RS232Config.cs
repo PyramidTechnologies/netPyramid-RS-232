@@ -24,22 +24,12 @@ namespace Apex7000_BillValidator
 
         // Used to map between reported value and actual currency denomination
         private CultureInfo currentCulture;
-        private Dictionary<byte, int> currentCurrencyMap;
+        private CurrencyMap currentCurrencyMap;
         #endregion
-
-        public RS232Config(COMPort commPort)
-        {
-            new RS232Config(commPort.ToString(), CultureInfo.CurrentCulture, false);
-        }
 
         public RS232Config(string commPort)
         {
             new RS232Config(commPort.ToString(), CultureInfo.CurrentCulture, false);
-        }
-
-        public RS232Config(COMPort commPort, CultureInfo culture, bool isEscrowMode)
-        {
-            new RS232Config(commPort.ToString(), currentCulture, isEscrowMode);
         }
 
         public RS232Config(string commPort, CultureInfo culture, bool isEscrowMode)

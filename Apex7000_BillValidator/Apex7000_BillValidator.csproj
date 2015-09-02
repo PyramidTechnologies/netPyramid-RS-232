@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ApexValidator.cs" />
     <Compile Include="Commands.cs" />
+    <Compile Include="CurrencyMap.cs" />
     <Compile Include="DataContracts.cs" />
     <Compile Include="DebugBuffer.cs" />
     <Compile Include="Events.cs" />
