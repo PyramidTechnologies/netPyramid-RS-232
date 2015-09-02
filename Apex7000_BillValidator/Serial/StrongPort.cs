@@ -38,10 +38,10 @@ namespace PTI.Serial
             port.RtsEnable = true;
             port.DiscardNull = false;
             port.PortName = portName;
+            port.Open();
 
             try
             {
-                port.Open();
                 this._internalSerialStream = port.BaseStream;
                 this._serialPort = port;
                 this._serialPort.DiscardInBuffer();
@@ -274,21 +274,12 @@ namespace PTI.Serial
 
         #region Methods
         /// <summary>
-        /// Attempts to open the underlying serial port using the currently
-        /// configured state. Returns true if port is successfully opened.
+        /// This class of port gets opened on instantiation
         /// </summary>
         /// <returns>bool</returns>
         public bool Connect()
         {
-            try
-            {
-                _serialPort.Open();
-                return true;
-            }
-            catch (AccessViolationException)
-            {
-                throw new PortException(ExceptionTypes.AccessError, "Port does not exist or is already open");
-            }
+            return IsOpen;
         }
 
         /// <summary>
@@ -324,7 +315,7 @@ namespace PTI.Serial
                     if (reconnectAttempts < 3)
                     {
                         Disconnect();
-                        Connect();
+                        new StrongPort(_serialPort.PortName);
                         Write(data);
                     }
                     else
