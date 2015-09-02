@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="ApexValidator.cs" />
     <Compile Include="Commands.cs" />
-    <Compile Include="CurrencyMap.cs" />
     <Compile Include="DataContracts.cs" />
     <Compile Include="DebugBuffer.cs" />
     <Compile Include="Events.cs" />
@@ -55,6 +54,7 @@
     <Compile Include="Serial\PortException.cs" />
     <Compile Include="Serial\SerialPortFixer.cs" />
     <Compile Include="Serial\StrongPort.cs" />
+    <Compile Include="SlaveCodex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

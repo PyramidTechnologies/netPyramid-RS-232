@@ -13,13 +13,20 @@
         </DockPanel.Resources>
 
         <StatusBar  DockPanel.Dock="Bottom">
+            <StatusBar.Resources>
+                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource button_flat_jumpy}"/>
+                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource combo_flat}" />
+            </StatusBar.Resources>
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+
                             <ColumnDefinition Width="*" />
+
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
@@ -30,13 +37,16 @@
                 <TextBlock>Port:</TextBlock>
             </StatusBarItem>
             <StatusBarItem Grid.Column="1">
-                <TextBlock Name="PortName">COM1</TextBlock>
+                <ComboBox x:Name="AvailablePorts" Width="120" IsEditable="True" IsReadOnly="True" Text="Select Port"/>
             </StatusBarItem>
-            <StatusBarItem Grid.Column="3">
-                <TextBlock>State:</TextBlock>
+            <StatusBarItem Grid.Column="2">
+                <Button x:Name="btnConnect" Content="Connect" Height="25" Width="100" Click="btnConnect_Click" />
             </StatusBarItem>
             <StatusBarItem Grid.Column="4">
-                <TextBlock Name="State">Idle</TextBlock>
+                <TextBlock>State:</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="5">
+                <TextBlock Text="{Binding State,Mode=OneWay, IsAsync=True}" />
             </StatusBarItem>
         </StatusBar>
 
@@ -46,12 +56,9 @@
                 <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
-
-            <ListView Name="ConsoleView" Grid.Column="1" Grid.ColumnSpan="2" Margin="2"/>
 
             <Grid Name="NoteBack" Margin="5">
                 <Grid.RowDefinitions>
@@ -84,7 +91,7 @@
                 <Label Content="{Binding Path=Bill7,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="6" />
             </Grid>
 
-            <Grid Name="StateMachine" Grid.Row="1" Grid.ColumnSpan="3">
+            <Grid Name="StateMachine" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
@@ -95,61 +102,62 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="15"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnCB" Content="Cashbox"  Grid.Row="0" Grid.Column="7"/>
-                <Button x:Name="btnPup" Content="Power Up" Grid.Row="0" Grid.Column="2"/>
-                <Button x:Name="btnDisabled" Content="Disabled" Grid.Row="1" Grid.Column="1"/>
-                <Button x:Name="btnIdle" Content="Idle"  Grid.Row="1" Grid.Column="3"/>
-                <Button x:Name="btnAccepting" Content="Accepting"  Grid.Row="3" Grid.Column="3"/>
-                <Button x:Name="btnEscrowed" Content="Escrowed" Grid.Row="5" Grid.Column="3"/>
-                <Button x:Name="btnRejected" Content="Rejected"  Grid.Row="5" Grid.Column="5"/>
-                <Button x:Name="btnCheated" Content="Cheated" Grid.Row="5" Grid.Column="6"/>
-                <Button x:Name="btnStacking" Content="Stacking" Grid.Row="7" Grid.Column="3"/>
-                <Button x:Name="btnReturning" Content="Returning" Grid.Row="7" Grid.Column="4"/>
-                <Button x:Name="btnStacked" Content="Stacked" Grid.Row="9" Grid.Column="3"/>
-                <Button x:Name="btnReturned" Content="Returned" Grid.Row="9" Grid.Column="4"/>
-                <Button x:Name="btnFailure" Content="Failure" Grid.Row="4" Grid.Column="0">
-                    <Button.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-42.796"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Button.RenderTransform>
-                </Button>
-                <Button x:Name="btnStackerFull" Content="Stacker Full" Grid.Row="4" Grid.Column="1">
-                    <Button.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-44.66"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Button.RenderTransform>
-                </Button>
-                <Button x:Name="btnBillJammed" Content="Bill Jammed" Grid.Row="4" Grid.Column="2">
-                    <Button.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform/>
-                            <SkewTransform/>
-                            <RotateTransform Angle="-46.029"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Button.RenderTransform>
-                </Button>
+                <Button x:Name="btnCB" Content="Cashbox"  Grid.Row="0" Grid.Column="4"/>
+                <Button x:Name="btnPup" Content="Power Up" Grid.Row="8" />
+                <Button x:Name="btnDisabled" Content="Disabled" />
+                <Button x:Name="btnIdle" Content="Idle" Grid.Column="2" />
+                <Button x:Name="btnAccepting" Content="Accepting"  Grid.Row="2" Grid.Column="2" />
+                <Button x:Name="btnEscrowed" Content="Escrowed" Grid.Row="4" Grid.Column="2" />
+                <Button x:Name="btnRejected" Content="Rejected" Grid.Column="5" Grid.Row="2" />
+                <Button x:Name="btnCheated" Content="Cheated" Grid.Row="4" Grid.Column="5" />
+                <Button x:Name="btnStacking" Content="Stacking" Grid.Row="6" Grid.Column="2" />
+                <Button x:Name="btnReturning" Content="Returning" Grid.Row="6" Grid.Column="3"/>
+                <Button x:Name="btnStacked" Content="Stacked" Grid.Row="8" Grid.Column="2" />
+                <Button x:Name="btnReturned" Content="Returned" Grid.Row="8" Grid.Column="3" />
+                <Button x:Name="btnFailure" Content="Failure" Grid.Row="2" />
+                <Button x:Name="btnStackerFull" Content="Stacker Full" Grid.Row="4" />
+                <Button x:Name="btnBillJammed" Content="Bill Jammed" Grid.Row="6" />
             </Grid>
+            <ListView x:Name="ConsoleLogger" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel VerticalAlignment="Bottom" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.Resources>
+                    <Style TargetType="{x:Type GridViewColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                    </Style>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Foreground" Value="Black" />
+                        <Style.Triggers>
+                            <!--Master color-->
+                            <DataTrigger Binding="{Binding Flow}" Value="0">
+                                <Setter Property="Background"  Value="#FFB4D5FD" />
+                            </DataTrigger>
+                            <!--Slave Color-->
+                            <DataTrigger Binding="{Binding Flow}" Value="1">
+                                    <Setter Property="Background" Value="#FFD2B4FD" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListView.Resources>
+                <ListView.View>                
+                <GridView>
+                        <GridViewColumn Header="Timestamp" Width="100" DisplayMemberBinding="{Binding Timestamp}"/>
+                        <GridViewColumn Header="Direction" Width="100" DisplayMemberBinding="{Binding Flow}"/>
+                        <GridViewColumn Header="Data" Width="400" DisplayMemberBinding="{Binding PrintableData}"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
 
         </Grid>
     </DockPanel>

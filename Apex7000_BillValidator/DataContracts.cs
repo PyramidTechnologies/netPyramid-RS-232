@@ -1,76 +1,38 @@
 ﻿
 namespace Apex7000_BillValidator
 {
-    /// <summary>
-    /// All errors reported by a Pyramid Bill acceptor
-    /// </summary>
-    public enum ErrorTypes
-    {
-        /// <summary>
-        /// Slave message has an invalid checksum
-        /// </summary>
-        CheckSumError,
-
-        /// <summary>
-        /// Slave reports a bill jam
-        /// </summary>
-        BillJam,
-
-        /// <summary>
-        /// Slave rejected the note due to validation or feed failure
-        /// </summary>
-        BillReject,
-
-        /// <summary>
-        /// Slave reports cashbox is full
-        /// </summary>
-        CashboxFull,
-
-        /// <summary>
-        /// Slave reports that cashbox is missing
-        /// </summary>
-        CashboxMissing,
-
-        /// <summary>
-        /// Slave reports a suspected cheating attempt
-        /// </summary>
-        BillFish,
-
-        /// <summary>
-        /// Slave has sent an invalid command. Note this may occur on power up on some operating systems.
-        /// </summary>
-        InvalidCommand,
-
-        /// <summary>
-        /// Serial port communication timeout
-        /// </summary>
-        Timeout,
-
-        /// <summary>
-        /// Failed to write to slave
-        /// </summary>
-        WriteError,
-
-        /// <summary>
-        /// General error opening, reading, or writing to port
-        /// </summary>
-        PortError
-    }
-
-    /// <summary>
-    /// Only one state may be reported at a time. Note: Stacked and returned are really
-    /// events but RS-232 spec put them in the State byte so we do to.
-    /// </summary>
     [System.Flags]
     public enum States : byte
     {
-        Idle = 1,
+        Idling = 1,
         Accepting = 2,
         Escrowed = 4,
         Stacking = 8,
-        Stacked = 16,
         Returning = 32,
-        Returned = 64
+        BillJammed,
+        StackerFull,
+        AcceptorFailure
+    }
+
+    [System.Flags]
+    public enum Events : byte
+    {
+        Stacked,
+        Returned,
+        Cheated,
+        BillRejected,
+        PowerUp
+    }
+
+    [System.Flags]
+    public enum Errors : byte
+    {
+        Timeout,
+        WriteError,
+        PortError,
+        CashboxMissing,
+        ChecksumError,
+        InvalidCommand
     }
 
     /// <summary>

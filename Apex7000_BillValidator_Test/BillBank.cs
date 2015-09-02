@@ -16,7 +16,22 @@ namespace Apex7000_BillValidator_Test
         private int bill5 = 0;
         private int bill6 = 0;
         private int bill7 = 0;
+
+        private static Dictionary<int, int> currencyMap = new Dictionary<int, int>();
+        private Dictionary<int, long> cashbox = new Dictionary<int, long>();
         #endregion
+
+        // Configure our currency map
+        static MainWindow()
+        {
+            currencyMap.Add(1, 1);
+            currencyMap.Add(2, 2);
+            currencyMap.Add(3, 5);
+            currencyMap.Add(4, 10);
+            currencyMap.Add(5, 20);
+            currencyMap.Add(6, 50);
+            currencyMap.Add(7, 100);
+        }
 
         #region Properties
         public int Bill1

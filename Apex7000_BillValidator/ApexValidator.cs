@@ -26,6 +26,19 @@ namespace Apex7000_BillValidator
             this.config = config;
         }
 
+
+
+        /// <summary>
+        /// Returns a list of all available ports
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetAvailablePorts()
+        {
+            return StrongPort.GetAvailablePorts();
+        }
+
+
+
         /// <summary>
         /// Close the underlying comm port
         /// </summary>
@@ -37,16 +50,21 @@ namespace Apex7000_BillValidator
             port.Disconnect();
         }
 
+
+
         /// <summary>
         /// Connect to the device and begin speaking rs232
         /// </summary>
         public void Connect()
         {
 
+
             // Lock so we only have one connection attempt at a time. This protects
             // from client code behaving badly.
             lock (mutex)
             {     
+
+
                 port = new StrongPort(config.CommPortName);
                 port.ReadTimeout = 500;
 
@@ -61,12 +79,19 @@ namespace Apex7000_BillValidator
                 }
                 catch (Exception e)
                 {
+
                     if (OnError != null)
                     {
+
                         log.Error(e.Message);
-                        NotifyError(ErrorTypes.PortError);
+
+                        NotifyError(Errors.PortError);
+
                     }
+
                 }
+
+
             }         
         }
 
@@ -82,6 +107,8 @@ namespace Apex7000_BillValidator
                 return;
             }
 
+
+            // Polls the slave using the interval defined in config.PollRate (milliseconds)
             Thread speakThread = new Thread((fn) =>
             {
 
@@ -91,18 +118,7 @@ namespace Apex7000_BillValidator
                 while (config.IsRunning)
                 {
 
-                    speakToSlave();
-
-                    //TimeSpan ts = DateTime.Now - escrowTimeout;
-                    //if (ts.TotalSeconds >= SLAVE_DEAD_LIMIT)
-                    //{
-
-                    //    //Let's reconnect and make sure everything is still good
-                    //    Reconnect();
-                    //    Reject();
-
-                    //}
-                    
+                    speakToSlave();                  
 
                     Thread.Sleep(config.PollRate);
                 }
@@ -111,63 +127,7 @@ namespace Apex7000_BillValidator
 
             speakThread.IsBackground = true;
             speakThread.Start();
-        }
-
-        /// <summary>
-        /// Write data to port and notify client of any errors they should know about.
-        /// </summary>
-        /// <param name="data">byte[]</param>
-        private void WriteWrapper(byte[] data)
-        {
-            try
-            {
-                port.Write(data);
-
-            } 
-            catch(PortException pe)
-            {
-                switch(pe.ErrorType)
-                {
-                    case ExceptionTypes.WriteError:
-                        OnError(this, ErrorTypes.WriteError);
-                        break;
-                    case ExceptionTypes.PortError:
-                        OnError(this, ErrorTypes.PortError);
-                        break;
-
-                    default:
-                        throw pe.GetBaseException();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Read data from the port and notify client of any errors they should know about.
-        /// </summary>
-        /// <returns></returns>
-        private byte[] ReadWrapper()
-        {
-            try
-            {
-                return port.Read();
-
-            } 
-            catch(PortException pe)
-            {
-                switch (pe.ErrorType)
-                {
-                    case ExceptionTypes.Timeout:
-                        OnError(this, ErrorTypes.Timeout);
-                        break;
-      
-                    default:
-                        throw pe.GetBaseException();
-                }
-
-                return new byte[0];
-            }
-
-        }
+        }       
 
         /// <summary>
         /// Safely reconnect to the slave device
@@ -201,13 +161,13 @@ namespace Apex7000_BillValidator
 
             }
            
-            // Attempt to write data to slave
-            config.pushDebugEntry(DebugBufferEntry.AsMaster(data));
+            // Attempt to write data to slave            
+            config.notifySerialData(DebugBufferEntry.AsMaster(data));
             WriteWrapper(data);
 
             // Blocks until all 11 bytes are read or we give up
             var resp = ReadWrapper();
-            config.pushDebugEntry(DebugBufferEntry.AsSlave(resp));
+            config.notifySerialData(DebugBufferEntry.AsSlave(resp));
             
             // POSSIBLE FUNCTION EXIT!!
             // No data was read, return!!
@@ -231,27 +191,15 @@ namespace Apex7000_BillValidator
                 config.Ack ^= 1;
             }
 
+            var currentState = (SlaveCodex.Byte0)resp[3];
 
+            // Only raise a state chang if the state has changed
+            if (config.PreviousResponse != currentState)
+            {
+                config.PreviousResponse = currentState;
 
-            // With the exception of Stacked and Returned, only we can
-            // only be in one state at once
-            config.PreviousResponse = (States)resp[3];
-
-            // Only one state will be reported at once with the exception of idle
-            if ((config.PreviousResponse & States.Idle) == States.Idle)
-                IsIdling(this, null);
-
-            if ((config.PreviousResponse & States.Accepting) == States.Accepting)
-                IsAccepting(this, null);        
-            else if ((config.PreviousResponse & States.Stacking) == States.Stacking)
-                IsStacking(this, null);
-            else if ((config.PreviousResponse & States.Stacked) == States.Stacked)
-                OnBillStacked(this, null);
-            else if ((config.PreviousResponse & States.Returning) == States.Returning)
-                IsReturning(this, null);
-            else if ((config.PreviousResponse & States.Returned) == States.Returned)
-                OnBillReturned(this, null);
-
+                OnStateChanged(this, config.PreviousResponse);
+            }
 
             // Mask away rest of message to see if a note is in escrow
             config.IsEscrowed = (resp[3] & 4) == 0x04 ? true : false;
@@ -259,16 +207,16 @@ namespace Apex7000_BillValidator
 
             // Multiple event may be reported at once
             if ((resp[4] & 0x01) == 0x01)
-                NotifyError(ErrorTypes.BillFish);
+                NotifyEvent(Events.Cheated);
 
             if ((resp[4] & 0x02) == 0x02)
-                NotifyError(ErrorTypes.BillReject);
+                NotifyEvent(Events.BillRejected);
 
             if ((resp[4] & 0x04) == 0x04)
-                NotifyError(ErrorTypes.BillJam);
+                NotifyStateChange(States.BillJammed);
 
             if ((resp[4] & 0x08) == 0x08)
-                NotifyError(ErrorTypes.CashboxFull);
+                NotifyStateChange(States.StackerFull);
 
 
             // Check for cassette missing
@@ -277,7 +225,7 @@ namespace Apex7000_BillValidator
 
                 config.CashboxPresent = false;
 
-                NotifyError(ErrorTypes.CashboxMissing);
+                NotifyError(Errors.CashboxMissing);
 
             }
 
@@ -287,7 +235,7 @@ namespace Apex7000_BillValidator
 
                 config.CashboxPresent = true;
 
-                HandleEvent(OnCashboxAttached);
+                SafeEvent(OnCashboxAttached);
 
             }
 
@@ -302,7 +250,7 @@ namespace Apex7000_BillValidator
 
             // Per the spec, credit message is issued by master after stack event is 
             // sent by the slave.
-            if ((config.PreviousResponse & States.Stacked) == States.Stacked)
+            if (((byte)config.PreviousResponse & 0x10) == 0x10)
             {
                 config.EscrowCommand = EscrowCommands.None;
 
@@ -311,7 +259,7 @@ namespace Apex7000_BillValidator
                        
         }
     
-        #region GenerateMsg Read Write Checksum
+        #region GenerateMsg Write Read Checksum
         /// <summary>
         /// Generate the next master message using our given state
         /// </summary>
@@ -369,6 +317,62 @@ namespace Apex7000_BillValidator
 
             // Set the checksum
             return Checksum(data);
+        }
+
+        /// <summary>
+        /// Write data to port and notify client of any errors they should know about.
+        /// </summary>
+        /// <param name="data">byte[]</param>
+        private void WriteWrapper(byte[] data)
+        {
+            try
+            {
+                port.Write(data);
+
+            }
+            catch (PortException pe)
+            {
+                switch (pe.ErrorType)
+                {
+                    case ExceptionTypes.WriteError:
+                        OnError(this, Errors.WriteError);
+                        break;
+                    case ExceptionTypes.PortError:
+                        OnError(this, Errors.PortError);
+                        break;
+
+                    default:
+                        throw pe.GetBaseException();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Read data from the port and notify client of any errors they should know about.
+        /// </summary>
+        /// <returns></returns>
+        private byte[] ReadWrapper()
+        {
+            try
+            {
+                return port.Read();
+
+            }
+            catch (PortException pe)
+            {
+                switch (pe.ErrorType)
+                {
+                    case ExceptionTypes.Timeout:
+                        OnError(this, Errors.Timeout);
+                        break;
+
+                    default:
+                        throw pe.GetBaseException();
+                }
+
+                return new byte[0];
+            }
+
         }
 
         /// <summary>

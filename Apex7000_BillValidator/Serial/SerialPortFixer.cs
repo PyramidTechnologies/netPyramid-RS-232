@@ -53,7 +53,7 @@ namespace PTI.Serial
             const int dwFlagsAndAttributes = 0x40000000;
             const int dwAccess = unchecked((int)0xC0000000);
 
-            if ((portName == null) || !portName.StartsWith("COM", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(portName))
             {
                 throw new ArgumentException("Invalid Serial Port", "portName");
             }

@@ -4,22 +4,32 @@ namespace Apex7000_BillValidator
 {
     public partial class ApexValidator
     {
-        // States, not really events (byte 1)
-        public event EventHandler IsIdling;
-        public event EventHandler IsAccepting;
-        // Escrow belongs here but it requires an arg so it is further down
-        public event EventHandler IsStacking;
-        public event EventHandler IsReturning;
+        /// <summary>
+        /// Raised when the acceptor reports any event. Events are transient
+        /// in that they are only reported once to the master.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Events</param>
+        public delegate void OnEventHandler(object sender, Events e);
+        public event OnEventHandler OnEvent;
 
-        // Events that are reported in the state byte
-        public event EventHandler OnBillStacked;
-        public event EventHandler OnBillReturned;
+        /// <summary>
+        /// Raised when the acceptor reports a state that is different from the 
+        /// previously recorded state. Note: In escrow mode the Escrowed event
+        /// will be raised as 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="state">States</param>
+        public delegate void OnStateChangeHandler(object sender, States state);
+        public event OnStateChangeHandler OnStateChanged;
 
-        // True RS-232 "events" (byte 2)
-        public event EventHandler OnCashboxAttached;
-
-        // Errors, credit, other (byte 3)
-        public event EventHandler OnPowerUp;
+        /// <summary>
+        /// Raised by the master in the event that communication fails
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="type">Errors</param>
+        public delegate void OnErrorEventHandler(object sender, Errors type);
+        public event OnErrorEventHandler OnError;
 
         /// <summary>
         /// Raised once a note has been successfully stacked.
@@ -38,35 +48,55 @@ namespace Apex7000_BillValidator
         /// <param name="sender">Object that raised event</param>
         /// <param name="denomination">Index 1-7 of the denomination in escrow. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
-        public delegate void IsEscrowedEventHandler(object sender, int denomination);
-        public event IsEscrowedEventHandler IsEscrowed;
+        public delegate void OsEscrowedEventHandler(object sender, int denomination);
+        public event OsEscrowedEventHandler OnEscrowed;
 
-        public delegate void OnErrorEventHandler(object sender, ErrorTypes type);
-        public event OnErrorEventHandler OnError;
+        /// <summary>
+        /// Raised when the cashbox is no longer detached
+        /// </summary>
+        public event EventHandler OnCashboxAttached;
 
         #region Private
         /// <summary>
         /// Safely handle event. If handler is null, event is ignored.
         /// </summary>
         /// <param name="eventInst"></param>
-        private void HandleEvent(EventHandler eventInst)
+        private void NotifyEvent(Events e)
         {
-            HandleEvent(eventInst, null);
-        }
-
-        /// <summary>
-        /// Safely handle event. If handler is null, event is ignored.
-        /// </summary>
-        /// <param name="eventInst"></param>
-        private void HandleEvent(EventHandler eventInst, EventArgs e)
-        {
-            EventHandler exec = eventInst;
+            OnEventHandler exec = OnEvent;
             if (exec != null)
             {
                 exec(this, e);
             }
         }
 
+        /// <summary>
+        /// Safely handle state change. If handler is null, event is ignored.
+        /// </summary>
+        /// <param name="eventInst"></param>
+        private void NotifyStateChange(States state)
+        {
+            OnStateChangeHandler exec = OnStateChanged;
+            if (exec != null)
+            {
+                exec(this, state);
+            }
+        }
+
+        /// <summary>
+        /// Safely handle event. If handler is null, event is ignored.
+        /// </summary>
+        /// <param name="eventInst"></param>
+        private void SafeEvent(EventHandler eventInst)
+        {
+            EventHandler exec = eventInst;
+            if (exec != null)
+            {
+                exec(this, null);
+            }
+        }
+
+ 
         /// <summary>
         /// Raised when a note is completely stacked.
         /// </summary>
@@ -86,7 +116,7 @@ namespace Apex7000_BillValidator
         /// <param name="e"></param>
         protected virtual void NotifyEscrow(int e)
         {
-            IsEscrowedEventHandler handler = IsEscrowed;
+            OsEscrowedEventHandler handler = OnEscrowed;
             if (handler != null)
             {
                 handler(this, e);
@@ -97,7 +127,7 @@ namespace Apex7000_BillValidator
         /// Raised when an exceptional state occurs.
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void NotifyError(ErrorTypes e)
+        protected virtual void NotifyError(Errors e)
         {
             OnErrorEventHandler handler = OnError;
             if (handler != null)

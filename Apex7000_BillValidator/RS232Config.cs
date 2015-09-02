@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 namespace Apex7000_BillValidator
@@ -14,28 +13,21 @@ namespace Apex7000_BillValidator
         // seconds
         private static readonly int SLAVE_DEAD_LIMIT = 10;
 
-        private static readonly int DEBUG_BUFFER_SZ = 100;
-
         #region Fields
         // Integer poll rate between 50 and 5000 ms
         private int pollRate = POLL_RATE;
 
         private LinkedList<DebugBufferEntry> debugBuffer = new LinkedList<DebugBufferEntry>();
-
-        // Used to map between reported value and actual currency denomination
-        private CultureInfo currentCulture;
-        private CurrencyMap currentCurrencyMap;
         #endregion
 
         public RS232Config(string commPort)
         {
-            new RS232Config(commPort.ToString(), CultureInfo.CurrentCulture, false);
+            new RS232Config(commPort.ToString(), false);
         }
 
-        public RS232Config(string commPort, CultureInfo culture, bool isEscrowMode)
+        public RS232Config(string commPort, bool isEscrowMode)
         {
             this.CommPortName = commPort;
-            this.currentCulture = culture;
             this.IsEscrowMode = isEscrowMode;
 
             this.CashboxPresent = true;
@@ -55,6 +47,9 @@ namespace Apex7000_BillValidator
         }
 
         #region Properties
+        public delegate void OnSerialDataHandler(object sender, DebugBufferEntry entry);
+        public event OnSerialDataHandler OnSerialData;
+
         /// <summary>
         /// Gets or sets the poll rate in milliseconds. The polled system is designed for the master to request 
         /// information from the slave at a periodic rate. The rate can be as slow as 5 seconds or as fast as 
@@ -102,6 +97,12 @@ namespace Apex7000_BillValidator
         /// Returns true if the communication thread is running normally
         /// </summary>
         public bool IsRunning { get; internal set; }
+
+        /// <summary>
+        /// Gets or Sets debug mode. While in debug mode, the OnSerialData event can be subscribed
+        /// to in order to receive all packets sent and received to your client handler.
+        /// </summary>
+        public bool DebugMode { get; set; }
         #endregion       
 
         #region Internal State
@@ -129,12 +130,13 @@ namespace Apex7000_BillValidator
         // Track comm timeout from slave device
         internal DateTime EscrowTimeout { get; set; }
 
-        internal void pushDebugEntry(DebugBufferEntry entry) 
+        internal void notifySerialData(DebugBufferEntry entry) 
         {
-            debugBuffer.AddLast(entry);
-
-            if (debugBuffer.Count > DEBUG_BUFFER_SZ)
-                debugBuffer.Clear();
+            OnSerialDataHandler handler = OnSerialData;
+            if(OnSerialData != null)
+            {
+                handler(this, entry);
+            }
         }
         #endregion
     }

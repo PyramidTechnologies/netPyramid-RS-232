@@ -20,26 +20,17 @@
             <SplineDoubleKeyFrame KeyTime="0:0:4" Value="0"/>
         </DoubleAnimationUsingKeyFrames>
     </Storyboard>
-
-    <Style x:Key="imgButton_withText" TargetType="Button" BasedOn="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-        <Setter Property="SnapsToDevicePixels" Value="True"/>
-    </Style>
-
-    <Style x:Key="textBlock_largeFont" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="20"/>
-        <Setter Property="FontWeight" Value="Medium"/>
-    </Style>
-
+  
     <Style x:Key="GroupHeader_TextBlock" TargetType="TextBlock">
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="Normal"/>
         <Setter Property="Margin" Value="5"/>
-        <Setter Property="Foreground" Value="DarkGray"/>
+        <Setter Property="Foreground" Value="Black"/>
         <Setter Property="FontWeight" Value="Medium"/>
     </Style>
 
     <Style x:Key="GroupHeader_Label" TargetType="Label">
-        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontWeight" Value="Light"/>
         <Setter Property="Margin" Value="1"/>
         <Setter Property="HorizontalContentAlignment" Value="Right"/>
@@ -101,10 +92,52 @@
             </Trigger>
         </Style.Triggers>
     </Style>
- 
+
+    <Style x:Key="button_flat_jumpy" TargetType="Button">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background" Value="#FF3E1D66"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Height" Value="60"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="bg"
+                        Background="{TemplateBinding Background}"
+                        BorderThickness="2"
+                        BorderBrush="White">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#FF9B9C9C" TargetName="bg" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="1"/>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Visibility" Value="Visible">
+                <Trigger.EnterActions>
+                    <BeginStoryboard Storyboard="{StaticResource GrowStoryboard}" />
+                </Trigger.EnterActions>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
     <Style x:Key="combo_flat"  TargetType="{x:Type ComboBox}">
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="MinWidth" Value="60"/>
         <Setter Property="UIElement.SnapsToDevicePixels" Value="True"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
@@ -115,41 +148,10 @@
         <Setter Property="BorderBrush" Value="Black"/>
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Background" Value="White" />
-        <Setter Property="Margin" Value="0,10,0,0"/>
         <Setter Property="Width" Value="85" />
         <Setter Property="Height" Value="20"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
     </Style>
 
-    <Style x:Key="textbox_flat"  TargetType="{x:Type TextBox}">
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="VerticalAlignment" Value="Top"/>
-        <Setter Property="MinWidth" Value="50"/>
-        <Setter Property="UIElement.SnapsToDevicePixels" Value="True"/>
-        <Setter Property="TextElement.Foreground" Value="Black"/>
-        <Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}"/>
-        <Setter Property="BorderBrush" Value="Black"/>
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Background" Value="White" />
-        <Setter Property="Margin" Value="0,10,0,0"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="Validation.ErrorTemplate">
-            <Setter.Value>
-                <ControlTemplate>
-                    <DockPanel LastChildFill="true">
-                        <Border Background="Red" DockPanel.Dock="right" Margin="5,0,0,0" Width="20" Height="20" CornerRadius="10"
-                                    ToolTip="{Binding ElementName=customAdorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}">
-                            <TextBlock Text="!" VerticalAlignment="center" HorizontalAlignment="center" FontWeight="Bold" Foreground="white">
-                            </TextBlock>
-                        </Border>
-                        <AdornedElementPlaceholder Name="customAdorner" VerticalAlignment="Center" >
-                            <Border BorderBrush="red" BorderThickness="1" />
-                        </AdornedElementPlaceholder>
-                    </DockPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
 </ResourceDictionary>
