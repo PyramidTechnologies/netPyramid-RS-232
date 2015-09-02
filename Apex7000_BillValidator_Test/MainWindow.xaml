@@ -2,7 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="600" Width="800">
+    <Window.Resources>
+        <ResourceDictionary Source="Themes/purple.xaml"/>
+    </Window.Resources>
     <DockPanel LastChildFill="true">
+        <DockPanel.Resources>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource button_flat_round}"/>
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GroupHeader_TextBlock}"/>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource GroupHeader_Label}"/>
+        </DockPanel.Resources>
 
         <StatusBar  DockPanel.Dock="Bottom">
             <StatusBar.ItemsPanel>
@@ -40,9 +48,10 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <ListView Name="ConsoleView" Grid.Column="1"/>
+            <ListView Name="ConsoleView" Grid.Column="1" Grid.ColumnSpan="2" Margin="2"/>
 
             <Grid Name="NoteBack" Margin="5">
                 <Grid.RowDefinitions>
@@ -58,24 +67,24 @@
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Bill 1" Grid.Row="0"/>
-                <Label Content="Bill 2" Grid.Row="1"/>
-                <Label Content="Bill 3" Grid.Row="2"/>
-                <Label Content="Bill 4" Grid.Row="3"/>
-                <Label Content="Bill 5" Grid.Row="4"/>
-                <Label Content="Bill 6" Grid.Row="5"/>
-                <Label Content="Bill 7" Grid.Row="6"/>
+                <TextBlock Text="Bill 1" Grid.Row="0"/>
+                <TextBlock Text="Bill 2" Grid.Row="1"/>
+                <TextBlock Text="Bill 3" Grid.Row="2"/>
+                <TextBlock Text="Bill 4" Grid.Row="3"/>
+                <TextBlock Text="Bill 5" Grid.Row="4"/>
+                <TextBlock Text="Bill 6" Grid.Row="5"/>
+                <TextBlock Text="Bill 7" Grid.Row="6"/>
 
-                <Label Content="{Binding Path=Bill1,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="0" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="{Binding Path=Bill2,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="1" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="{Binding Path=Bill3,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="2" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="{Binding Path=Bill4,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="3" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="{Binding Path=Bill5,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="4" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="{Binding Path=Bill6,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="5" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
-                <Label Content="{Binding Path=Bill7,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="6" HorizontalContentAlignment="Right" BorderBrush="#FF0F0E0E" BorderThickness="1" Margin="2"/>
+                <Label Content="{Binding Path=Bill1,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="0" />
+                <Label Content="{Binding Path=Bill2,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="1" />
+                <Label Content="{Binding Path=Bill3,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="2" />
+                <Label Content="{Binding Path=Bill4,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="3" />
+                <Label Content="{Binding Path=Bill5,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="4" />
+                <Label Content="{Binding Path=Bill6,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="5" />
+                <Label Content="{Binding Path=Bill7,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="6" />
             </Grid>
 
-            <Grid Name="StateMachine" Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid Name="StateMachine" Grid.Row="1" Grid.ColumnSpan="3">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
@@ -96,19 +105,21 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Button Content="Power Up" HorizontalAlignment="Left" Margin="21,6.509,0,0" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Idle" Grid.Column="2" HorizontalAlignment="Left" Margin="30,2.862,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1"/>
-                <Button Content="Accepting" Grid.Column="2" HorizontalAlignment="Left" Margin="30,10,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Escrowed" Grid.Column="2" HorizontalAlignment="Left" Margin="30,7.872,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Rejected" Grid.Column="4" HorizontalAlignment="Left" Margin="32,7.872,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Cheated" Grid.Column="5" HorizontalAlignment="Left" Margin="26,7.872,0,0" Grid.Row="5" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Stacking" Grid.Column="2" HorizontalAlignment="Left" Margin="30,9.998,0,0" Grid.Row="7" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.093,0.169"/>
-                <Button Content="Returning" Grid.Column="3" HorizontalAlignment="Left" Margin="27,9.999,0,0" Grid.Row="7" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Stacked" Grid.Column="2" HorizontalAlignment="Left" Margin="30,2.862,0,0" Grid.Row="9" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Returned" Grid.Column="3" HorizontalAlignment="Left" Margin="27,2.862,0,0" Grid.Row="9" VerticalAlignment="Top" Width="75"/>
-                <Button Content="Disabled" Grid.Column="1" HorizontalAlignment="Left" Margin="21,2.862,0,0" VerticalAlignment="Top" Width="75" Grid.Row="1"/>
-                <Button Content="Failure" HorizontalAlignment="Left" Margin="59,8.175,0,0" Grid.Row="4" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
+                <Button x:Name="btnCB" Content="Cashbox"  Grid.Row="0" Grid.Column="7"/>
+                <Button x:Name="btnPup" Content="Power Up" Grid.Row="0" Grid.Column="2"/>
+                <Button x:Name="btnDisabled" Content="Disabled" Grid.Row="1" Grid.Column="1"/>
+                <Button x:Name="btnIdle" Content="Idle"  Grid.Row="1" Grid.Column="3"/>
+                <Button x:Name="btnAccepting" Content="Accepting"  Grid.Row="3" Grid.Column="3"/>
+                <Button x:Name="btnEscrowed" Content="Escrowed" Grid.Row="5" Grid.Column="3"/>
+                <Button x:Name="btnRejected" Content="Rejected"  Grid.Row="5" Grid.Column="5"/>
+                <Button x:Name="btnCheated" Content="Cheated" Grid.Row="5" Grid.Column="6"/>
+                <Button x:Name="btnStacking" Content="Stacking" Grid.Row="7" Grid.Column="3"/>
+                <Button x:Name="btnReturning" Content="Returning" Grid.Row="7" Grid.Column="4"/>
+                <Button x:Name="btnStacked" Content="Stacked" Grid.Row="9" Grid.Column="3"/>
+                <Button x:Name="btnReturned" Content="Returned" Grid.Row="9" Grid.Column="4"/>
+                <Button x:Name="btnFailure" Content="Failure" Grid.Row="4" Grid.Column="0">
                     <Button.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>
@@ -118,7 +129,7 @@
                         </TransformGroup>
                     </Button.RenderTransform>
                 </Button>
-                <Button Content="Stacker Full" HorizontalAlignment="Left" Margin="124,0,0,2.865" Grid.Row="4" VerticalAlignment="Bottom" Width="75" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
+                <Button x:Name="btnStackerFull" Content="Stacker Full" Grid.Row="4" Grid.Column="1">
                     <Button.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>
@@ -128,7 +139,7 @@
                         </TransformGroup>
                     </Button.RenderTransform>
                 </Button>
-                <Button Content="Bill Jammed" Grid.Column="1" HorizontalAlignment="Left" Margin="59,9.326,0,0" Grid.Row="4" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.5,0.5" Grid.ColumnSpan="2">
+                <Button x:Name="btnBillJammed" Content="Bill Jammed" Grid.Row="4" Grid.Column="2">
                     <Button.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform/>
