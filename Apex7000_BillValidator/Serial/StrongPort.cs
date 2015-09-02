@@ -5,7 +5,6 @@ using System.IO.Ports;
 using System.Reflection;
 using System.Threading;
 using System.Linq;
-using Apex7000_BillValidator;
 
 namespace PTI.Serial
 {
@@ -229,7 +228,7 @@ namespace PTI.Serial
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 log.Warn("SerialPort workaround failure.");
             }
@@ -288,11 +287,7 @@ namespace PTI.Serial
             }
             catch (AccessViolationException)
             {
-                throw new PortException(PortErrors.AccessError, "Port does not exist or is already open");
-            }
-            catch (Exception e)
-            {
-                throw new PortException(PortErrors.PortError, e.Message, e);
+                throw new PortException(ExceptionTypes.AccessError, "Port does not exist or is already open");
             }
         }
 
@@ -322,7 +317,7 @@ namespace PTI.Serial
                     _serialPort.Write(data, 0, data.Length);
                     reconnectAttempts = 0;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // Incremental backoff
                     Thread.Sleep(500 * reconnectAttempts++);
@@ -334,13 +329,13 @@ namespace PTI.Serial
                     }
                     else
                     {
-                        throw new PortException(PortErrors.WriteError);
+                        throw new PortException(ExceptionTypes.WriteError);
                     }
                 }
             }
             else
             {
-                throw new PortException(PortErrors.PortError);
+                throw new PortException(ExceptionTypes.PortError);
             }
         }
 
@@ -362,7 +357,7 @@ namespace PTI.Serial
                     waitCount++;
                     if (waitCount >= 5)
                     {
-                        throw new PortException(PortErrors.Timeout);
+                        throw new PortException(ExceptionTypes.Timeout);
                     }
 
                     Thread.Sleep(100);

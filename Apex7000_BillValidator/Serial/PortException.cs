@@ -1,10 +1,9 @@
-﻿using Apex7000_BillValidator;
-using System;
+﻿using System;
 using System.Runtime.Serialization;
 
 namespace PTI.Serial
 {
-    public enum PortErrors
+    public enum ExceptionTypes
     {
         Timeout,
         WriteError,
@@ -16,21 +15,21 @@ namespace PTI.Serial
     [SerializableAttribute]
     public class PortException : Exception, ISerializable
     {
-        public PortErrors ErrorType { get; private set; }
+        public ExceptionTypes ErrorType { get; private set; }
 
-        public PortException(PortErrors type)
+        public PortException(ExceptionTypes type)
             : base() 
         {
             ErrorType = type;
         }
 
-        public PortException(PortErrors type, string message)
+        public PortException(ExceptionTypes type, string message)
             : base(message)
         {
             ErrorType = type;
         }
 
-        public PortException(PortErrors type, string message, Exception inner)
+        public PortException(ExceptionTypes type, string message, Exception inner)
             : base(message, inner)
         {
             ErrorType = type;

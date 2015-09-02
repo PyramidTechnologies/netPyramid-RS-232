@@ -7,26 +7,22 @@ namespace Apex7000_BillValidator
 {
     public class DebugBufferEntry
     {
-        private Flows flows;
-        private int p;
-
-        public static DebugBufferEntry DebugBufferEntryAsMaster(byte[] data, int id)
+        public static DebugBufferEntry AsMaster(byte[] data)
         {
-            return new DebugBufferEntry(data, Flows.Master, id);
+            return new DebugBufferEntry(data, Flows.Master);
         }
 
-        public static DebugBufferEntry DebugBufferEntryAsSlave(byte[] data, int id)
+        public static DebugBufferEntry AsSlave(byte[] data)
         {
-            return new DebugBufferEntry(data, Flows.Slave, id);
+            return new DebugBufferEntry(data, Flows.Slave);
         }
 
-        private DebugBufferEntry(byte[] data, Flows flow, int p)
+        private DebugBufferEntry(byte[] data, Flows flow)
         {
             var dt = DateTime.Now;
             Timestamp = String.Format("{0}:{1}:{2}", dt.Minute, dt.Second, dt.Millisecond);
             Data = data;
             Flow = flow;
-            ThreadID = p;
         }
 
         public byte[] Data { get; private set; }
@@ -41,11 +37,9 @@ namespace Apex7000_BillValidator
 
         public String Timestamp { get; private set; }
 
-        public int ThreadID { get; private set; }
-
         public override string ToString()
         {
-            return String.Format("{0} :: {1} :: {2}", Flow, PrintableData, ThreadID);
+            return String.Format("{0} :: {1} :: {2}", Flow, PrintableData);
         }
 
         public static string ByteArrayToString(byte[] ba)
@@ -54,8 +48,7 @@ namespace Apex7000_BillValidator
             foreach (byte b in ba)
                 hex.AppendFormat("{0:X2} ", b);
             return hex.ToString();
-        }
-        
+        }        
     }
 
     public enum Flows {
