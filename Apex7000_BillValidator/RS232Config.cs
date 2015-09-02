@@ -106,12 +106,12 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Slaves last state
         /// </summary>
-        public Response PreviousResponse { get; internal set; }
+        public States PreviousResponse { get; internal set; }
 
         /// <summary>
-        /// Returns true if underlying port is connected
+        /// Returns true if the communication thread is running normally
         /// </summary>
-        public bool IsConnected { get; internal set; }
+        public bool IsRunning { get; internal set; }
         #endregion       
 
         #region Internal State
@@ -138,7 +138,6 @@ namespace Apex7000_BillValidator
 
         // Track comm timeout from slave device
         internal DateTime EscrowTimeout { get; set; }
-        internal int ReconnectAttempts { get; set; }
 
         internal void pushDebugEntry(DebugBufferEntry entry) 
         {

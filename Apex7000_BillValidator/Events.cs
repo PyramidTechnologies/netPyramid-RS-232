@@ -5,11 +5,11 @@ namespace Apex7000_BillValidator
     public partial class ApexValidator
     {
         // States, not really events (byte 1)
-        public event EventHandler OnIdling;
-        public event EventHandler OnAccepting;
-        public event EventHandler OnEscrowed;
-        public event EventHandler OnStacking;
-        public event EventHandler OnReturning;
+        public event EventHandler IsIdling;
+        public event EventHandler IsAccepting;
+        // Escrow belongs here but requires an arg so it is further down
+        public event EventHandler IsStacking;
+        public event EventHandler IsReturning;
 
         // Events that are reported in the state byte
         public event EventHandler OnBillStacked;
@@ -19,7 +19,7 @@ namespace Apex7000_BillValidator
         public event EventHandler OnCashboxAttached;
 
         // Errors, credit, other (byte 3)
-        public event EventHandler PowerUp;
+        public event EventHandler OnPowerUp;
 
         /// <summary>
         /// Raised once a note has been successfully stacked.
@@ -38,13 +38,13 @@ namespace Apex7000_BillValidator
         /// <param name="sender">Object that raised event</param>
         /// <param name="denomination">Index 1-7 of the denomination in escrow. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
-        public delegate void OnEscrowEventHandler(object sender, int denomination);
-        public event OnEscrowEventHandler OnEscrow;
+        public delegate void IsEscrowedEventHandler(object sender, int denomination);
+        public event IsEscrowedEventHandler IsEscrowed;
 
         public delegate void OnErrorEventHandler(object sender, ErrorTypes type);
         public event OnErrorEventHandler OnError;
 
-
+        #region Private
         private void HandleEvent(EventHandler eventInst)
         {
             HandleEvent(eventInst, null);
@@ -78,7 +78,7 @@ namespace Apex7000_BillValidator
         /// <param name="e"></param>
         protected virtual void NotifyEscrow(int e)
         {
-            OnEscrowEventHandler handler = OnEscrow;
+            IsEscrowedEventHandler handler = IsEscrowed;
             if (handler != null)
             {
                 handler(this, e);
@@ -97,5 +97,6 @@ namespace Apex7000_BillValidator
                 handler(this, e);
             }
         }
+        #endregion
     }
 }

@@ -42,11 +42,11 @@ namespace Apex7000_BillValidator
     }
 
     [System.Flags]
-    public enum Response : byte
+    public enum States : byte
     {
         Idle = 1,
         Accepting = 2,
-        Escrow = 4,
+        Escrowed = 4,
         Stacking = 8,
         Stacked = 16,
         Returning = 32,
