@@ -93,7 +93,7 @@ namespace Apex7000_BillValidator
             if ((message & SlaveMessage.Failure) == SlaveMessage.Failure)
                 return States.AcceptorFailure;
 
-            return States.BusyScanning;
+            return States.Offline;
         }
 
         internal static Events GetEvents(SlaveMessage message)

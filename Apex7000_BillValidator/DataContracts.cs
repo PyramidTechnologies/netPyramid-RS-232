@@ -3,7 +3,7 @@ namespace Apex7000_BillValidator
 {
     public enum States : byte
     {
-        BusyScanning,
+        Offline,
 
         Idling,
         Accepting,

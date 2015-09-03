@@ -14,6 +14,8 @@ namespace Apex7000_BillValidator_Test
         private ApexValidator validator;
         private RS232Config config;
 
+        private bool btnConnectedLock = false;
+
         private FixedObservableLinkedList<DebugBufferEntry> debugQueue;
 
         public MainWindow()
@@ -27,33 +29,48 @@ namespace Apex7000_BillValidator_Test
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            PortName = AvailablePorts.Text;
-            if (string.IsNullOrEmpty(PortName))
-            {                
-                MessageBox.Show("Please select a port");
-                return;
+            // We're already connected
+            if (btnConnectedLock)
+            {
+                validator.Close();
+                btnConnect.Content = "Connect";
+                btnConnectedLock = false;
+            }
+            else
+            {
+                btnConnectedLock = true;
+                btnConnect.Content = "Disconnect";
+
+                PortName = AvailablePorts.Text;
+                if (string.IsNullOrEmpty(PortName))
+                {
+                    MessageBox.Show("Please select a port");
+                    return;
+                }
+
+                // Testing on CAN firmware using escrow mode
+                config = new RS232Config(PortName, true);
+                validator = new ApexValidator(config);
+
+                // Configure logging
+                config.OnSerialData += config_OnSerialData;
+                ConsoleLogger.ItemsSource = debugQueue;
+
+                // Configure events and state (All optional)
+                validator.OnEvent += validator_OnEvent;
+                validator.OnStateChanged += validator_OnStateChanged;
+                validator.OnError += validator_OnError;
+                validator.OnCashboxAttached += validator_CashboxAttached;
+
+                // Required if you are in escrow mode
+                validator.OnEscrowed += validator_OnEscrow;
+                validator.OnCredit += validator_OnCredit;
+
+                // This starts the acceptor
+                validator.Connect();
             }
 
-            // Testing on CAN firmware using escrow mode
-            config = new RS232Config(PortName, true);
-            validator = new ApexValidator(config);
-
-            // Configure logging
-            config.OnSerialData += config_OnSerialData;
-            ConsoleLogger.ItemsSource = debugQueue;
-
-            // Configure events and state (All optional)
-            validator.OnEvent += validator_OnEvent;
-            validator.OnStateChanged += validator_OnStateChanged;
-            validator.OnError += validator_OnError;
-            validator.OnCashboxAttached += validator_CashboxAttached;
-
-            // Required if you are in escrow mode
-            validator.OnEscrowed += validator_OnEscrow;
-            validator.OnCredit += validator_OnCredit;
-            
-            // This starts the acceptor
-            validator.Connect();
+            AvailablePorts.IsEnabled = !btnConnectedLock;
         }
 
         void config_OnSerialData(object sender, DebugBufferEntry entry)
@@ -69,31 +86,16 @@ namespace Apex7000_BillValidator_Test
                
         void validator_OnStateChanged(object sender, States state)
         {
-            Console.WriteLine("State: {0}", state);
+            if (state != States.Idling)
+                Console.WriteLine("State: {0}", state);
             State = state;
         }
 
         void validator_OnEvent(object sender, Events e)
         {
-            Console.WriteLine("Event Occured: {0}", e);
-            switch(e)
-            {
-                case Events.BillRejected:
-                    setEvent(btnRejected);
-                    break;
-                case Events.Cheated:
-                    setEvent(btnCheated);
-                    break;
-                case Events.PowerUp:
-                    setEvent(btnPup);
-                    break;
-                case Events.Returned:
-                    setEvent(btnReturned);
-                    break;
-                case Events.Stacked:
-                    setEvent(btnStacked);
-                    break;
-            }
+            if(e != Events.None)
+                Console.WriteLine("Event Occured: {0}", e);
+            Event = e;
         }
         void validator_CashboxAttached(object sender, EventArgs e)
         {
@@ -144,13 +146,26 @@ namespace Apex7000_BillValidator_Test
 
         void validator_OnEscrow(object sender, int index)
         {
-            validator.Stack();
-            State = States.Escrowed;
+            if (index != 3)
+            {
+                validator.Stack();
+                State = States.Escrowed;
 
-            if (currencyMap.ContainsKey(index))
-                Console.WriteLine("Escrowed ${0}", currencyMap[index]);
+                if (currencyMap.ContainsKey(index))
+                    Console.WriteLine("Escrowed ${0}", currencyMap[index]);
+                else
+                    Console.WriteLine("Unknown denomination index: {0}", index);
+            }
             else
-                Console.WriteLine("Unknown denomination index: {0}", index);
+            {
+                validator.Reject();
+
+                if (currencyMap.ContainsKey(index))
+                    Console.WriteLine("Rejected ${0}", currencyMap[index]);
+                else
+                    Console.WriteLine("Unknown denomination index: {0}", index);
+            }
+
         }       
     }
     

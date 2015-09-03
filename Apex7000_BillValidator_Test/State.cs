@@ -9,6 +9,13 @@ using System.Windows.Media;
 
 namespace Apex7000_BillValidator_Test
 {
+    internal enum ClearTypes
+    {
+        All,
+        Events,
+        States
+    }
+
     partial class MainWindow : Window, INotifyPropertyChanged
     {
         private static SolidColorBrush inactive = new SolidColorBrush(Colors.LightGray);
@@ -16,29 +23,30 @@ namespace Apex7000_BillValidator_Test
         private static SolidColorBrush activeEvent = new SolidColorBrush(Colors.LightGreen);
         private static SolidColorBrush activeState = new SolidColorBrush(Colors.LightBlue);
 
-        private string portName = "";
-        private States state = States.BusyScanning;
-        private bool isEscrowMode = false;
+        #region Fields
+        private string _portName = "";
+        private States _state = States.Offline;
+        private Events _event = Events.None;
+        private bool _isEscrowMode = false;
+        #endregion
 
+
+        #region Properties
         public string PortName
         {
-            get { return portName;  }
+            get { return _portName;  }
             set
             {
-                portName = value;
+                _portName = value;
                 NotifyPropertyChanged("PortName");
             }
         }
 
         public States State
         {
-            get { return state; }
+            get { return _state; }
             set
             {
-                // Do not bother updating if we've already set this flag
-                if ((value & state) == state)
-                    return;
-
                 DoOnUIThread(() =>
                     {
                         switch (value)
@@ -69,21 +77,63 @@ namespace Apex7000_BillValidator_Test
                                 break;
                         }
 
-                        state = value;
-                        NotifyPropertyChanged("State");
                     });
+         
+                _state = value;
+                NotifyPropertyChanged("State");
+            }
+        }
+
+        public Events Event
+        {
+            get { return _event; }
+            set
+            {
+                DoOnUIThread(() =>
+                {
+                    if ((_event & (Events.Returned | Events.Stacked | Events.BillRejected | Events.Cheated)) != 0)
+                    {
+                        clearTags(ClearTypes.All);
+                    }
+                });
+
+                switch (value)
+                {
+                    case Events.BillRejected:
+                        setEvent(btnRejected);
+                        break;
+                    case Events.Cheated:
+                        setEvent(btnCheated);
+                        break;
+                    case Events.PowerUp:
+                        setEvent(btnPup);
+                        break;
+                    case Events.Returned:
+                        setEvent(btnReturned);
+                        break;
+                    case Events.Stacked:
+                        setEvent(btnStacked);
+                        break;
+
+                    default:
+                        setEvent(null);
+                        break;
+                }
+
+                _event = value;
             }
         }
 
         public bool EscrowMode
         {
-            get { return isEscrowMode;  }
+            get { return _isEscrowMode;  }
             set
             {
-                isEscrowMode = value;
+                _isEscrowMode = value;
                 NotifyPropertyChanged("EscrowMode");
             }
         }
+        #endregion
 
         /// <summary>
         /// Sets the state tag as active while clearing all other state tags
@@ -93,7 +143,7 @@ namespace Apex7000_BillValidator_Test
         {
             DoOnUIThread(() =>
             {
-                clearStates();
+                //clearTags(typeof(States));
                 target.Background = activeState;
             });
         }
@@ -106,7 +156,13 @@ namespace Apex7000_BillValidator_Test
         {
             DoOnUIThread(() =>
             {
-                target.Background = activeState;
+                if (target != null)
+                {
+                    target.Background = activeState;
+
+                }
+                else
+                    clearTags(ClearTypes.Events);
             });
         }
 
@@ -118,21 +174,38 @@ namespace Apex7000_BillValidator_Test
         {
             DoOnUIThread(() =>
             {
-                clearStates();
+                clearTags(ClearTypes.All);
                 target.Background = activeError;
+                setState(btnDisabled);
             });
         }
 
         /// <summary>
         /// Resets all state tags back to lightGrey. Must be called from UI thread.
         /// </summary>
-        private void clearStates()
-        {
-
+        private void clearTags(ClearTypes type)
+        {                     
+            var tag = "";
             IEnumerable<Button> stateTags = StateMachine.Children.OfType<Button>();
             foreach (Button b in stateTags)
             {
-                b.Background = inactive;
+                // lol. if the button has a tag, return it as a string. Otherwise tag == empty string.
+                tag = (b.Tag ?? null) == null ? "" : b.Tag.ToString();
+
+                switch (type)
+                {
+                    case ClearTypes.All:
+                        b.Background = inactive;
+                        break;
+                    case ClearTypes.Events:
+                        if (tag.Equals("event"))
+                            b.Background = inactive;
+                        break;
+                    case ClearTypes.States:
+                        if (tag.Equals("state"))
+                            b.Background = inactive;
+                        break;
+                }
             }
 
         }
