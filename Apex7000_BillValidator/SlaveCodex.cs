@@ -76,22 +76,22 @@ namespace Apex7000_BillValidator
             // Clear non-state bits
             message &= stateMask;
 
-            if ((message & SlaveMessage.Idling) == SlaveMessage.Idling)
-                return States.Idling;
-            if ((message & SlaveMessage.Accepting) == SlaveMessage.Accepting)
-                return States.Accepting;
-            if ((message & SlaveMessage.Escrowed) == SlaveMessage.Escrowed)
-                return States.Escrowed;
-            if ((message & SlaveMessage.Stacking) == SlaveMessage.Stacking)
-                return States.Stacking;
-            if ((message & SlaveMessage.Returning) == SlaveMessage.Returning)
-                return States.Returning;
-            if ((message & SlaveMessage.BillJammed) == SlaveMessage.BillJammed)
-                return States.BillJammed;
-            if ((message & SlaveMessage.StackerFull) == SlaveMessage.StackerFull)
-                return States.StackerFull;
             if ((message & SlaveMessage.Failure) == SlaveMessage.Failure)
                 return States.AcceptorFailure;
+            if ((message & SlaveMessage.StackerFull) == SlaveMessage.StackerFull)
+                return States.StackerFull;
+            if ((message & SlaveMessage.BillJammed) == SlaveMessage.BillJammed)
+                return States.BillJammed;
+            if ((message & SlaveMessage.Returning) == SlaveMessage.Returning)
+                return States.Returning;
+            if ((message & SlaveMessage.Stacking) == SlaveMessage.Stacking)
+                return States.Stacking;
+            if ((message & SlaveMessage.Escrowed) == SlaveMessage.Escrowed)
+                return States.Escrowed;
+            if ((message & SlaveMessage.Accepting) == SlaveMessage.Accepting)
+                return States.Accepting;
+            if ((message & SlaveMessage.Idling) == SlaveMessage.Idling)
+                return States.Idling;
 
             return States.Offline;
         }
