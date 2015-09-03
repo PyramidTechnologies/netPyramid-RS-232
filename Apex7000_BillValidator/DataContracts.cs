@@ -4,11 +4,13 @@ namespace Apex7000_BillValidator
     [System.Flags]
     public enum States : byte
     {
-        Idling = 1,
-        Accepting = 2,
-        Escrowed = 4,
-        Stacking = 8,
-        Returning = 32,
+        BusyScanning,
+
+        Idling,
+        Accepting,
+        Escrowed,
+        Stacking,
+        Returning,
         BillJammed,
         StackerFull,
         AcceptorFailure
@@ -17,16 +19,21 @@ namespace Apex7000_BillValidator
     [System.Flags]
     public enum Events : byte
     {
+        None,
+
         Stacked,
         Returned,
         Cheated,
         BillRejected,
-        PowerUp
+        PowerUp,
+        InvalidCommand
     }
 
     [System.Flags]
     public enum Errors : byte
     {
+        None,
+
         Timeout,
         WriteError,
         PortError,

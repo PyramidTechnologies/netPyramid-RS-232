@@ -10,48 +10,129 @@ namespace Apex7000_BillValidator
     /// </summary>
     internal class SlaveCodex
     {
+        private static SlaveMessage stateMask = (SlaveMessage)0x40C2F;
+        private static SlaveMessage eventMask = (SlaveMessage)0x30350;
+        private static SlaveMessage cbOkayMask = (SlaveMessage)0x001000;
+        private static int creditMask = 0x380000;
+
         /// <summary>
         /// RS-232 mixed a couple of events in with state
         /// </summary>
-        public enum Byte0 : byte
+        [System.Flags]
+        internal enum SlaveMessage : byte
         {
-            Idling = 1,
-            Accepting = 2,
-            Escrowed = 4,
-            Stacking = 8,
-            Stacked = 16,
-            Returned = 32,
-            Returned = 64
+            // Byte 0 - bit 0
+            Idling          = 1 << 0,   // State
+            Accepting       = 1 << 1,   // State
+            Escrowed        = 1 << 2,   // State
+            Stacking        = 1 << 3,   // State
+            Stacked         = 1 << 4,   // Event
+            Returning       = 1 << 5,   // State
+            Returned        = 1 << 6,   // Event
+
+            // Ignore 8th bit in 7-bit RS-232
+            x1              = 1 << 7,
+   
+            // Byte1 - bit 0
+            Cheated         = 1 << 8,   // Event
+            BillRejected    = 1 << 9,   // Event
+            BillJammed      = 1 << 10,  // State
+            StackerFull     = 1 << 11,  // State
+            StackerPresent  = 1 << 12,  // Ephemeral
+            Reserved1       = 1 << 13,  // Set to 0
+            Reserved2       = 1 << 14,  // Set to 0
+
+            // Ignore 8th bit in 7-bit RS-232
+            x2              = 1 << 15,
+
+            // Byte2 - bit 0
+            PowerUp         = 1 << 16,  // Event
+            InvalidCommand  = 1 << 17,  // Event
+            Failure         = 1 << 18,  // State
+            C1              = 1 << 19,  // Credit bit 1
+            C2              = 1 << 20,  // Credit bit 2
+            C3              = 1 << 21,  // Credit bit 3
+            Reserved        = 1 << 23,  // Set to 0
+
+            // Ignore 8th bit in 7-bit RS-232
+            x3              = 1 << 24
         }
 
-        enum Byte1 : byte
+        internal static SlaveMessage ToSlaveMessage(byte[] message)
         {
-            Cheated = 1,
-            BillRejected = 2,
-            BillJammed = 4,
-            StackerFull = 8,
-            StackerPresent = 16,
-            Reserved1 = 32,         // Set to 0
-            Reserved2 = 64          // Set to 0
+            int combined = (
+                (message[0] << 16) |
+                (message[1]) << 8  |
+                (message[2])
+                );
+            return (SlaveMessage)combined;
         }
 
-        enum Byte2 : byte
+        internal static States GetState(SlaveMessage message)
         {
-            PowerUp = 1,
-            InvalidCommand = 2,
-            Failure = 4,
-            C1 = 8,
-            C2 = 16,
-            C3 = 32,
-            Reserved = 64           // Set to 0
+            // Clear non-state bits
+            message &= stateMask;
+
+            if ((message & SlaveMessage.Idling) == SlaveMessage.Idling)
+                return States.Idling;
+            if ((message & SlaveMessage.Accepting) == SlaveMessage.Accepting)
+                return States.Accepting;
+            if ((message & SlaveMessage.Escrowed) == SlaveMessage.Escrowed)
+                return States.Escrowed;
+            if ((message & SlaveMessage.Stacking) == SlaveMessage.Stacking)
+                return States.Stacking;
+            if ((message & SlaveMessage.Returning) == SlaveMessage.Returning)
+                return States.Returning;
+            if ((message & SlaveMessage.BillJammed) == SlaveMessage.BillJammed)
+                return States.BillJammed;
+            if ((message & SlaveMessage.StackerFull) == SlaveMessage.StackerFull)
+                return States.StackerFull;
+            if ((message & SlaveMessage.Failure) == SlaveMessage.Failure)
+                return States.AcceptorFailure;
+
+            return States.BusyScanning;
         }
 
+        internal static Events GetEvents(SlaveMessage message)
+        {
+            message &= eventMask;
+            Events result = Events.None;
+
+            if ((message & SlaveMessage.Stacked) == SlaveMessage.Stacked)
+                result |= Events.Stacked;
+            if ((message & SlaveMessage.Returned) == SlaveMessage.Returned)
+                result |= Events.Returned;
+            if ((message & SlaveMessage.Cheated) == SlaveMessage.Cheated)
+                result |= Events.Cheated;
+            if ((message & SlaveMessage.BillRejected) == SlaveMessage.BillRejected)
+                result |= Events.BillRejected;
+            if ((message & SlaveMessage.PowerUp) == SlaveMessage.PowerUp)
+                result |= Events.PowerUp;
+            if ((message & SlaveMessage.InvalidCommand) == SlaveMessage.InvalidCommand)
+                result |= Events.InvalidCommand;
+
+            return result;
+        }
+
+        internal static bool CashboxPresent(SlaveMessage message)
+        {
+            message &= cbOkayMask;
+
+            return (message & SlaveMessage.StackerPresent) == SlaveMessage.StackerPresent;
+        }
 
         // enum Byte 3 Reserved - all bits must be 0
 
         // enum Byte 4 Model number - (00-7FH)
-
+        internal static string GetModelNumber(byte byte4)
+        {
+            return String.Format("{0}", byte4);
+        }
+        
         // enum Byte 5 Firmware Rev - (00-7FH)
-
+        internal static string GetModelNumber(byte byte5)
+        {
+            return String.Format("{0}", byte5);
+        }
     }
 }
