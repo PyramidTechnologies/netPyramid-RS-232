@@ -138,15 +138,11 @@ namespace Apex7000_BillValidator_Test
             }
             set
             {
-                if (config != null)
-                {
-                    config.IsEscrowMode = value;
-                    NotifyPropertyChanged("IsEscrowMode");
-                }
-                else
-                {
-                    _isEscrowMode = value;
-                }
+                if (config != null)                
+                    config.IsEscrowMode = value;                
+                else                
+                    _isEscrowMode = value;                
+                NotifyPropertyChanged("IsEscrowMode");
             }
         }
 

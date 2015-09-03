@@ -189,7 +189,7 @@
                     <GridView>
                         <GridViewColumn Header="Timestamp" Width="100" DisplayMemberBinding="{Binding Timestamp}"/>
                         <GridViewColumn Header="Direction" Width="100" DisplayMemberBinding="{Binding Flow}"/>
-                        <GridViewColumn Header="Data" Width="400" DisplayMemberBinding="{Binding PrintableData}"/>
+                        <GridViewColumn Header="Data" Width="200" DisplayMemberBinding="{Binding PrintableData}"/>
                         <GridViewColumn Header="Decoded" Width="400" DisplayMemberBinding="{Binding DecodedData}"/>
                     </GridView>
                 </ListView.View>
