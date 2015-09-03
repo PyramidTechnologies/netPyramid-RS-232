@@ -17,7 +17,7 @@ namespace Apex7000_BillValidator_Test
         private static SolidColorBrush activeState = new SolidColorBrush(Colors.LightBlue);
 
         private string portName = "";
-        private States state = States.Idling;
+        private States state = States.BusyScanning;
         private bool isEscrowMode = false;
 
         public string PortName

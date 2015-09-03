@@ -191,36 +191,28 @@ namespace Apex7000_BillValidator
                 config.Ack ^= 1;
             }
 
-            var currentState = (SlaveCodex.Byte0)resp[3];
+            // Extract only the states and events
+            var slaveMessage = SlaveCodex.ToSlaveMessage(resp);
 
-            // Only raise a state chang if the state has changed
-            if (config.PreviousResponse != currentState)
-            {
-                config.PreviousResponse = currentState;
-
-                OnStateChanged(this, config.PreviousResponse);
-            }
+            config.PreviousResponse = SlaveCodex.GetState(slaveMessage);
+            OnStateChanged(this, config.PreviousResponse);
+            
 
             // Mask away rest of message to see if a note is in escrow
-            config.IsEscrowed = (resp[3] & 4) == 0x04 ? true : false;
+            config.IsEscrowed = config.PreviousResponse == States.Escrowed;
 
 
             // Multiple event may be reported at once
-            if ((resp[4] & 0x01) == 0x01)
-                NotifyEvent(Events.Cheated);
-
-            if ((resp[4] & 0x02) == 0x02)
-                NotifyEvent(Events.BillRejected);
-
-            if ((resp[4] & 0x04) == 0x04)
-                NotifyStateChange(States.BillJammed);
-
-            if ((resp[4] & 0x08) == 0x08)
-                NotifyStateChange(States.StackerFull);
-
+            var currentEvents = SlaveCodex.GetEvents(slaveMessage);
+            foreach (Events e in Enum.GetValues(typeof(Events)))
+            {
+                // If flag is set in slave message, report event
+                if((currentEvents & e) == e)
+                    NotifyEvent(e);
+            }
 
             // Check for cassette missing
-            if ((resp[4] & 0x10) != 0x10)
+            if (!SlaveCodex.IsCashboxPresent(slaveMessage))
             {
 
                 config.CashboxPresent = false;
@@ -240,22 +232,25 @@ namespace Apex7000_BillValidator
             }
 
             // Credit bits are 3-5 of data byte 3 
-            var value = (byte)((resp[5] & 0x38) >> 3);
+            var value = SlaveCodex.GetCredit(slaveMessage);
             if (value != 0)
             {
-                config.Credit = value;
+                config.Credit = (byte)value;
 
             }
 
 
             // Per the spec, credit message is issued by master after stack event is 
             // sent by the slave.
-            if (((byte)config.PreviousResponse & 0x10) == 0x10)
+            if ((config.PreviousEvents & Events.Stacked) == Events.Stacked)
             {
                 config.EscrowCommand = EscrowCommands.None;
 
                 NotifyCredit(config.Credit);
-            }            
+            }
+
+            // Update the events aster the check for check so as to not lose a credit message
+            config.PreviousEvents = currentEvents;
                        
         }
     

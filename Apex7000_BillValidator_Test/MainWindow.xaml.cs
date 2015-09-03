@@ -69,11 +69,13 @@ namespace Apex7000_BillValidator_Test
                
         void validator_OnStateChanged(object sender, States state)
         {
+            Console.WriteLine("State: {0}", state);
             State = state;
         }
 
         void validator_OnEvent(object sender, Events e)
         {
+            Console.WriteLine("Event Occured: {0}", e);
             switch(e)
             {
                 case Events.BillRejected:
@@ -95,7 +97,7 @@ namespace Apex7000_BillValidator_Test
         }
         void validator_CashboxAttached(object sender, EventArgs e)
         {
-            Console.WriteLine("Box Attached");
+            Console.WriteLine("Cashbox Attached");
             setState(btnCB);
         }
 
@@ -132,18 +134,23 @@ namespace Apex7000_BillValidator_Test
         {
             if (currencyMap.ContainsKey(denomination))
             {
-                var val = currencyMap[denomination];
-                Console.WriteLine("Credited ${0}", AddCredit(val));
+                var credited = AddCredit(denomination);
+                if (credited > 0)
+                    Console.WriteLine("Credited ${0}", credited);
+                else
+                    Console.WriteLine("Failed to credit: {0}", denomination);
             }
         }
 
-        void validator_OnEscrow(object sender, int denomination)
+        void validator_OnEscrow(object sender, int index)
         {
             validator.Stack();
             State = States.Escrowed;
 
-            if (currencyMap.ContainsKey(denomination))
-                Console.WriteLine("Escrowed ${0}", currencyMap[denomination]);
+            if (currencyMap.ContainsKey(index))
+                Console.WriteLine("Escrowed ${0}", currencyMap[index]);
+            else
+                Console.WriteLine("Unknown denomination index: {0}", index);
         }       
     }
     

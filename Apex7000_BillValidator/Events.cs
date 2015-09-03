@@ -35,9 +35,9 @@ namespace Apex7000_BillValidator
         /// Raised once a note has been successfully stacked.
         /// </summary>
         /// <param name="sender">Object that raised event</param>
-        /// <param name="denomination">Index 1-7 of the denomination stacked. See
+        /// <param name="index">Index 1-7 of the denomination stacked. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
-        public delegate void OnCreditEventHandler(object sender, int denomination);
+        public delegate void OnCreditEventHandler(object sender, int index);
         public event OnCreditEventHandler OnCredit;
 
         /// <summary>
@@ -46,9 +46,9 @@ namespace Apex7000_BillValidator
         /// the note based upon the denomination.
         /// </summary>
         /// <param name="sender">Object that raised event</param>
-        /// <param name="denomination">Index 1-7 of the denomination in escrow. See
+        /// <param name="index">Index 1-7 of the denomination in escrow. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
-        public delegate void OsEscrowedEventHandler(object sender, int denomination);
+        public delegate void OsEscrowedEventHandler(object sender, int index);
         public event OsEscrowedEventHandler OnEscrowed;
 
         /// <summary>
