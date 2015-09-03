@@ -16,6 +16,7 @@ namespace Apex7000_BillValidator
         #region Fields
         // Integer poll rate between 50 and 5000 ms
         private int pollRate = POLL_RATE;
+        private byte enableDisable = 0x7F;
 
         private LinkedList<DebugBufferEntry> debugBuffer = new LinkedList<DebugBufferEntry>();
         #endregion
@@ -49,6 +50,23 @@ namespace Apex7000_BillValidator
         #region Properties
         public delegate void OnSerialDataHandler(object sender, DebugBufferEntry entry);
         public event OnSerialDataHandler OnSerialData;
+
+        /// <summary>
+        /// Gets or sets the 7-bit enable pattern. Starting from the LSB, each bit represents
+        /// the index of a note to enable. Setting a bit 1 enables the note.
+        /// </summary>
+        public byte EnablePattern 
+        {
+            get
+            {
+                return enableDisable;
+            }
+            set
+            {
+                // Ensure only 7 bits are set
+                enableDisable = (byte)(value & 0x7F);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the poll rate in milliseconds. The polled system is designed for the master to request 

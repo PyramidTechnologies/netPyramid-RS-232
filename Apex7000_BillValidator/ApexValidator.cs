@@ -96,6 +96,22 @@ namespace Apex7000_BillValidator
         }
 
         /// <summary>
+        /// Safely reconnect to the slave device
+        /// </summary>
+        private void Reconnect()
+        {
+
+            // Try to close the port before we re instantiate. If this
+            // explodes there are bigger issues
+            port.Disconnect();
+
+            // Let the port cool off (close base stream, etc.)
+            Thread.Sleep(100);
+
+            Connect();
+        }
+
+        /// <summary>
         /// Polls the slave and processes messages accordingly
         /// </summary>
         private void startRS232Loop()
@@ -130,22 +146,6 @@ namespace Apex7000_BillValidator
         }       
 
         /// <summary>
-        /// Safely reconnect to the slave device
-        /// </summary>
-        private void Reconnect()
-        {
-
-            // Try to close the port before we re instantiate. If this
-            // explodes there are bigger issues
-            port.Disconnect();
-
-            // Let the port cool off (close base stream, etc.)
-            Thread.Sleep(100);
-
-            Connect();
-        }
-
-        /// <summary>
         /// The main parsing routine
         /// </summary>
         private void speakToSlave()
@@ -178,7 +178,7 @@ namespace Apex7000_BillValidator
             }
 
             // Check that we have the same ACK #
-            else if((resp[2] & 1) != (data[2] & 1))
+            else if (IsBadAckNumber(resp, data))
             {
                 config.previouslySentMasterMsg = data;
                 return;
@@ -268,6 +268,9 @@ namespace Apex7000_BillValidator
             // Toggle message number (ack #) if last message was okay and not a re-send request.
             data[2] = (byte)(0x10 | config.Ack);
 
+            // Set enable/disable pattern
+            data[3] = config.EnablePattern;
+
             // If we have a valid note in escrow decide if 
             // we have to wait for the host to accept/reject
             // or if we can just stack.
@@ -276,6 +279,10 @@ namespace Apex7000_BillValidator
                 if (!config.IsEscrowMode)
                 {
 
+                    // Not escrow mode
+                    data[4] = 0x00;
+
+
                     // Not escrow mode, we have a non-zero credit so just stack
                     data[4] |= 0x20;
 
@@ -283,6 +290,8 @@ namespace Apex7000_BillValidator
                 }
                 else
                 {
+                    data[4] = 0x01;
+
                     // Otherwise do what the host tells us to do.
                     switch (config.EscrowCommand)
                     {
@@ -386,6 +395,17 @@ namespace Apex7000_BillValidator
 
             tmp.Add(checksum);
             return tmp.ToArray();
+        }
+
+        /// <summary>
+        /// Returns true if the ACK numbers for the given packets do not match
+        /// </summary>
+        /// <param name="resp">byte[] received</param>
+        /// <param name="data">byte[] last message sent</param>
+        /// <returns></returns>
+        private static bool IsBadAckNumber(byte[] resp, byte[] data)
+        {
+            return (resp[2] & 1) != (data[2] & 1);
         }
         #endregion
     }
