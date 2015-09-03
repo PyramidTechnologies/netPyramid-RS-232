@@ -24,6 +24,7 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
 
                             <ColumnDefinition Width="*" />
 
@@ -37,61 +38,95 @@
                 <TextBlock>Port:</TextBlock>
             </StatusBarItem>
             <StatusBarItem Grid.Column="1">
-                <ComboBox x:Name="AvailablePorts" Width="120" IsEditable="True" IsReadOnly="True" Text="Select Port"/>
+                <ComboBox x:Name="AvailablePorts" Width="120" IsEditable="True" IsReadOnly="True" Text="Select Port" IsEnabled="{Binding Path=IsNotConnected,Mode=OneWay, IsAsync=True}"/>
             </StatusBarItem>
             <StatusBarItem Grid.Column="2">
                 <Button x:Name="btnConnect" Content="Connect" Height="25" Width="100" Click="btnConnect_Click" />
             </StatusBarItem>
-            <StatusBarItem Grid.Column="4">
-                <TextBlock>State:</TextBlock>
+            <StatusBarItem Grid.Column="3">
+                <CheckBox Content="Escrow Mode" IsChecked="{Binding IsEscrowMode,Mode=OneWay, IsAsync=True}" IsEnabled="{Binding Path=IsConnected,Mode=OneWay, IsAsync=True}"/>
             </StatusBarItem>
             <StatusBarItem Grid.Column="5">
+                <TextBlock>State:</TextBlock>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="6">
                 <TextBlock Text="{Binding State,Mode=OneWay, IsAsync=True}" />
             </StatusBarItem>
         </StatusBar>
 
-        <Grid Name="twobytwo" >
+        <Grid Name="twobytwo" Margin="0,0,0,1" >
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Name="NoteBack" Margin="5">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Text="Bill 1" Grid.Row="0"/>
-                <TextBlock Text="Bill 2" Grid.Row="1"/>
-                <TextBlock Text="Bill 3" Grid.Row="2"/>
-                <TextBlock Text="Bill 4" Grid.Row="3"/>
-                <TextBlock Text="Bill 5" Grid.Row="4"/>
-                <TextBlock Text="Bill 6" Grid.Row="5"/>
-                <TextBlock Text="Bill 7" Grid.Row="6"/>
+            <TabControl>
+                <TabItem Header="Bill Bank">
+                    <Grid Name="NoteBack" Margin="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Bill 1" Grid.Row="0"/>
+                        <TextBlock Text="Bill 2" Grid.Row="1"/>
+                        <TextBlock Text="Bill 3" Grid.Row="2"/>
+                        <TextBlock Text="Bill 4" Grid.Row="3"/>
+                        <TextBlock Text="Bill 5" Grid.Row="4"/>
+                        <TextBlock Text="Bill 6" Grid.Row="5"/>
+                        <TextBlock Text="Bill 7" Grid.Row="6"/>
+                        <TextBlock Text="Total" Grid.Row="7" FontWeight="ExtraBold"/>
 
-                <Label Content="{Binding Path=Bill1,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="0" />
-                <Label Content="{Binding Path=Bill2,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="1" />
-                <Label Content="{Binding Path=Bill3,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="2" />
-                <Label Content="{Binding Path=Bill4,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="3" />
-                <Label Content="{Binding Path=Bill5,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="4" />
-                <Label Content="{Binding Path=Bill6,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="5" />
-                <Label Content="{Binding Path=Bill7,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="6" />
-            </Grid>
+                        <Label Content="{Binding Path=Bill1,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="0" />
+                        <Label Content="{Binding Path=Bill2,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="1" />
+                        <Label Content="{Binding Path=Bill3,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="2" />
+                        <Label Content="{Binding Path=Bill4,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="3" />
+                        <Label Content="{Binding Path=Bill5,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="4" />
+                        <Label Content="{Binding Path=Bill6,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="5" />
+                        <Label Content="{Binding Path=Bill7,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="6" />
+                        <Label Content="{Binding Path=TotalCount,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="7" FontWeight="ExtraBold" />
 
-            <Grid Name="StateMachine" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,5,0,0">
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Enable/Disable">
+                    <Grid Background="#FFE5E5E5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Content="Bill 1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <CheckBox Content="Bill 2" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"/>
+                        <CheckBox Content="Bill 3" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"/>
+                        <CheckBox Content="Bill 4" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3"/>
+                        <CheckBox Content="Bill 5" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" />
+                        <CheckBox Content="Bill 6" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+                        <CheckBox Content="Bill 7" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+
+            <Grid Name="StateMachine" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,25,0,12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
@@ -126,7 +161,9 @@
                 <Button x:Name="btnStackerFull" Content="Stacker Full" Grid.Row="4" Tag="state" />
                 <Button x:Name="btnBillJammed" Content="Bill Jammed" Grid.Row="6" Tag="state" />
             </Grid>
-            <ListView x:Name="ConsoleLogger" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single">
+            
+            <!-- Max height calculated as the largest area that shows 13 packets without empty area -->
+            <ListView x:Name="ConsoleLogger" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single" MaxHeight="320" MinHeight="320">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel VerticalAlignment="Bottom" />

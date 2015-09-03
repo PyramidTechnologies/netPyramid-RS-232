@@ -105,29 +105,43 @@ namespace Apex7000_BillValidator_Test
         }
         #endregion
 
+        /// <summary>
+        /// Adds credit to the specified slot, returns the denomination that was credited
+        /// </summary>
+        /// <param name="denom"></param>
+        /// <returns></returns>
         internal int AddCredit(int denom)
         {
             switch(denom)
             {
                 case 1:
-                    return Bill1++;
+                    Bill1++;
+                    break;
                 case 2:
-                    return Bill2++;
+                    Bill2++;
+                    break;
                 case 3:
-                    return Bill3++;
+                    Bill3++;
+                    break;
                 case 4:
-                    return Bill4++;
+                    Bill4++;
+                    break;
                 case 5:
-                    return Bill5++;
+                    Bill5++;
+                    break;
                 case 6:
-                    return Bill6++;
+                    Bill6++;
+                    break;
                 case 7:
-                    return Bill7++;
+                    Bill7++;
+                    break;
 
                 default:
                     // Illegal value
                     return 0;
             }
+
+            return currencyMap[denom];
         }
 
 

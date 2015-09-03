@@ -9,7 +9,7 @@ namespace Apex7000_BillValidator_Test
 /// <summary>
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class FixedObservableLinkedList<T> :LinkedList<T>, INotifyCollectionChanged
+    internal class FixedObservableLinkedList<T> : LinkedList<T>, INotifyCollectionChanged
     {
         private readonly object syncObject = new object();
 
@@ -35,7 +35,7 @@ namespace Apex7000_BillValidator_Test
                     RemoveLast();
                 }
             }
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, obj));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, null));
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;

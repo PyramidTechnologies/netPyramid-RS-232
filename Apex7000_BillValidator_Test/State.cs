@@ -27,7 +27,8 @@ namespace Apex7000_BillValidator_Test
         private string _portName = "";
         private States _state = States.Offline;
         private Events _event = Events.None;
-        private bool _isEscrowMode = false;
+
+        private bool _isConnected = false;
         #endregion
 
 
@@ -124,15 +125,41 @@ namespace Apex7000_BillValidator_Test
             }
         }
 
-        public bool EscrowMode
+        public bool IsEscrowMode
         {
-            get { return _isEscrowMode;  }
+            get 
+            {
+                if (config != null)
+                    return config.IsEscrowMode;
+                else
+                    return false;
+            }
             set
             {
-                _isEscrowMode = value;
-                NotifyPropertyChanged("EscrowMode");
+                if (config != null)
+                {
+                    config.IsEscrowMode = value;
+                    NotifyPropertyChanged("IsEscrowMode");
+                }
             }
         }
+
+        public bool IsConnected
+        {
+            get { return _isConnected; }
+            set
+            {
+                _isConnected = value;
+                NotifyPropertyChanged("IsConnected");
+                NotifyPropertyChanged("IsNotConnected");
+            }
+        }
+
+        public bool IsNotConnected
+        {
+            get { return !IsConnected; }
+        }
+
         #endregion
 
         /// <summary>

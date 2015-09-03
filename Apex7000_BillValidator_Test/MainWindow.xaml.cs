@@ -14,8 +14,6 @@ namespace Apex7000_BillValidator_Test
         private ApexValidator validator;
         private RS232Config config;
 
-        private bool btnConnectedLock = false;
-
         private FixedObservableLinkedList<DebugBufferEntry> debugQueue;
 
         public MainWindow()
@@ -23,22 +21,22 @@ namespace Apex7000_BillValidator_Test
             DataContext = this;
             InitializeComponent();
 
-            debugQueue = new FixedObservableLinkedList<DebugBufferEntry>(20);
+            debugQueue = new FixedObservableLinkedList<DebugBufferEntry>(14);
             AvailablePorts.ItemsSource = ApexValidator.GetAvailablePorts();
         }
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
             // We're already connected
-            if (btnConnectedLock)
+            if (IsConnected)
             {
                 validator.Close();
                 btnConnect.Content = "Connect";
-                btnConnectedLock = false;
+                IsConnected = false;
             }
             else
             {
-                btnConnectedLock = true;
+                IsConnected = true;
                 btnConnect.Content = "Disconnect";
 
                 PortName = AvailablePorts.Text;
@@ -69,8 +67,6 @@ namespace Apex7000_BillValidator_Test
                 // This starts the acceptor
                 validator.Connect();
             }
-
-            AvailablePorts.IsEnabled = !btnConnectedLock;
         }
 
         void config_OnSerialData(object sender, DebugBufferEntry entry)
@@ -80,7 +76,6 @@ namespace Apex7000_BillValidator_Test
                 debugQueue.Add(entry);
 
                 ConsoleLogger.ScrollIntoView(entry);
-
             });
         }
                
@@ -136,9 +131,8 @@ namespace Apex7000_BillValidator_Test
         {
             if (currencyMap.ContainsKey(denomination))
             {
-                var credited = AddCredit(denomination);
-                if (credited > 0)
-                    Console.WriteLine("Credited ${0}", credited);
+                if (denomination > 0) 
+                    Console.WriteLine("Credited ${0}", AddCredit(denomination));                
                 else
                     Console.WriteLine("Failed to credit: {0}", denomination);
             }
@@ -154,7 +148,7 @@ namespace Apex7000_BillValidator_Test
                 if (currencyMap.ContainsKey(index))
                     Console.WriteLine("Escrowed ${0}", currencyMap[index]);
                 else
-                    Console.WriteLine("Unknown denomination index: {0}", index);
+                    Console.WriteLine("Escrowed Unknown denomination index: {0}", index);
             }
             else
             {
@@ -163,7 +157,7 @@ namespace Apex7000_BillValidator_Test
                 if (currencyMap.ContainsKey(index))
                     Console.WriteLine("Rejected ${0}", currencyMap[index]);
                 else
-                    Console.WriteLine("Unknown denomination index: {0}", index);
+                    Console.WriteLine("Rejected Unknown denomination index: {0}", index);
             }
 
         }       
