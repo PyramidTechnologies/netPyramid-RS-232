@@ -1,7 +1,6 @@
 ﻿
 namespace Apex7000_BillValidator
 {
-    [System.Flags]
     public enum States : byte
     {
         BusyScanning,
@@ -19,27 +18,27 @@ namespace Apex7000_BillValidator
     [System.Flags]
     public enum Events : byte
     {
-        None,
+        None            = 0,
 
-        Stacked,
-        Returned,
-        Cheated,
-        BillRejected,
-        PowerUp,
-        InvalidCommand
+        Stacked         = 1 << 0,
+        Returned        = 1 << 1,
+        Cheated         = 1 << 2,
+        BillRejected    = 1 << 3,
+        PowerUp         = 1 << 4,
+        InvalidCommand  = 1 << 5
     }
 
     [System.Flags]
     public enum Errors : byte
     {
-        None,
+        None            = 0,
 
-        Timeout,
-        WriteError,
-        PortError,
-        CashboxMissing,
-        ChecksumError,
-        InvalidCommand
+        Timeout         = 1 << 0,
+        WriteError      = 1 << 1,
+        PortError       = 1 << 2,
+        CashboxMissing  = 1 << 3,
+        ChecksumError   = 1 << 4,
+        InvalidCommand  = 1 << 5
     }
 
     /// <summary>

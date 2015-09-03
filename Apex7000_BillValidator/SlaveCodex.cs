@@ -13,13 +13,13 @@ namespace Apex7000_BillValidator
         private static SlaveMessage stateMask = (SlaveMessage)0x40C2F;
         private static SlaveMessage eventMask = (SlaveMessage)0x30350;
         private static SlaveMessage cbOkayMask = (SlaveMessage)0x001000;
-        private static int creditMask = 0x380000;
+        private static SlaveMessage creditMask = (SlaveMessage)0x380000;
 
         /// <summary>
         /// RS-232 mixed a couple of events in with state
         /// </summary>
         [System.Flags]
-        internal enum SlaveMessage : byte
+        internal enum SlaveMessage : int
         {
             // Byte 0 - bit 0
             Idling          = 1 << 0,   // State
@@ -60,10 +60,13 @@ namespace Apex7000_BillValidator
 
         internal static SlaveMessage ToSlaveMessage(byte[] message)
         {
+            if (message.Length != 11)
+                return SlaveMessage.InvalidCommand;
+                    
             int combined = (
-                (message[0] << 16) |
-                (message[1]) << 8  |
-                (message[2])
+                (message[5] << 16) |
+                (message[4]) << 8  |
+                (message[3])
                 );
             return (SlaveMessage)combined;
         }
@@ -114,11 +117,18 @@ namespace Apex7000_BillValidator
             return result;
         }
 
-        internal static bool CashboxPresent(SlaveMessage message)
+        internal static bool IsCashboxPresent(SlaveMessage message)
         {
             message &= cbOkayMask;
 
             return (message & SlaveMessage.StackerPresent) == SlaveMessage.StackerPresent;
+        }
+
+        internal static int GetCredit(SlaveMessage message)
+        {
+            message &= creditMask;
+
+            return (int)message >> 19;
         }
 
         // enum Byte 3 Reserved - all bits must be 0
@@ -130,7 +140,7 @@ namespace Apex7000_BillValidator
         }
         
         // enum Byte 5 Firmware Rev - (00-7FH)
-        internal static string GetModelNumber(byte byte5)
+        internal static string GetFirmwareRevision(byte byte5)
         {
             return String.Format("{0}", byte5);
         }
