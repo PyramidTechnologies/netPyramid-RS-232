@@ -68,6 +68,8 @@ namespace Apex7000_BillValidator
                 port = new StrongPort(config.CommPortName);
                 port.ReadTimeout = 500;
 
+                DebugBufferEntry.SetEpoch();
+
                 try
                 {
                     port.Connect();

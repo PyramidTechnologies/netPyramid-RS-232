@@ -10,6 +10,15 @@ namespace Apex7000_BillValidator
     /// </summary>
     public class DebugBufferEntry
     {
+        private static DateTime epoch;
+        /// <summary>
+        /// Sets the timestamp epoch. All timestamps are relative to this value.
+        /// </summary>
+        internal static void SetEpoch()
+        {
+            epoch = DateTime.Now;
+        }
+
         /// <summary>
         /// Creates a new entry and marks it as being sent master->slave
         /// </summary>
@@ -32,8 +41,11 @@ namespace Apex7000_BillValidator
 
         private DebugBufferEntry(byte[] data, Flows flow)
         {
-            var dt = DateTime.Now;
-            Timestamp = String.Format("{0}:{1}:{2}", dt.Minute, dt.Second, dt.Millisecond);
+            var dt = (DateTime.Now - epoch);
+            Timestamp = String.Format("{0}:{1}:{2}::{3}", dt.Hours, dt.Minutes, dt.Seconds, dt.Milliseconds);
+            
+            var now = DateTime.Now;
+            RealTime = String.Format("{0}:{1}:{2}", dt.Minutes, dt.Seconds, dt.Milliseconds);
             Data = data;
             Flow = flow;
         }
@@ -60,9 +72,14 @@ namespace Apex7000_BillValidator
         public Flows Flow { get; private set; }
 
         /// <summary>
-        /// Retrurns minutes:seconds:milliseconds timestamp
+        /// Retrurns minutes:seconds:milliseconds timestamp relative to epoch
         /// </summary>
         public String Timestamp { get; private set; }
+
+        /// <summary>
+        /// Returns the PC time the packet was collected
+        /// </summary>
+        public String RealTime { get; private set; }
 
         /// <summary>
         /// Returns Flow :: Data :: Timestamp
