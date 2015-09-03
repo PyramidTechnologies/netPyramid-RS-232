@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
 namespace Apex7000_BillValidator
 {
@@ -16,9 +13,6 @@ namespace Apex7000_BillValidator
         #region Fields
         // Integer poll rate between 50 and 5000 ms
         private int pollRate = POLL_RATE;
-        private byte enableDisable = 0x7F;
-
-        private LinkedList<DebugBufferEntry> debugBuffer = new LinkedList<DebugBufferEntry>();
         #endregion
 
         public RS232Config(string commPort)
@@ -31,42 +25,11 @@ namespace Apex7000_BillValidator
             this.CommPortName = commPort;
             this.IsEscrowMode = isEscrowMode;
 
-            this.CashboxPresent = true;
             this.EscrowTimeout = DateTime.MinValue;
-
-            //this.currentCurrencyMap = BillParser.getCurrencyMap(this.currentCulture);
         }
-
-        public string GetDebugBuffer()
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach(DebugBufferEntry dbe in debugBuffer)
-                sb.Append(dbe.ToString() + "\n");
-
-            debugBuffer.Clear();
-            return sb.ToString();
-        }
-
         #region Properties
         public delegate void OnSerialDataHandler(object sender, DebugBufferEntry entry);
         public event OnSerialDataHandler OnSerialData;
-
-        /// <summary>
-        /// Gets or sets the 7-bit enable pattern. Starting from the LSB, each bit represents
-        /// the index of a note to enable. Setting a bit 1 enables the note.
-        /// </summary>
-        public byte EnablePattern 
-        {
-            get
-            {
-                return enableDisable;
-            }
-            set
-            {
-                // Ensure only 7 bits are set
-                enableDisable = (byte)(value & 0x7F);
-            }
-        }
 
         /// <summary>
         /// Gets or sets the poll rate in milliseconds. The polled system is designed for the master to request 
@@ -120,12 +83,6 @@ namespace Apex7000_BillValidator
         /// Returns true if the communication thread is running normally
         /// </summary>
         public bool IsRunning { get; internal set; }
-
-        /// <summary>
-        /// Gets or Sets debug mode. While in debug mode, the OnSerialData event can be subscribed
-        /// to in order to receive all packets sent and received to your client handler.
-        /// </summary>
-        public bool DebugMode { get; set; }
         #endregion       
 
         #region Internal State
