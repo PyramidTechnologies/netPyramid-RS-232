@@ -27,7 +27,6 @@ namespace Apex7000_BillValidator
         }
 
 
-
         /// <summary>
         /// Returns a list of all available ports
         /// </summary>
@@ -169,6 +168,7 @@ namespace Apex7000_BillValidator
 
             // Blocks until all 11 bytes are read or we give up
             var resp = ReadWrapper();
+            // Extract only the states and events
             config.notifySerialData(DebugBufferEntry.AsSlave(resp));
             
             // POSSIBLE FUNCTION EXIT!!
@@ -192,16 +192,16 @@ namespace Apex7000_BillValidator
                 config.previouslySentMasterMsg = null;
                 config.Ack ^= 1;
             }
-
-            // Extract only the states and events
+            
+            // Translate raw bytes into friendly enums
             var slaveMessage = SlaveCodex.ToSlaveMessage(resp);
-
             config.PreviousResponse = SlaveCodex.GetState(slaveMessage);
+            // Raise a state changed notice for clients
             OnStateChanged(this, config.PreviousResponse);
             
 
             // Mask away rest of message to see if a note is in escrow
-            config.IsEscrowed = config.PreviousResponse == States.Escrowed;
+            config.IsEscrowed = (config.PreviousResponse == States.Escrowed);
 
 
             // Multiple event may be reported at once
@@ -270,30 +270,26 @@ namespace Apex7000_BillValidator
             // Toggle message number (ack #) if last message was okay and not a re-send request.
             data[2] = (byte)(0x10 | config.Ack);
 
-            // Set enable/disable pattern
-            data[3] = config.EnablePattern;
+            // Enable all notes
+            // TODO create a mask for this
+            data[3] = 0x7F;
 
-            // If we have a valid note in escrow decide if 
-            // we have to wait for the host to accept/reject
-            // or if we can just stack.
-            if (config.IsEscrowed)
+            if(!config.IsEscrowMode)
             {
-                if (!config.IsEscrowMode)
-                {
+                // Set escrow mode bit
+                data[4] = 1 << 4;
 
-                    // Not escrow mode
-                    data[4] = 0x00;
-
-
-                    // Not escrow mode, we have a non-zero credit so just stack
+                if (config.IsEscrowed)
                     data[4] |= 0x20;
 
+            } 
+            else
+            {
+                // Clear escrow mode bit
+                data[4] = 0x00;
 
-                }
-                else
+                if(config.IsEscrowed)
                 {
-                    data[4] = 0x01;
-
                     // Otherwise do what the host tells us to do.
                     switch (config.EscrowCommand)
                     {
@@ -319,7 +315,9 @@ namespace Apex7000_BillValidator
                             break;
                     }
                 }
+
             }
+
 
             // Set the checksum
             return Checksum(data);

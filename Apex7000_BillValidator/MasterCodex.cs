@@ -7,16 +7,20 @@ namespace Apex7000_BillValidator
 {
     class MasterCodex
     {
+        // Mask out reserved and ignored bits
+        private static MasterMessage relevanceMask = (MasterMessage)0xFE7F;
+
+        [System.Flags]
         internal enum MasterMessage : int
         {
             // Byte0 - bit 0
-            Accept1         = 1 << 0,
-            Accept2         = 1 << 1,
-            Accept3         = 1 << 2,
-            Accept4         = 1 << 3,
-            Accept5         = 1 << 4,
-            Accept6         = 1 << 5,
-            Accept7         = 1 << 6,
+            En1         = 1 << 0,
+            En2         = 1 << 1,
+            En3         = 1 << 2,
+            En4         = 1 << 3,
+            En5         = 1 << 4,
+            En6         = 1 << 5,
+            En7         = 1 << 6,
             
             // Ignore 8th bit
             x1              = 1 << 7,
@@ -43,10 +47,12 @@ namespace Apex7000_BillValidator
                 return MasterMessage.InvalidCommand;
 
             int combined = (
-                (message[5] << 8) |
-                (message[4])
+                (message[4] << 8) |
+                (message[3])
                 );
-            return (MasterMessage)combined;
+
+            var result = (MasterMessage)(combined) & relevanceMask;
+            return result;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace Apex7000_BillValidator
         /// </summary>
         /// <param name="data">byte[]</param>
         /// <returns>DebugBufferEntry</returns>
-        public static DebugBufferEntry AsMaster(byte[] data)
+        internal static DebugBufferEntry AsMaster(byte[] data)
         {
             return new DebugBufferEntry(data, Flows.Master);
         }
@@ -34,7 +34,7 @@ namespace Apex7000_BillValidator
         /// </summary>
         /// <param name="data">byte[]</param>
         /// <returns>DebugBufferEntry</returns>
-        public static DebugBufferEntry AsSlave(byte[] data)
+        internal static DebugBufferEntry AsSlave(byte[] data)
         {
             return new DebugBufferEntry(data, Flows.Slave);
         }
@@ -48,6 +48,11 @@ namespace Apex7000_BillValidator
             RealTime = String.Format("{0}:{1}:{2}", dt.Minutes, dt.Seconds, dt.Milliseconds);
             Data = data;
             Flow = flow;
+
+            if (Flow == Flows.Master)
+                DecodedData = MasterCodex.ToMasterMessage(data).ToString();
+            else
+                DecodedData = SlaveCodex.ToSlaveMessage(data).ToString();
         }
 
         /// <summary>
@@ -80,6 +85,8 @@ namespace Apex7000_BillValidator
         /// Returns the PC time the packet was collected
         /// </summary>
         public String RealTime { get; private set; }
+
+        public String DecodedData { get; private set; }
 
         /// <summary>
         /// Returns Flow :: Data :: Timestamp

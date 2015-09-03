@@ -17,6 +17,9 @@ namespace PTI.Serial
         // My prefered encoding when debugging byte buffers
         private readonly System.Text.Encoding W1252 = System.Text.Encoding.GetEncoding("Windows-1252");
 
+        // Lock on reading so we don't disconnect while waiting for data.
+        private static object readLock = new object();
+
         public StrongPort(string portName)
         {
 
@@ -289,7 +292,11 @@ namespace PTI.Serial
         /// <returns>bool</returns>
         public bool Disconnect()
         {
-            SafeDisconnect(_serialPort, _internalSerialStream);
+            // Lock prevents closing in the middle of a read
+            lock (readLock)
+            {
+                SafeDisconnect(_serialPort, _internalSerialStream);
+            }
             return true;
         }
 
@@ -340,26 +347,29 @@ namespace PTI.Serial
             // Create empty array to hold incoming data
             byte[] buffer = new byte[0];
 
-            if (IsOpen)
+            lock (readLock)
             {
-                int waitCount = 0;
-                while (_serialPort.BytesToRead < 11)
+                if (IsOpen)
                 {
-                    waitCount++;
-                    if (waitCount >= 5)
+                    int waitCount = 0;
+                    while (_serialPort.BytesToRead < 11)
                     {
-                        throw new PortException(ExceptionTypes.Timeout);
+                        waitCount++;
+                        if (waitCount >= 5)
+                        {
+                            throw new PortException(ExceptionTypes.Timeout);
+                        }
+
+                        Thread.Sleep(100);
                     }
 
-                    Thread.Sleep(100);
+                    // Resize to 11 bytes since we have data to read
+                    buffer = new byte[11];
+
+                    _serialPort.Read(buffer, 0, 11);
+                    _serialPort.DiscardInBuffer();
+
                 }
-
-                // Resize to 11 bytes since we have data to read
-                buffer = new byte[11];
-
-                _serialPort.Read(buffer, 0, 11);
-                _serialPort.DiscardInBuffer();
-
             }
 
             return buffer;
