@@ -9,9 +9,9 @@ using System.Windows.Media;
 
 namespace Apex7000_BillValidator_Test
 {
-    internal enum ClearTypes
+    internal enum TagTypes
     {
-        All,
+        NonEmptyTags,
         Events,
         States
     }
@@ -19,6 +19,7 @@ namespace Apex7000_BillValidator_Test
     partial class MainWindow : Window, INotifyPropertyChanged
     {
         private static SolidColorBrush inactive = new SolidColorBrush(Colors.LightGray);
+        private static SolidColorBrush cashboxOkay = new SolidColorBrush(Colors.LightYellow);
         private static SolidColorBrush activeError = new SolidColorBrush(Colors.LightPink);
         private static SolidColorBrush activeEvent = new SolidColorBrush(Colors.LightGreen);
         private static SolidColorBrush activeState = new SolidColorBrush(Colors.LightBlue);
@@ -28,6 +29,7 @@ namespace Apex7000_BillValidator_Test
         private States _state = States.Offline;
         private Events _event = Events.None;
 
+        private bool _isEscrowMode = false;
         private bool _isConnected = false;
         #endregion
 
@@ -94,7 +96,7 @@ namespace Apex7000_BillValidator_Test
                 {
                     if ((_event & (Events.Returned | Events.Stacked | Events.BillRejected | Events.Cheated)) != 0)
                     {
-                        clearTags(ClearTypes.All);
+                        clearTags(TagTypes.NonEmptyTags);
                     }
                 });
 
@@ -107,7 +109,7 @@ namespace Apex7000_BillValidator_Test
                         setEvent(btnCheated);
                         break;
                     case Events.PowerUp:
-                        setEvent(btnPup);
+                        Console.WriteLine("Powered Up");
                         break;
                     case Events.Returned:
                         setEvent(btnReturned);
@@ -132,7 +134,7 @@ namespace Apex7000_BillValidator_Test
                 if (config != null)
                     return config.IsEscrowMode;
                 else
-                    return false;
+                    return _isEscrowMode;
             }
             set
             {
@@ -140,6 +142,10 @@ namespace Apex7000_BillValidator_Test
                 {
                     config.IsEscrowMode = value;
                     NotifyPropertyChanged("IsEscrowMode");
+                }
+                else
+                {
+                    _isEscrowMode = value;
                 }
             }
         }
@@ -158,8 +164,7 @@ namespace Apex7000_BillValidator_Test
         public bool IsNotConnected
         {
             get { return !IsConnected; }
-        }
-
+        }           
         #endregion
 
         /// <summary>
@@ -170,8 +175,10 @@ namespace Apex7000_BillValidator_Test
         {
             DoOnUIThread(() =>
             {
-                //clearTags(typeof(States));
-                target.Background = activeState;
+                if (target == btnCB)
+                    target.Background = cashboxOkay;
+                else                
+                    target.Background = activeState;                
             });
         }
 
@@ -185,11 +192,11 @@ namespace Apex7000_BillValidator_Test
             {
                 if (target != null)
                 {
-                    target.Background = activeState;
+                    target.Background = activeEvent;
 
                 }
                 else
-                    clearTags(ClearTypes.Events);
+                    clearTags(TagTypes.Events);
             });
         }
 
@@ -201,16 +208,15 @@ namespace Apex7000_BillValidator_Test
         {
             DoOnUIThread(() =>
             {
-                clearTags(ClearTypes.All);
+                clearTags(TagTypes.NonEmptyTags);
                 target.Background = activeError;
-                setState(btnDisabled);
             });
         }
 
         /// <summary>
         /// Resets all state tags back to lightGrey. Must be called from UI thread.
         /// </summary>
-        private void clearTags(ClearTypes type)
+        private void clearTags(TagTypes type)
         {                     
             var tag = "";
             IEnumerable<Button> stateTags = StateMachine.Children.OfType<Button>();
@@ -221,14 +227,15 @@ namespace Apex7000_BillValidator_Test
 
                 switch (type)
                 {
-                    case ClearTypes.All:
-                        b.Background = inactive;
+                    case TagTypes.NonEmptyTags:
+                        if(!string.IsNullOrEmpty(tag))
+                            b.Background = inactive;
                         break;
-                    case ClearTypes.Events:
+                    case TagTypes.Events:
                         if (tag.Equals("event"))
                             b.Background = inactive;
                         break;
-                    case ClearTypes.States:
+                    case TagTypes.States:
                         if (tag.Equals("state"))
                             b.Background = inactive;
                         break;

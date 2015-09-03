@@ -44,7 +44,7 @@
                 <Button x:Name="btnConnect" Content="Connect" Height="25" Width="100" Click="btnConnect_Click" />
             </StatusBarItem>
             <StatusBarItem Grid.Column="3">
-                <CheckBox Content="Escrow Mode" IsChecked="{Binding IsEscrowMode,Mode=OneWay, IsAsync=True}" IsEnabled="{Binding Path=IsConnected,Mode=OneWay, IsAsync=True}"/>
+                <CheckBox x:Name="chkEscrowMode" Content="Escrow Mode" IsChecked="{Binding IsEscrowMode,Mode=OneWay, IsAsync=True}" Checked="chkEscrowMode_Checked" Unchecked="chkEscrowMode_Unchecked"/>
             </StatusBarItem>
             <StatusBarItem Grid.Column="5">
                 <TextBlock>State:</TextBlock>
@@ -97,11 +97,11 @@
                         <Label Content="{Binding Path=Bill5,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="4" />
                         <Label Content="{Binding Path=Bill6,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="5" />
                         <Label Content="{Binding Path=Bill7,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="6" />
-                        <Label Content="{Binding Path=TotalCount,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="7" FontWeight="ExtraBold" />
+                        <Label Content="{Binding Path=Total,IsAsync=True,Mode=OneWay}" Grid.Column="1" Grid.Row="7" FontWeight="ExtraBold" />
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Enable/Disable">
+                <TabItem Header="Enable/Disable" IsEnabled="{Binding Path=IsEscrowMode,Mode=OneWay,IsAsync=True}">
                     <Grid Background="#FFE5E5E5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
@@ -114,13 +114,13 @@
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
-                        <CheckBox Content="Bill 1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <CheckBox Content="Bill 2" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1"/>
-                        <CheckBox Content="Bill 3" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2"/>
-                        <CheckBox Content="Bill 4" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3"/>
-                        <CheckBox Content="Bill 5" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" />
-                        <CheckBox Content="Bill 6" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
-                        <CheckBox Content="Bill 7" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2"/>
+                        <CheckBox x:Name="chk1" Content="Bill 1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
+                        <CheckBox x:Name="chk2" Content="Bill 2" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" IsChecked="True"/>
+                        <CheckBox x:Name="chk3" Content="Bill 3" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2" IsChecked="True"/>
+                        <CheckBox x:Name="chk4" Content="Bill 4" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="3" IsChecked="True"/>
+                        <CheckBox x:Name="chk5" Content="Bill 5" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" IsChecked="True"/>
+                        <CheckBox x:Name="chk6" Content="Bill 6" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" IsChecked="True"/>
+                        <CheckBox x:Name="chk7" Content="Bill 7" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2" IsChecked="True"/>
                     </Grid>
                 </TabItem>
             </TabControl>
@@ -145,25 +145,23 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <Button x:Name="btnCB" Content="Cashbox"  Grid.Row="0" Grid.Column="4"/>
-                <Button x:Name="btnPup" Content="Power Up" Grid.Row="8" Tag="event" />
-                <Button x:Name="btnDisabled" Content="Disabled" Tag="state" />
-                <Button x:Name="btnIdle" Content="Idle" Grid.Column="2" Tag="state" />
-                <Button x:Name="btnAccepting" Content="Accepting"  Grid.Row="2" Grid.Column="2" Tag="state" />
-                <Button x:Name="btnEscrowed" Content="Escrowed" Grid.Row="4" Grid.Column="2" Tag="state" />
-                <Button x:Name="btnRejected" Content="Rejected" Grid.Column="5" Grid.Row="2" Tag="event" />
-                <Button x:Name="btnCheated" Content="Cheated" Grid.Row="4" Grid.Column="5" Tag="event" />
-                <Button x:Name="btnStacking" Content="Stacking" Grid.Row="6" Grid.Column="2" Tag="state" />
-                <Button x:Name="btnReturning" Content="Returning" Grid.Row="6" Grid.Column="3" Tag="state"/>
-                <Button x:Name="btnStacked" Content="Stacked" Grid.Row="8" Grid.Column="2" Tag="event" />
-                <Button x:Name="btnReturned" Content="Returned" Grid.Row="8" Grid.Column="3" Tag="event" />
-                <Button x:Name="btnFailure" Content="Failure" Grid.Row="2" Tag="state" />
-                <Button x:Name="btnStackerFull" Content="Stacker Full" Grid.Row="4" Tag="state" />
-                <Button x:Name="btnBillJammed" Content="Bill Jammed" Grid.Row="6" Tag="state" />
+                <Button x:Name="btnIdle" Content="Idle" Tag="state" />
+                <Button x:Name="btnCB" Content="Cashbox"  Grid.Row="0" Grid.Column="4" />
+                <Button x:Name="btnAccepting" Content="Accepting"  Grid.Row="2" Tag="state" />
+                <Button x:Name="btnEscrowed" Content="Escrowed" Grid.Row="4" Tag="state" />
+                <Button x:Name="btnRejected" Content="Rejected" Grid.Column="3" Grid.Row="2" Tag="event" />
+                <Button x:Name="btnCheated" Content="Cheated" Grid.Row="8" Grid.Column="3" Tag="event" />
+                <Button x:Name="btnStacking" Content="Stacking" Grid.Row="6" Tag="state" />
+                <Button x:Name="btnReturning" Content="Returning" Grid.Row="6" Grid.Column="2" Tag="state"/>
+                <Button x:Name="btnStacked" Content="Stacked" Grid.Row="8" Tag="event" />
+                <Button x:Name="btnReturned" Content="Returned" Grid.Row="8" Grid.Column="2" Tag="event" />
+                <Button x:Name="btnFailure" Content="Failure" Tag="state" Grid.Column="3" />
+                <Button x:Name="btnStackerFull" Content="Stacker Full" Grid.Row="4" Tag="state" Grid.Column="3" />
+                <Button x:Name="btnBillJammed" Content="Bill Jammed" Grid.Row="6" Tag="state" Grid.Column="3" />
             </Grid>
-            
+
             <!-- Max height calculated as the largest area that shows 13 packets without empty area -->
-            <ListView x:Name="ConsoleLogger" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single" MaxHeight="320" MinHeight="320">
+            <ListView x:Name="ConsoleLogger" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single" MaxHeight="320" MinHeight="320" ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted.">
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel VerticalAlignment="Bottom" />
@@ -182,16 +180,17 @@
                             </DataTrigger>
                             <!--Slave Color-->
                             <DataTrigger Binding="{Binding Flow}" Value="1">
-                                    <Setter Property="Background" Value="#FFD2B4FD" />
+                                <Setter Property="Background" Value="#FFD2B4FD" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </ListView.Resources>
-                <ListView.View>                
-                <GridView>
+                <ListView.View>
+                    <GridView>
                         <GridViewColumn Header="Timestamp" Width="100" DisplayMemberBinding="{Binding Timestamp}"/>
                         <GridViewColumn Header="Direction" Width="100" DisplayMemberBinding="{Binding Flow}"/>
                         <GridViewColumn Header="Data" Width="400" DisplayMemberBinding="{Binding PrintableData}"/>
+                        <GridViewColumn Header="Decoded" Width="400" DisplayMemberBinding="{Binding DecodedData}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

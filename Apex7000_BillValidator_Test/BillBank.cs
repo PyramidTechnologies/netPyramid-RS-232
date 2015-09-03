@@ -16,6 +16,7 @@ namespace Apex7000_BillValidator_Test
         private int bill5 = 0;
         private int bill6 = 0;
         private int bill7 = 0;
+        private int total = 0;
 
         private static Dictionary<int, int> currencyMap = new Dictionary<int, int>();
         private Dictionary<int, long> cashbox = new Dictionary<int, long>();
@@ -103,6 +104,16 @@ namespace Apex7000_BillValidator_Test
                 NotifyPropertyChanged("Bill7");
             }
         }
+
+        public int Total
+        {
+            get { return total; }
+            set
+            {
+                total = value;
+                NotifyPropertyChanged("Total");
+            }
+        }
         #endregion
 
         /// <summary>
@@ -141,7 +152,10 @@ namespace Apex7000_BillValidator_Test
                     return 0;
             }
 
-            return currencyMap[denom];
+            // Return translated value and increment bill bank total
+            var val = currencyMap[denom];
+            Total += val;
+            return val;
         }
 
 
