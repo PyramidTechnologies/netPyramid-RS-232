@@ -96,8 +96,6 @@ namespace Apex7000_BillValidator_Test
         /// <param name="state"></param>
         void validator_OnStateChanged(object sender, States state)
         {
-            if (state != States.Idling)
-                Console.WriteLine("State: {0}", state);
             State = state;
         }
 
@@ -109,8 +107,6 @@ namespace Apex7000_BillValidator_Test
         /// <param name="e"></param>
         void validator_OnEvent(object sender, Events e)
         {
-            if (e == Events.Returned)
-                return;
             Event = e;
         }
 
