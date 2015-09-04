@@ -39,11 +39,13 @@ namespace Apex7000_BillValidator_Test
 
                 // Create a new instance using the specified port and in escrow mode
                 config = new RS232Config(PortName, IsEscrowMode);
+                config.EscrowTimeoutSeconds = 12;
                 validator = new ApexValidator(config);
 
                 // Configure logging
                 config.OnSerialData += config_OnSerialData;
-                ConsoleLogger.ItemsSource = debugQueue;
+                ConsoleLoggerMaster.ItemsSource = debugQueueMaster;
+                ConsoleLoggerSlave.ItemsSource = debugQueueSlave;
 
                 // Configure events and state (All optional)
                 validator.OnEvent += validator_OnEvent;
@@ -72,9 +74,18 @@ namespace Apex7000_BillValidator_Test
         {
             DoOnUIThread(() =>
             {
-                debugQueue.Add(entry);
+                if (entry.Flow == Flows.Master)
+                {
+                    debugQueueMaster.Add(entry);
 
-                ConsoleLogger.ScrollIntoView(entry);
+                    ConsoleLoggerMaster.ScrollIntoView(entry);
+                }
+                else
+                {
+                    debugQueueSlave.Add(entry);
+
+                    ConsoleLoggerSlave.ScrollIntoView(entry);
+                }
             });
         }
 
@@ -98,6 +109,8 @@ namespace Apex7000_BillValidator_Test
         /// <param name="e"></param>
         void validator_OnEvent(object sender, Events e)
         {
+            if (e == Events.Returned)
+                return;
             Event = e;
         }
 
@@ -177,7 +190,8 @@ namespace Apex7000_BillValidator_Test
                     string action = "";
 
                     // If bill is enabled by our mask, stack the note
-                    if (checkEnableMask(index))
+                    bool isEnabled = checkEnableMask(index);
+                    if (isEnabled)
                     {
                         // Pass Escrow state to UI
                         State = States.Escrowed;

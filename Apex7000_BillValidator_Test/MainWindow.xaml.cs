@@ -14,14 +14,17 @@ namespace Apex7000_BillValidator_Test
         private ApexValidator validator;
         private RS232Config config;
 
-        private FixedObservableLinkedList<DebugBufferEntry> debugQueue;
+        private FixedObservableLinkedList<DebugBufferEntry> debugQueueMaster;
+        private FixedObservableLinkedList<DebugBufferEntry> debugQueueSlave;
 
         public MainWindow()
         {
             DataContext = this;
             InitializeComponent();
 
-            debugQueue = new FixedObservableLinkedList<DebugBufferEntry>(14);
+            debugQueueMaster = new FixedObservableLinkedList<DebugBufferEntry>(20);
+            debugQueueSlave = new FixedObservableLinkedList<DebugBufferEntry>(20);
+
             AvailablePorts.ItemsSource = ApexValidator.GetAvailablePorts();
         }
      
@@ -36,24 +39,25 @@ namespace Apex7000_BillValidator_Test
             switch(index)
             {
                 case 1:
-                    return chk1.IsChecked == true;
+                    return chk1.IsChecked.Value;
                 case 2:
-                    return chk2.IsChecked == true;
+                    return chk2.IsChecked.Value;
                 case 3:
-                    return chk3.IsChecked == true;
+                    return chk3.IsChecked.Value;
                 case 4:
-                    return chk4.IsChecked == true;
+                    return chk4.IsChecked.Value;
                 case 5:
-                    return chk5.IsChecked == true;
+                    return chk5.IsChecked.Value;
                 case 6:
-                    return chk6.IsChecked == true;
+                    return chk6.IsChecked.Value;
                 case 7:
-                    return chk7.IsChecked == true;
+                    return chk7.IsChecked.Value;
 
                 default:
                     return false;
             }
         }
+
     }
     
 }
