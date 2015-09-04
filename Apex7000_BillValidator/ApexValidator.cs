@@ -15,6 +15,7 @@ namespace Apex7000_BillValidator
         #region Fields
         private StrongPort port = null;
         private RS232Config config;
+        private bool resetRequested = false;
         #endregion
 
         /// <summary>
@@ -97,6 +98,16 @@ namespace Apex7000_BillValidator
         }
 
         /// <summary>
+        /// Sets flag to reset the acceptor on the next message sent
+        /// </summary>
+        public void RequestReset()
+        {
+            resetRequested = true;
+        }
+
+
+
+        /// <summary>
         /// Safely reconnect to the slave device
         /// </summary>
         private void Reconnect()
@@ -135,7 +146,10 @@ namespace Apex7000_BillValidator
                 while (config.IsRunning)
                 {
 
-                    speakToSlave();                  
+                    if (resetRequested)
+                        DoResetAcceptor();
+                    else
+                        speakToSlave();                  
 
                     Thread.Sleep(config.PollRate);
                 }
@@ -377,6 +391,23 @@ namespace Apex7000_BillValidator
                 return new byte[0];
             }
 
+        }
+
+        /// <summary>
+        /// Perform a reset on the acceptor. This will not generate a response but the unit
+        /// may go unresponsive for up to 3 seconds.
+        /// </summary>
+        private void DoResetAcceptor()
+        {
+            byte[] reset = Request.ResetTarget;
+            // Toggle message number (ack #) if last message was okay and not a re-send request.
+            reset[2] = (byte)(0x10 | config.Ack);
+            Checksum(reset);
+            WriteWrapper(reset);
+
+            // Toggle ACK number
+            config.Ack ^= 1;
+            resetRequested = false;
         }
 
         /// <summary>

@@ -200,6 +200,14 @@ namespace Apex7000_BillValidator_Test
                 });
         }
 
+        private void btnReset_Click(object sender, RoutedEventArgs e)
+        {
+            if(validator != null)
+            {
+                validator.RequestReset();
+            }
+        }
+
 
         private void chkEscrowMode_Checked(object sender, RoutedEventArgs e)
         {

@@ -78,6 +78,6 @@ namespace Apex7000_BillValidator
         public static readonly byte[] BaseMessage = { 0x02, 0x08, 0x10, 0x7F, 0x10, 0x00, 0x03 };
 
         // TODO
-        public static readonly byte[] ResetTarget = { };
+        public static readonly byte[] ResetTarget = { 0x02, 0x08, 0x61, 0x7f, 0x7f, 0x7f, 0x03 };
     }  
 }
