@@ -52,12 +52,6 @@ namespace Apex7000_BillValidator
         None,
 
         /// <summary>
-        /// A command has been issued and is currently being acted upon. This may take multiple
-        /// message cycles to clear.
-        /// </summary>
-        Pending,
-
-        /// <summary>
         /// Issues the stack command during the next message loop
         /// </summary>
         Stack,

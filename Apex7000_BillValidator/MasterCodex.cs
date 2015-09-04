@@ -32,13 +32,13 @@ namespace Apex7000_BillValidator
             Orientation2    = 1 << 11,  // Set to 0
             Escrow          = 1 << 12,  // Set to 1 to enable
             Stack           = 1 << 13,   // In Escrow mode, set to 1 to stack
-            Return          = 1 << 15,  // In Escrow mode, set to 1 to return
+            Return          = 1 << 14,  // In Escrow mode, set to 1 to return
 
             // Ignore 8th bit
-            x2              = 1 << 16,
+            x2              = 1 << 15,
 
             // Not part of spec, just added for decoding
-            InvalidCommand  = 1 << 17
+            InvalidCommand  = 1 << 16
         }
 
         internal static MasterMessage ToMasterMessage(byte[] message)

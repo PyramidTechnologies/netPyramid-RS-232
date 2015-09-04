@@ -7,8 +7,6 @@ namespace Apex7000_BillValidator
 
         // ms
         private static readonly int POLL_RATE = 200;
-        // seconds
-        private static readonly int SLAVE_DEAD_LIMIT = 10;
 
         #region Fields
         // Integer poll rate between 50 and 5000 ms
@@ -24,10 +22,10 @@ namespace Apex7000_BillValidator
         {
             this.CommPortName = commPort;
             this.IsEscrowMode = isEscrowMode;
-
-            this.EscrowTimeout = DateTime.MinValue;
         }
         #region Properties
+
+
         public delegate void OnSerialDataHandler(object sender, DebugBufferEntry entry);
         public event OnSerialDataHandler OnSerialData;
 
@@ -83,6 +81,13 @@ namespace Apex7000_BillValidator
         /// Returns true if the communication thread is running normally
         /// </summary>
         public bool IsRunning { get; internal set; }
+
+        /// <summary>
+        /// Gets or sets the timeout for escrow mode. By default, we wait indefinately but
+        /// you may configure this to a non-zero value to enable escrow timeouts. This has the effect
+        /// of sending a reject message to the acceptor once timeout occurs.
+        /// </summary>
+        public int EscrowTimeoutSeconds { get; set; }
         #endregion       
 
         #region Internal State
@@ -95,7 +100,7 @@ namespace Apex7000_BillValidator
         internal bool CashboxPresent { get; set; }
 
         // If true, the slave is reporting that a note is in escrow
-        internal bool IsEscrowed { get; set; }
+        internal bool NoteIsEscrowed { get; set; }
 
         // Last reported credit from slave
         internal byte Credit { get; set; }
@@ -107,8 +112,8 @@ namespace Apex7000_BillValidator
         // Used in case we need to retransmit
         internal byte[] previouslySentMasterMsg { get; set; }
 
-        // Track comm timeout from slave device
-        internal DateTime EscrowTimeout { get; set; }
+        // Time at which escrow starts
+        internal DateTime escrowStart = DateTime.MinValue;
 
         internal void notifySerialData(DebugBufferEntry entry) 
         {
