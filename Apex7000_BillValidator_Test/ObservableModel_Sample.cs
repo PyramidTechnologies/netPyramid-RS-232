@@ -33,7 +33,6 @@ namespace Apex7000_BillValidator_Test
         private bool _isConnected = false;
         #endregion
 
-
         #region Properties
         public string PortName
         {
