@@ -219,11 +219,11 @@ namespace Apex7000_BillValidator
 
             // Translate raw bytes into friendly enums
             var slaveMessage = SlaveCodex.ToSlaveMessage(resp);
-            config.PreviousResponse = SlaveCodex.GetState(slaveMessage);
+            config.PreviousState = SlaveCodex.GetState(slaveMessage);
 
 
             // Raise a state changed notice for clients
-            OnStateChanged(this, config.PreviousResponse);
+            OnStateChanged(this, config.PreviousState);
            
 
             // Multiple event may be reported at once
@@ -255,8 +255,13 @@ namespace Apex7000_BillValidator
             }
 
 
-            // Mask away rest of message to see if a note is in escrow
-            config.NoteIsEscrowed = (config.PreviousResponse == States.Escrowed);
+            // Mask away rest of message to see if a note is in escrow. If this is the first
+            // escrow message, start the escrow timeout clock
+            if(!config.NoteIsEscrowed && config.PreviousState == States.Escrowed)
+            {
+                config.escrowStart = DateTime.MinValue;
+            }
+            config.NoteIsEscrowed = (config.PreviousState == States.Escrowed);
 
             // Credit bits are 3-5 of data byte 3 
             var value = SlaveCodex.GetCredit(slaveMessage);
@@ -360,7 +365,6 @@ namespace Apex7000_BillValidator
 
                         case EscrowCommands.None:
                             NotifyEscrow(config.Credit);
-                            config.escrowStart = DateTime.MinValue;
                             break;
                     }
                 }

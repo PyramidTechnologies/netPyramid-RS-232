@@ -6,7 +6,7 @@ namespace Apex7000_BillValidator
     {
 
         // ms
-        private static readonly int POLL_RATE = 200;
+        private static readonly int POLL_RATE = 100;
 
         #region Fields
         // Integer poll rate between 50 and 5000 ms
@@ -70,7 +70,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Slave's last state
         /// </summary>
-        public States PreviousResponse { get; internal set; }
+        public States PreviousState { get; internal set; }
 
         /// <summary>
         /// Slave's last events
