@@ -24,6 +24,15 @@ namespace Apex7000_BillValidator_Test
 
                 // If bill is enabled by our mask, stack the note
                 bool isEnabled = checkEnableMask(index);
+
+                // Here you could also a call to check the user's account balance to make sure they're not
+                // exceeding a specified amount. Remember, returns and rejects can be triggered by a few things:
+                // 1) Reject : Invalid note
+                // 2) Reject : Cheat attemp
+                // 3) Return : Note disabled by E/D mask
+                // 4) Return : Host manually send return message because a check failed (e.g. too much money on user account etc.)
+
+
                 if (isEnabled)
                 {
                     // Pass Escrow state to UI

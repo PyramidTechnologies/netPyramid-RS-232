@@ -48,7 +48,7 @@ namespace Apex7000_BillValidator_Test
             validator = new ApexValidator(config);
 
             // Configure logging - see DebugData_Sample.cs
-            config.OnSerialData += config_OnSerialData;
+            validator.OnSerialData += config_OnSerialData;
             ConsoleLoggerMaster.ItemsSource = debugQueueMaster;
             ConsoleLoggerSlave.ItemsSource = debugQueueSlave;
 

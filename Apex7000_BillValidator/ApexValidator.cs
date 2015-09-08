@@ -345,12 +345,14 @@ namespace Apex7000_BillValidator
             // Toggle message number (ack #) if last message was okay and not a re-send request.
             data[2] = (byte)(0x10 | Ack);
 
-            // Enable all notes
-            // TODO create a mask for this
-            data[3] = 0x7F;
+
 
             if(!config.IsEscrowMode)
             {
+
+                // Not escrow mode, all notes are enabled by default
+                data[3] = 0x7F;
+
                 // Clear escrow mode bit
                 data[4] = 0x00;
 
@@ -360,12 +362,17 @@ namespace Apex7000_BillValidator
             } 
             else
             {
+
+                // Get enable mask from client configuration. On next message, the acceptor
+                // will update itself and not escrow any notes that are disabled in this mask.
+                data[3] = config.EnableMask;
+
                 // Set escrow mode bit
                 data[4] = 1 << 4;
 
                 if(NoteIsEscrowed)
                 {
-
+                    // Perform timeout check and set reject flag is timeout exceeded
                     if(config.EscrowTimeoutSeconds > 0)
                     {
 

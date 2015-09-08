@@ -11,6 +11,7 @@ namespace Apex7000_BillValidator
         #region Fields
         // Integer poll rate between 50 and 5000 ms
         private int pollRate = POLL_RATE;
+        private byte enableMask = 0x7F;
         #endregion
 
         public RS232Config(string commPort)
@@ -84,6 +85,17 @@ namespace Apex7000_BillValidator
         /// of sending a reject message to the acceptor once timeout occurs.
         /// </summary>
         public int EscrowTimeoutSeconds { get; set; }
+
+        /// <summary>
+        /// Bitwise enable disbale pattern. Each bit set to 1 corresponds to an enabled bill.
+        /// e.g. 0x7E (0b01111110) is all bill except the $1 are enabled. This value is limited
+        /// to 7-bits (0x7F) and any extra bits will be unset. 0xFF -> 0x7F
+        /// </summary>
+        public byte EnableMask
+        {
+            get { return enableMask; }
+            set { enableMask = (byte)(0x7F & value); }
+        }
         #endregion       
     }
 }

@@ -34,7 +34,6 @@ namespace Apex7000_BillValidator
             // We do not directly instruct the unit to reject as this may interfere
             // with any pending transmissions.
             EscrowCommand = EscrowCommands.Reject;
-        }
-        }
+        }        
     }
 }
