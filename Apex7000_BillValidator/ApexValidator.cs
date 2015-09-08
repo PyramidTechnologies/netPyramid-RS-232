@@ -49,6 +49,20 @@ namespace Apex7000_BillValidator
         // Time at which escrow starts
         private DateTime escrowStart = DateTime.MinValue;
 
+        /// <summary>
+        /// Slave's last state
+        /// </summary>
+        public States PreviousState { get; private set; }
+
+        /// <summary>
+        /// Slave's last events
+        /// </summary>
+        public Events PreviousEvents { get; private set; }
+
+        /// <summary>
+        /// Returns true if the communication thread is running normally
+        /// </summary>
+        public bool IsRunning { get; private set; }
         #endregion
 
         /// <summary>
@@ -77,7 +91,7 @@ namespace Apex7000_BillValidator
         public void Close()
         {
             // This will kill the comms loop
-            config.IsRunning = false;
+            IsRunning = false;
 
             if(port != null)
                 port.Disconnect();
@@ -173,7 +187,7 @@ namespace Apex7000_BillValidator
         private void startRS232Loop()
         {
 
-            if (config.IsRunning)
+            if (IsRunning)
             {
                 log.Error("Already running RS-232 Comm loop... Exiting now...");
                 return;
@@ -184,10 +198,10 @@ namespace Apex7000_BillValidator
             Thread speakThread = new Thread((fn) =>
             {
 
-                config.IsRunning = true;
+                IsRunning = true;
 
                 // Set toggle flag so we can kill this loop
-                while (config.IsRunning)
+                while (IsRunning)
                 {
 
                     if (resetRequested)
@@ -265,7 +279,7 @@ namespace Apex7000_BillValidator
 
             // Translate raw bytes into friendly enums
             var slaveMessage = SlaveCodex.ToSlaveMessage(resp);
-            config.PreviousState = SlaveCodex.GetState(slaveMessage);
+            PreviousState = SlaveCodex.GetState(slaveMessage);
 
 
             // Raise a state changed notice for clients
@@ -303,11 +317,11 @@ namespace Apex7000_BillValidator
 
             // Mask away rest of message to see if a note is in escrow. If this is the first
             // escrow message, start the escrow timeout clock
-            if(!NoteIsEscrowed && config.PreviousState == States.Escrowed)
+            if(!NoteIsEscrowed && PreviousState == States.Escrowed)
             {
                 escrowStart = DateTime.MinValue;
             }
-            NoteIsEscrowed = (config.PreviousState == States.Escrowed);
+            NoteIsEscrowed = (PreviousState == States.Escrowed);
 
             // Credit bits are 3-5 of data byte 3 
             var value = SlaveCodex.GetCredit(slaveMessage);
@@ -321,7 +335,7 @@ namespace Apex7000_BillValidator
             // sent by the slave. If the previous event was stacked or returned, we
             // must clear the escrow command to completely release the note from
             // escrow state.
-            switch(config.PreviousEvents)
+            switch(PreviousEvents)
             {
                 case Events.Stacked:
                     NotifyCredit(Credit);
@@ -337,7 +351,7 @@ namespace Apex7000_BillValidator
             }
 
             // Update the events aster the check for check so as to not lose a credit message
-            config.PreviousEvents = currentEvents;
+            PreviousEvents = currentEvents;
                        
         }
     

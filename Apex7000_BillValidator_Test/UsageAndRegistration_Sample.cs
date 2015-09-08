@@ -62,7 +62,7 @@ namespace Apex7000_BillValidator_Test
             validator.OnCashboxAttached += validator_CashboxAttached;
 
             // Required if you are in escrow mode - see CreditAndEscrow_Sample.cs
-            validator.OnEscrowed += validator_OnEscrow;
+            validator.OnEscrow += validator_OnEscrow;
 
             // Technically optional but you probably want this event - see CreditAndEscrow_Sample.cs
             validator.OnCredit += validator_OnCredit;

@@ -81,21 +81,6 @@ namespace Apex7000_BillValidator
         public bool IsEscrowMode { get; set; }
 
         /// <summary>
-        /// Slave's last state
-        /// </summary>
-        public States PreviousState { get; internal set; }
-
-        /// <summary>
-        /// Slave's last events
-        /// </summary>
-        public Events PreviousEvents { get; internal set; }
-
-        /// <summary>
-        /// Returns true if the communication thread is running normally
-        /// </summary>
-        public bool IsRunning { get; internal set; }
-
-        /// <summary>
         /// Gets or sets the timeout for escrow mode. By default, we wait indefinately but
         /// you may configure this to a non-zero value to enable escrow timeouts. This has the effect
         /// of sending a reject message to the acceptor once timeout occurs.
