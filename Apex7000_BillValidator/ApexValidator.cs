@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 
 namespace Apex7000_BillValidator
@@ -80,7 +81,8 @@ namespace Apex7000_BillValidator
             // This will kill the comms loop
             config.IsRunning = false;
 
-            port.Disconnect();
+            if(port != null)
+                port.Disconnect();
         }
 
 
@@ -95,10 +97,18 @@ namespace Apex7000_BillValidator
             // Lock so we only have one connection attempt at a time. This protects
             // from client code behaving badly.
             lock (mutex)
-            {     
+            {
 
+                try
+                {
+                    port = new StrongPort(config.CommPortName);
+                }
+                catch (IOException)
+                {
+                    OnError(this, Errors.FailedToOpenPort);
+                    return;
+                }
 
-                port = new StrongPort(config.CommPortName);
                 port.ReadTimeout = 500;
 
                 DebugBufferEntry.SetEpoch();

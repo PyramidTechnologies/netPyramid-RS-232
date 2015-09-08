@@ -77,6 +77,9 @@ namespace Apex7000_BillValidator_Test
                 case Errors.WriteError:
                     // TODO
                     break;
+                case Errors.FailedToOpenPort:
+                    DoOnUIThread(()=>MessageBox.Show("Failed to open Port"));
+                    break;
             }
 
         }
