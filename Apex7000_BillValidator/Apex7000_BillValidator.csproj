@@ -50,6 +50,7 @@
     <Compile Include="Commands.cs" />
     <Compile Include="DataContracts.cs" />
     <Compile Include="DebugBuffer.cs" />
+    <Compile Include="EventArgs.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="MasterCodex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

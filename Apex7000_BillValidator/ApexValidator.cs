@@ -51,7 +51,7 @@ namespace Apex7000_BillValidator
             OnSerialDataHandler handler = OnSerialData;
             if (OnSerialData != null)
             {
-                handler(this, entry);
+                handler(this, new DebugEntryArgs(entry));
             }
         }
         #endregion
@@ -76,7 +76,9 @@ namespace Apex7000_BillValidator
         }
 
 
-
+        /// <summary>
+        /// Stop talking to the slave and release the underlying commm port.
+        /// </summary>
         public void Close()
         {
             // This will kill the comms loop
@@ -106,7 +108,7 @@ namespace Apex7000_BillValidator
                 }
                 catch (IOException)
                 {
-                    OnError(this, Errors.FailedToOpenPort);
+                    NotifyError(Errors.FailedToOpenPort);
                     return;
                 }
 
@@ -205,8 +207,10 @@ namespace Apex7000_BillValidator
 
             speakThread.IsBackground = true;
             speakThread.Start();
-        }       
+        }
 
+
+        #region Implementation
         /// <summary>
         /// The main parsing routine
         /// </summary>
@@ -235,7 +239,6 @@ namespace Apex7000_BillValidator
             // Extract only the states and events
             notifySerialData(DebugBufferEntry.AsSlave(resp));
             
-            // POSSIBLE FUNCTION EXIT!!
             // No data was read, return!!
             if (resp.Length == 0)
             {
@@ -271,7 +274,7 @@ namespace Apex7000_BillValidator
 
 
             // Raise a state changed notice for clients
-            OnStateChanged(this, config.PreviousState);
+            NotifyStateChange(config.PreviousState);
            
 
             // Multiple event may be reported at once
@@ -447,10 +450,10 @@ namespace Apex7000_BillValidator
                 switch (pe.ErrorType)
                 {
                     case ExceptionTypes.WriteError:
-                        OnError(this, Errors.WriteError);
+                        NotifyError(Errors.WriteError);
                         break;
                     case ExceptionTypes.PortError:
-                        OnError(this, Errors.PortError);
+                        NotifyError(Errors.PortError);
                         break;
 
                     default:
@@ -475,7 +478,7 @@ namespace Apex7000_BillValidator
                 switch (pe.ErrorType)
                 {
                     case ExceptionTypes.Timeout:
-                        OnError(this, Errors.Timeout);
+                        NotifyError(Errors.Timeout);
                         break;
 
                     default:
@@ -532,6 +535,7 @@ namespace Apex7000_BillValidator
         {
             return (resp[2] & 1) != (data[2] & 1);
         }
+        #endregion
         #endregion
     }
 }

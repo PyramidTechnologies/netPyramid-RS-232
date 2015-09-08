@@ -10,7 +10,7 @@ namespace Apex7000_BillValidator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Events</param>
-        public delegate void OnEventHandler(object sender, Events e);
+        public delegate void OnEventHandler(object sender, EventChangedArgs e);
         public event OnEventHandler OnEvent;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace Apex7000_BillValidator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="state">States</param>
-        public delegate void OnStateChangeHandler(object sender, States state);
+        public delegate void OnStateChangeHandler(object sender, StateChangedArgs e);
         public event OnStateChangeHandler OnStateChanged;
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Apex7000_BillValidator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="type">Errors</param>
-        public delegate void OnErrorEventHandler(object sender, Errors type);
+        public delegate void OnErrorEventHandler(object sender, ErrorArgs e);
         public event OnErrorEventHandler OnError;
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Apex7000_BillValidator
         /// <param name="sender">Object that raised event</param>
         /// <param name="index">Index 1-7 of the denomination stacked. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
-        public delegate void OnCreditEventHandler(object sender, int index);
+        public delegate void OnCreditEventHandler(object sender, CreditArgs e);
         public event OnCreditEventHandler OnCredit;
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Apex7000_BillValidator
         /// <param name="sender">Object that raised event</param>
         /// <param name="index">Index 1-7 of the denomination in escrow. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
-        public delegate void OsEscrowedEventHandler(object sender, int index);
+        public delegate void OsEscrowedEventHandler(object sender, EscrowArgs e);
         public event OsEscrowedEventHandler OnEscrowed;
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Apex7000_BillValidator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="entry"></param>
-        public delegate void OnSerialDataHandler(object sender, DebugBufferEntry entry);
+        public delegate void OnSerialDataHandler(object sender, DebugEntryArgs e);
         public event OnSerialDataHandler OnSerialData;
 
 
@@ -77,7 +77,7 @@ namespace Apex7000_BillValidator
             OnEventHandler exec = OnEvent;
             if (exec != null)
             {
-                exec(this, e);
+                exec(this, new EventChangedArgs(e));
             }
         }
 
@@ -90,7 +90,7 @@ namespace Apex7000_BillValidator
             OnStateChangeHandler exec = OnStateChanged;
             if (exec != null)
             {
-                exec(this, state);
+                exec(this, new StateChangedArgs(state));
             }
         }
 
@@ -117,7 +117,7 @@ namespace Apex7000_BillValidator
             OnCreditEventHandler handler = OnCredit;
             if (handler != null)
             {
-                handler(this, e);
+                handler(this, new CreditArgs(e));
             }
         }
 
@@ -130,7 +130,7 @@ namespace Apex7000_BillValidator
             OsEscrowedEventHandler handler = OnEscrowed;
             if (handler != null)
             {
-                handler(this, e);
+                handler(this, new EscrowArgs(e));
             }
         }
 
@@ -143,7 +143,7 @@ namespace Apex7000_BillValidator
             OnErrorEventHandler handler = OnError;
             if (handler != null)
             {
-                handler(this, e);
+                handler(this, new ErrorArgs(e));
             }
         }
         #endregion
