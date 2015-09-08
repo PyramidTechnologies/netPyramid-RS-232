@@ -16,6 +16,10 @@ namespace Apex7000_BillValidator_Test
         States
     }
 
+
+    /// <summary>
+    /// This class demonstrates some databinding techniques for illustrating state and events.
+    /// </summary>
     partial class MainWindow : Window, INotifyPropertyChanged
     {
         private static SolidColorBrush inactive = new SolidColorBrush(Colors.LightGray);

@@ -42,6 +42,8 @@ namespace Apex7000_BillValidator_Test
     }
 
     /// <summary>
+    /// Used for the debug console view, we limit the number of entries that our list contains. This
+    /// avoids out of memory exceptions if you were to leave this running overnight at a fast poll rate.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     internal class FixedObservableLinkedList<T> : LinkedList<T>, INotifyCollectionChanged
