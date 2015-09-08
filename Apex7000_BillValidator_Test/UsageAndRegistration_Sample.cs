@@ -31,16 +31,19 @@ namespace Apex7000_BillValidator_Test
                 return;
             }
 
-            // Instantiate a validator and register for all the handlers we need
-            IsConnected = true;
-            btnConnect.Content = "Disconnect";
 
             PortName = AvailablePorts.Text;
-            if (string.IsNullOrEmpty(PortName))
+            if (string.IsNullOrEmpty(PortName) || PortName.Equals("Select Port"))
             {
                 MessageBox.Show("Please select a port");
                 return;
             }
+
+
+            // Instantiate a validator and register for all the handlers we need
+            IsConnected = true;
+            btnConnect.Content = "Disconnect";
+
 
             // Create a new instance using the specified port and in escrow mode
             config = new RS232Config(PortName, IsEscrowMode);
