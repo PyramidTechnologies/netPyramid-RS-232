@@ -18,9 +18,9 @@ namespace Apex7000_BillValidator_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="state"></param>
-        void validator_OnStateChanged(object sender, States state)
+        void validator_OnStateChanged(object sender, StateChangedArgs state)
         {
-            State = state;
+            State = state.State;
         }
 
 
@@ -29,9 +29,9 @@ namespace Apex7000_BillValidator_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void validator_OnEvent(object sender, Events e)
+        void validator_OnEvent(object sender, EventChangedArgs e)
         {
-            Event = e;
+            Event = e.Event;
         }
 
         /// <summary>
@@ -52,12 +52,12 @@ namespace Apex7000_BillValidator_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="type"></param>
-        void validator_OnError(object sender, Errors type)
+        void validator_OnError(object sender, ErrorArgs type)
         {
             Console.WriteLine("Error has occured: {0}", type.ToString());
 
 
-            switch (type)
+            switch (type.Error)
             {
                 case Errors.CashboxMissing:
                     setError(btnCB);

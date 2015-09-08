@@ -21,8 +21,9 @@ namespace Apex7000_BillValidator_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="entry"></param>
-        void config_OnSerialData(object sender, DebugBufferEntry entry)
+        void config_OnSerialData(object sender, DebugEntryArgs e)
         {
+            var entry = e.Entry;
             DoOnUIThread(() =>
             {
                 if (entry.Flow == Flows.Master)

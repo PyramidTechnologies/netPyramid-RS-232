@@ -48,7 +48,7 @@
                 <CheckBox x:Name="chkEscrowMode" Content="Escrow Mode" IsChecked="{Binding IsEscrowMode,Mode=OneWay, IsAsync=True}" Checked="chkEscrowMode_Checked" Unchecked="chkEscrowMode_Unchecked"/>
             </StatusBarItem>
             <StatusBarItem Grid.Column="5">
-                <Button x:Name="btnReset" Content="Reset" Height="25" Width="100" Click="btnReset_Click" />
+                <Button x:Name="btnReset" Content="Reset" Height="25" Width="100" Click="btnReset_Click" Visibility="Hidden" />
             </StatusBarItem>            
             <StatusBarItem Grid.Column="6">
                 <TextBlock>State:</TextBlock>

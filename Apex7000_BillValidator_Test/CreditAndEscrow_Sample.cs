@@ -15,8 +15,10 @@ namespace Apex7000_BillValidator_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="index"></param>
-        private void validator_OnEscrow(object sender, int index)
+        private void validator_OnEscrow(object sender, EscrowArgs e)
         {
+            var index = e.Index;
+
             DoOnUIThread(() =>
             {
 
@@ -63,8 +65,9 @@ namespace Apex7000_BillValidator_Test
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="denomination"></param>
-        private void validator_OnCredit(object sender, int denomination)
+        private void validator_OnCredit(object sender, CreditArgs e)
         {
+            var denomination = e.Index;
             if (currencyMap.ContainsKey(denomination))
             {
                 if (denomination > 0)
