@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Apex7000_BillValidator
 {
     public partial class ApexValidator
