@@ -5,6 +5,7 @@ using System.IO.Ports;
 using System.Reflection;
 using System.Threading;
 using System.Linq;
+using log4net;
 
 namespace PTI.Serial
 {
@@ -12,7 +13,7 @@ namespace PTI.Serial
     // Wrapper around SerialPort
     public class StrongPort : ICommPort
     {
-        private static readonly slf4net.ILogger log = slf4net.LoggerFactory.GetLogger(typeof(StrongPort));
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // My prefered encoding when debugging byte buffers
         private readonly System.Text.Encoding W1252 = System.Text.Encoding.GetEncoding("Windows-1252");
@@ -64,7 +65,7 @@ namespace PTI.Serial
                     // in future versions of the .NET Framework
                     if (field == null)
                     {
-                        log.Warn(
+                        log.WarnFormat(
                              "An exception occured while creating the serial port adaptor, "
                              + "the internal stream reference was not acquired and we were unable "
                              + "to get it using reflection. The serial port may not be accessible "
@@ -77,7 +78,7 @@ namespace PTI.Serial
                     internalStream = (Stream)field.GetValue(port);
                 }
 
-                log.Debug(
+                log.DebugFormat(
                     "An error occurred while constructing the serial port adaptor: {0}", ex);
 
                 SafeDisconnect(port, internalStream);
@@ -157,7 +158,7 @@ namespace PTI.Serial
             }
             catch (Exception ex)
             {
-                log.Debug(
+                log.DebugFormat(
                     "Exception in serial stream shutdown of port {0}: {1}", port.PortName, ex);
             }
 
@@ -168,7 +169,7 @@ namespace PTI.Serial
             }
             catch (Exception ex)
             {
-                log.Debug("Exception in port {0} shutdown: {1}", port.PortName, ex);
+                log.DebugFormat("Exception in port {0} shutdown: {1}", port.PortName, ex);
             }
         }
 

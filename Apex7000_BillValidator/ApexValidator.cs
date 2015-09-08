@@ -1,4 +1,5 @@
-﻿using PTI.Serial;
+﻿using log4net;
+using PTI.Serial;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,7 +12,7 @@ namespace Apex7000_BillValidator
     {
       
         private readonly object mutex = new object();
-        private static readonly slf4net.ILogger log = slf4net.LoggerFactory.GetLogger(typeof(StrongPort));
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Fields
         private StrongPort port = null;
@@ -125,10 +126,11 @@ namespace Apex7000_BillValidator
                 catch (Exception e)
                 {
 
+                    log.ErrorFormat("Exception Connecting to acceptor: {0}", e.Message, e);
+
+
                     if (OnError != null)
                     {
-
-                        log.Error(e.Message);
 
                         NotifyError(Errors.PortError);
 
