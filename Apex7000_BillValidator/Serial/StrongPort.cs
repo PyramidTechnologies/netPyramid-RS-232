@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Linq;
 using log4net;
+using System.Security.Permissions;
 
 namespace PTI.Serial
 {
@@ -21,6 +22,15 @@ namespace PTI.Serial
         // Lock on reading so we don't disconnect while waiting for data.
         private static object readLock = new object();
 
+        /// <summary>
+        /// Creates a new strong port by correctly configuring the DCB blocks used to configured
+        /// the comm port in the Win32 API. As such, this call requires unrestricted access to the system
+        /// e.g. run as admin. If you do not run this application as admin, this call will fail with a 
+        /// security excetion
+        /// </summary>
+        /// <param name="portName">OS name of port to open. e.g. COM4</param>
+        /// <exception cref="System.Security.SecurityException">Thrown if executing user does not have unrestricted access</exception>
+        [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
         public StrongPort(string portName)
         {
 
@@ -93,12 +103,18 @@ namespace PTI.Serial
         #endregion
 
         #region Disposal
+        /// <summary>
+        /// Releases comm port and related managed resources.
+        /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
         }
 
-        protected void Dispose(bool disposing)
+        /// <summary>
+        /// Releases comm port and related managed resources.
+        /// </summary>
+        protected virtual void Dispose(bool disposing)
         {
             SafeDisconnect(this._serialPort, this._internalSerialStream);
 

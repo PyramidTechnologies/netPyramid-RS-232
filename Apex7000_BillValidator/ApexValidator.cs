@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace Apex7000_BillValidator
 {
-    public partial class ApexValidator
+    public partial class ApexValidator : IDisposable
     {
       
         private readonly object mutex = new object();
@@ -536,6 +536,17 @@ namespace Apex7000_BillValidator
             return (resp[2] & 1) != (data[2] & 1);
         }
         #endregion
+        #endregion
+
+        #region IDisposable
+        /// <summary>
+        /// Releases comm port and related managed resources.
+        /// </summary>
+        public void Dispose()
+        {
+            if (port != null)
+                port.Dispose();
+        }
         #endregion
     }
 }
