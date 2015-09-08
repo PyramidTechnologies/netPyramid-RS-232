@@ -49,14 +49,6 @@ namespace Apex7000_BillValidator
         // Time at which escrow starts
         private DateTime escrowStart = DateTime.MinValue;
 
-        private void notifySerialData(DebugBufferEntry entry)
-        {
-            OnSerialDataHandler handler = OnSerialData;
-            if (OnSerialData != null)
-            {
-                handler(this, new DebugEntryArgs(entry));
-            }
-        }
         #endregion
 
         /// <summary>
@@ -231,7 +223,7 @@ namespace Apex7000_BillValidator
             }
            
             // Attempt to write data to slave            
-            notifySerialData(DebugBufferEntry.AsMaster(data));
+            NotifySerialData(DebugBufferEntry.AsMaster(data));
             WriteWrapper(data);
 
 
@@ -240,7 +232,7 @@ namespace Apex7000_BillValidator
 
 
             // Extract only the states and events
-            notifySerialData(DebugBufferEntry.AsSlave(resp));
+            NotifySerialData(DebugBufferEntry.AsSlave(resp));
             
             // No data was read, return!!
             if (resp.Length == 0)
@@ -277,7 +269,7 @@ namespace Apex7000_BillValidator
 
 
             // Raise a state changed notice for clients
-            NotifyStateChange(config.PreviousState);
+            NotifyStateChange(PreviousState);
            
 
             // Multiple event may be reported at once
