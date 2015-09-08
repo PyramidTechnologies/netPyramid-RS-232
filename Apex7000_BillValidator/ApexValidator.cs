@@ -18,6 +18,42 @@ namespace Apex7000_BillValidator
         private bool resetRequested = false;
         #endregion
 
+
+        #region Internal State
+        // State variables for tracking between events and states
+        private byte Ack { get; set; }
+
+        // Track if we have already reported the cashbox state. We always
+        // raise the cashbox missing event but report cashbox attached event
+        // only once.
+        private bool CashboxPresent { get; set; }
+
+        // If true, the slave is reporting that a note is in escrow
+        private bool NoteIsEscrowed { get; set; }
+
+        // Last reported credit from slave
+        private byte Credit { get; set; }
+
+        // Additional feature: async flag to tell the slave
+        // to ACCEPT or REJECT the note next time the master polls
+        private EscrowCommands EscrowCommand { get; set; }
+
+        // Used in case we need to retransmit
+        private byte[] previouslySentMasterMsg { get; set; }
+
+        // Time at which escrow starts
+        private DateTime escrowStart = DateTime.MinValue;
+
+        private void notifySerialData(DebugBufferEntry entry)
+        {
+            OnSerialDataHandler handler = OnSerialData;
+            if (OnSerialData != null)
+            {
+                handler(this, entry);
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Creates a new ApexValidator using the specified configuration
         /// </summary>
@@ -165,18 +201,18 @@ namespace Apex7000_BillValidator
         private void speakToSlave()
         {
             byte[] data;
-            if (config.previouslySentMasterMsg == null)
+            if (previouslySentMasterMsg == null)
             {
                 data = GenerateNormalMessage();
             }
             else
             {
-                data = config.previouslySentMasterMsg;
+                data = previouslySentMasterMsg;
 
             }
            
             // Attempt to write data to slave            
-            config.notifySerialData(DebugBufferEntry.AsMaster(data));
+            notifySerialData(DebugBufferEntry.AsMaster(data));
             WriteWrapper(data);
 
 
@@ -185,7 +221,7 @@ namespace Apex7000_BillValidator
 
 
             // Extract only the states and events
-            config.notifySerialData(DebugBufferEntry.AsSlave(resp));
+            notifySerialData(DebugBufferEntry.AsSlave(resp));
             
             // POSSIBLE FUNCTION EXIT!!
             // No data was read, return!!
@@ -198,7 +234,7 @@ namespace Apex7000_BillValidator
             // Check that we have the same ACK #
             else if (IsBadAckNumber(resp, data))
             {
-                config.previouslySentMasterMsg = data;
+                previouslySentMasterMsg = data;
                 return;
             }
 
@@ -209,8 +245,8 @@ namespace Apex7000_BillValidator
             // Otherwise we're all good - toggle ack and clear last sent message
             else
             {
-                config.previouslySentMasterMsg = null;
-                config.Ack ^= 1;
+                previouslySentMasterMsg = null;
+                Ack ^= 1;
             }
             
             // At this point we have sent our message and received a valid response.
@@ -239,16 +275,16 @@ namespace Apex7000_BillValidator
             if (!SlaveCodex.IsCashboxPresent(slaveMessage))
             {
 
-                config.CashboxPresent = false;
+                CashboxPresent = false;
 
                 NotifyError(Errors.CashboxMissing);
 
             }
             // Only report the cashbox attached 1 time after it is re-attached
-            else if (!config.CashboxPresent)
+            else if (!CashboxPresent)
             {
 
-                config.CashboxPresent = true;
+                CashboxPresent = true;
 
                 SafeEvent(OnCashboxAttached);
 
@@ -257,17 +293,17 @@ namespace Apex7000_BillValidator
 
             // Mask away rest of message to see if a note is in escrow. If this is the first
             // escrow message, start the escrow timeout clock
-            if(!config.NoteIsEscrowed && config.PreviousState == States.Escrowed)
+            if(!NoteIsEscrowed && config.PreviousState == States.Escrowed)
             {
-                config.escrowStart = DateTime.MinValue;
+                escrowStart = DateTime.MinValue;
             }
-            config.NoteIsEscrowed = (config.PreviousState == States.Escrowed);
+            NoteIsEscrowed = (config.PreviousState == States.Escrowed);
 
             // Credit bits are 3-5 of data byte 3 
             var value = SlaveCodex.GetCredit(slaveMessage);
             if (value > 0)
             {
-                config.Credit = (byte)value;
+                Credit = (byte)value;
 
             }
 
@@ -278,14 +314,14 @@ namespace Apex7000_BillValidator
             switch(config.PreviousEvents)
             {
                 case Events.Stacked:
-                    NotifyCredit(config.Credit);
+                    NotifyCredit(Credit);
                     // C# does not allow fallthrough so we will goto :)
                     goto case Events.Returned;
     
                 case Events.Returned:                                
                     // Clear our the pending escrow command once we've stacked or returned the note
-                    config.EscrowCommand = EscrowCommands.None;
-                    config.Credit = 0;
+                    EscrowCommand = EscrowCommands.None;
+                    Credit = 0;
                     break;
 
             }
@@ -307,7 +343,7 @@ namespace Apex7000_BillValidator
             var data = Request.BaseMessage;
 
             // Toggle message number (ack #) if last message was okay and not a re-send request.
-            data[2] = (byte)(0x10 | config.Ack);
+            data[2] = (byte)(0x10 | Ack);
 
             // Enable all notes
             // TODO create a mask for this
@@ -318,7 +354,7 @@ namespace Apex7000_BillValidator
                 // Clear escrow mode bit
                 data[4] = 0x00;
 
-                if (config.NoteIsEscrowed)
+                if (NoteIsEscrowed)
                     data[4] |= 0x20;
 
             } 
@@ -327,44 +363,44 @@ namespace Apex7000_BillValidator
                 // Set escrow mode bit
                 data[4] = 1 << 4;
 
-                if(config.NoteIsEscrowed)
+                if(NoteIsEscrowed)
                 {
 
                     if(config.EscrowTimeoutSeconds > 0)
                     {
 
-                        if(config.escrowStart == DateTime.MinValue)
+                        if(escrowStart == DateTime.MinValue)
                         {
-                            config.escrowStart = DateTime.Now;
+                            escrowStart = DateTime.Now;
                         }
 
-                        var delta = DateTime.Now - config.escrowStart;
+                        var delta = DateTime.Now - escrowStart;
                         if (delta.TotalSeconds > config.EscrowTimeoutSeconds)
                         {
-                            config.EscrowCommand = EscrowCommands.Reject;
+                            EscrowCommand = EscrowCommands.Reject;
                             
-                            config.escrowStart = DateTime.MinValue;
+                            escrowStart = DateTime.MinValue;
                         }
                     }
 
 
                     // Otherwise do what the host tells us to do.
-                    switch (config.EscrowCommand)
+                    switch (EscrowCommand)
                     {
                         case EscrowCommands.Stack:
                             // set stack bit
                             data[4] |= 0x20;
-                            config.EscrowCommand = EscrowCommands.None;
+                            EscrowCommand = EscrowCommands.None;
                             break;
 
                         case EscrowCommands.Reject:
                             // set reject bit
                             data[4] |= 0x40;
-                            config.EscrowCommand = EscrowCommands.None;
+                            EscrowCommand = EscrowCommands.None;
                             break;
 
                         case EscrowCommands.None:
-                            NotifyEscrow(config.Credit);
+                            NotifyEscrow(Credit);
                             break;
                     }
                 }
@@ -440,12 +476,12 @@ namespace Apex7000_BillValidator
         {
             byte[] reset = Request.ResetTarget;
             // Toggle message number (ack #) if last message was okay and not a re-send request.
-            reset[2] = (byte)(0x10 | config.Ack);
+            reset[2] = (byte)(0x10 | Ack);
             Checksum(reset);
             WriteWrapper(reset);
 
             // Toggle ACK number
-            config.Ack ^= 1;
+            Ack ^= 1;
             resetRequested = false;
         }
 

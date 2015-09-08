@@ -17,7 +17,7 @@ namespace Apex7000_BillValidator
             // Set flag to accept
             // We do not directly instruct the unit to stack as this may interfere
             // with any pending transmissions.
-            config.EscrowCommand = EscrowCommands.Stack;
+            EscrowCommand = EscrowCommands.Stack;
         }
 
         /// <summary>
@@ -33,7 +33,8 @@ namespace Apex7000_BillValidator
             // Set flag to reject
             // We do not directly instruct the unit to reject as this may interfere
             // with any pending transmissions.
-            config.EscrowCommand = EscrowCommands.Reject;
+            EscrowCommand = EscrowCommands.Reject;
+        }
         }
     }
 }

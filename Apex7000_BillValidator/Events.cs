@@ -56,6 +56,17 @@ namespace Apex7000_BillValidator
         /// </summary>
         public event EventHandler OnCashboxAttached;
 
+
+
+        /// <summary>
+        /// Subscribe to serial data received and transmission events. Useful for debugging.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="entry"></param>
+        public delegate void OnSerialDataHandler(object sender, DebugBufferEntry entry);
+        public event OnSerialDataHandler OnSerialData;
+
+
         #region Private
         /// <summary>
         /// Safely handle event. If handler is null, event is ignored.

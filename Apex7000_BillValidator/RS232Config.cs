@@ -5,7 +5,7 @@ namespace Apex7000_BillValidator
     public class RS232Config
     {
 
-        // ms
+        // default pollrate in ms
         private static readonly int POLL_RATE = 100;
 
         #region Fields
@@ -24,10 +24,6 @@ namespace Apex7000_BillValidator
             this.IsEscrowMode = isEscrowMode;
         }
         #region Properties
-
-
-        public delegate void OnSerialDataHandler(object sender, DebugBufferEntry entry);
-        public event OnSerialDataHandler OnSerialData;
 
         /// <summary>
         /// Gets or sets the poll rate in milliseconds. The polled system is designed for the master to request 
@@ -89,40 +85,5 @@ namespace Apex7000_BillValidator
         /// </summary>
         public int EscrowTimeoutSeconds { get; set; }
         #endregion       
-
-        #region Internal State
-        // State variables for tracking between events and states
-        internal byte Ack {get; set; }
-
-        // Track if we have already reported the cashbox state. We always
-        // raise the cashbox missing event but report cashbox attached event
-        // only once.
-        internal bool CashboxPresent { get; set; }
-
-        // If true, the slave is reporting that a note is in escrow
-        internal bool NoteIsEscrowed { get; set; }
-
-        // Last reported credit from slave
-        internal byte Credit { get; set; }
-
-        // Additional feature: async flag to tell the slave
-        // to ACCEPT or REJECT the note next time the master polls
-        internal EscrowCommands EscrowCommand { get; set; }
-
-        // Used in case we need to retransmit
-        internal byte[] previouslySentMasterMsg { get; set; }
-
-        // Time at which escrow starts
-        internal DateTime escrowStart = DateTime.MinValue;
-
-        internal void notifySerialData(DebugBufferEntry entry) 
-        {
-            OnSerialDataHandler handler = OnSerialData;
-            if(OnSerialData != null)
-            {
-                handler(this, entry);
-            }
-        }
-        #endregion
     }
 }
