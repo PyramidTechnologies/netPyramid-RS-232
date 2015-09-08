@@ -12,7 +12,7 @@ namespace PTI.Serial
 {
 
     // Wrapper around SerialPort
-    public class StrongPort : ICommPort
+    internal class StrongPort : ICommPort
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -31,7 +31,7 @@ namespace PTI.Serial
         /// <param name="portName">OS name of port to open. e.g. COM4</param>
         /// <exception cref="System.Security.SecurityException">Thrown if executing user does not have unrestricted access</exception>
         [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
-        public StrongPort(string portName)
+        internal StrongPort(string portName)
         {
 
             // http://zachsaw.blogspot.com/2010/07/net-serialport-woes.html

@@ -84,6 +84,9 @@ namespace Apex7000_BillValidator
         /// </summary>
         public String RealTime { get; private set; }
 
+        /// <summary>
+        /// byte[] decoded into known RS-232 messages
+        /// </summary>
         public String DecodedData { get; private set; }
 
         /// <summary>

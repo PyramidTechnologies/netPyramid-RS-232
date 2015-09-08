@@ -7,6 +7,10 @@ using System.Threading;
 
 namespace Apex7000_BillValidator
 {
+    /// <summary>
+    /// The main class that does the actual "talking" the acceptor. In the context of documentation,
+    /// this object what is referred to as the master and the acceptor is the slave device.
+    /// </summary>
     public partial class ApexValidator : IDisposable
     {
       
@@ -58,7 +62,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Creates a new ApexValidator using the specified configuration
         /// </summary>
-        /// <param name="comm"></param>
+        /// <param name="config">Operating RS-232 parameters</param>
         public ApexValidator(RS232Config config)
         {
             this.config = config;

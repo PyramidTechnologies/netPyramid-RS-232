@@ -15,7 +15,9 @@ using System.Text;
 
 namespace PTI.Serial
 {
-
+    /// <summary>
+    /// Defines the contract new implementations of a serial port must adhere to.
+    /// </summary>
     public interface ICommPort : IDisposable
     {
 

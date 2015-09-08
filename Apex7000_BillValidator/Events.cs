@@ -9,7 +9,7 @@ namespace Apex7000_BillValidator
         /// in that they are only reported once to the master.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e">Events</param>
+        /// <param name="e">EventChangedArgs</param>
         public delegate void OnEventHandler(object sender, EventChangedArgs e);
         public event OnEventHandler OnEvent;
 
@@ -19,7 +19,7 @@ namespace Apex7000_BillValidator
         /// will be raised as 
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="state">States</param>
+        /// <param name="e">StateChangedArgs</param>
         public delegate void OnStateChangeHandler(object sender, StateChangedArgs e);
         public event OnStateChangeHandler OnStateChanged;
 
@@ -27,7 +27,7 @@ namespace Apex7000_BillValidator
         /// Raised by the master in the event that communication fails
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="type">Errors</param>
+        /// <param name="e">ErrorArgs</param>
         public delegate void OnErrorEventHandler(object sender, ErrorArgs e);
         public event OnErrorEventHandler OnError;
 
@@ -35,7 +35,7 @@ namespace Apex7000_BillValidator
         /// Raised once a note has been successfully stacked.
         /// </summary>
         /// <param name="sender">Object that raised event</param>
-        /// <param name="index">Index 1-7 of the denomination stacked. See
+        /// <param name="e">Index 1-7 of the denomination stacked. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
         public delegate void OnCreditEventHandler(object sender, CreditArgs e);
         public event OnCreditEventHandler OnCredit;
@@ -46,7 +46,7 @@ namespace Apex7000_BillValidator
         /// the note based upon the denomination.
         /// </summary>
         /// <param name="sender">Object that raised event</param>
-        /// <param name="index">Index 1-7 of the denomination in escrow. See
+        /// <param name="e">Index 1-7 of the denomination in escrow. See
         /// you bill acceptors documentation for the corresponding dollar value.</param>
         public delegate void OsEscrowedEventHandler(object sender, EscrowArgs e);
         public event OsEscrowedEventHandler OnEscrowed;
@@ -57,12 +57,11 @@ namespace Apex7000_BillValidator
         public event EventHandler OnCashboxAttached;
 
 
-
         /// <summary>
         /// Subscribe to serial data received and transmission events. Useful for debugging.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="entry"></param>
+        /// <param name="e">Serial data summary to reprt</param>
         public delegate void OnSerialDataHandler(object sender, DebugEntryArgs e);
         public event OnSerialDataHandler OnSerialData;
 
@@ -71,7 +70,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Safely handle event. If handler is null, event is ignored.
         /// </summary>
-        /// <param name="eventInst"></param>
+        /// <param name="e">Event(s) to report</param>
         private void NotifyEvent(Events e)
         {
             OnEventHandler exec = OnEvent;
@@ -84,7 +83,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Safely handle state change. If handler is null, event is ignored.
         /// </summary>
-        /// <param name="eventInst"></param>
+        /// <param name="state">State to report</param>
         private void NotifyStateChange(States state)
         {
             OnStateChangeHandler exec = OnStateChanged;
@@ -97,7 +96,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Safely handle event. If handler is null, event is ignored.
         /// </summary>
-        /// <param name="eventInst"></param>
+        /// <param name="eventInst">Instance of EventHandler to exectute</param>
         private void SafeEvent(EventHandler eventInst)
         {
             EventHandler exec = eventInst;
@@ -111,7 +110,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Raised when a note is completely stacked.
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">Index of note to report as requiring credit issued</param>
         protected virtual void NotifyCredit(int e)
         {
             OnCreditEventHandler handler = OnCredit;
@@ -124,7 +123,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Raised when a bill enters escrow. Only raised while in escrow mode!
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">Index of note to report as in escrow</param>
         protected virtual void NotifyEscrow(int e)
         {
             OsEscrowedEventHandler handler = OnEscrowed;
@@ -137,7 +136,7 @@ namespace Apex7000_BillValidator
         /// <summary>
         /// Raised when an exceptional state occurs.
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">Errors type to report</param>
         protected virtual void NotifyError(Errors e)
         {
             OnErrorEventHandler handler = OnError;
