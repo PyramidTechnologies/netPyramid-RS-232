@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace PTI.Serial
 {
+    /// \internal
     internal enum ExceptionTypes
     {
         Timeout,
@@ -11,7 +12,7 @@ namespace PTI.Serial
         AccessError
     }
 
-
+    /// \internal
     [SerializableAttribute]
     internal class PortException : Exception, ISerializable
     {

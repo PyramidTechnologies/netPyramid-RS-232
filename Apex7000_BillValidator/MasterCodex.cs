@@ -1,7 +1,10 @@
 ﻿
 namespace Apex7000_BillValidator
 {
-    class MasterCodex
+    /// <summary>
+    /// \internal
+    /// </summary>
+    internal class MasterCodex
     {
         // Mask out reserved and ignored bits
         private static MasterMessage relevanceMask = (MasterMessage)0xFE7F;

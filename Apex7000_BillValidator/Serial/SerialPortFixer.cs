@@ -22,6 +22,7 @@ using System.Security.Permissions;
 
 namespace PTI.Serial
 {
+    /// \internal
     internal class SerialPortFixer : IDisposable
     {
         [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
