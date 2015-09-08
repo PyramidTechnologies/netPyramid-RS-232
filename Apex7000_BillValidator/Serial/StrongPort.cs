@@ -12,6 +12,7 @@ namespace PTI.Serial
 {
 
     // Wrapper around SerialPort
+    // \internal
     internal class StrongPort : ICommPort
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);

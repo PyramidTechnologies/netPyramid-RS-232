@@ -5,6 +5,7 @@ namespace Apex7000_BillValidator
     /// <summary>
     /// Used internally to quickly translate between bytes and the string meaning
     /// </summary>
+    /// \internal
     internal class SlaveCodex
     {
         private static SlaveMessage stateMask = (SlaveMessage)0x40C2F;
