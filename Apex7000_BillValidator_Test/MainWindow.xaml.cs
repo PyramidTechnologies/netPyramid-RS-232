@@ -1,18 +1,8 @@
-﻿using System;
+﻿using Apex7000_BillValidator;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Apex7000_BillValidator;
 
 namespace Apex7000_BillValidator_Test
 {
@@ -21,55 +11,70 @@ namespace Apex7000_BillValidator_Test
     /// </summary>
     public partial class MainWindow : Window
     {
-        public ApexValidator validator;
+        private ApexValidator validator;
+        private RS232Config config;
+
+
+
         public MainWindow()
         {
+            DataContext = this;
             InitializeComponent();
-            Loaded += MainWindow_Loaded;
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+
+
+        /// Simple UI listeners
+
+        private void btnReset_Click(object sender, RoutedEventArgs e)
         {
-            //validator = new ApexValidator(COMPort.COM10, "en-US");
-            validator = new ApexValidator(COMPort.COM2);
-            validator.PowerUp += validator_PowerUp;
-            validator.OnEscrow += validator_OnEscrow;
-            validator.BillStacked += validator_BillStacked;
-            validator.OnError += validator_OnError;
-            validator.CashboxAttached += validator_CashboxAttached;
-            validator.CashboxRemoved += validator_CashboxRemoved;
-
-            validator.Connect();
+            if (validator != null)
+            {
+                validator.RequestReset();
+            }
         }
 
-        void validator_OnError(object sender, ErrorTypes type)
+
+        private void chkEscrowMode_Checked(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Error has occured: {0}", type.ToString());
+            IsEscrowMode = true;
         }
 
-        void validator_CashboxRemoved(object sender, EventArgs e)
+        private void chkEscrowMode_Unchecked(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Box removed");
+            IsEscrowMode = false;
         }
 
-        void validator_CashboxAttached(object sender, EventArgs e)
+        private void AvailablePorts_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            Console.WriteLine("Box Attached");
+            AvailablePorts.ItemsSource = ApexValidator.GetAvailablePorts();
         }
 
-        void validator_BillStacked(object sender, EventArgs e)
-        {            
-            Console.WriteLine("Bill Stacked");
-        }
-
-        void validator_OnEscrow(object sender, int denomination)
+        private void AvailablePorts_Loaded(object sender, RoutedEventArgs e)
         {
-            validator.Stack();
+            AvailablePorts.ItemsSource = ApexValidator.GetAvailablePorts();
         }
 
-        void validator_PowerUp(object sender, EventArgs e)
+        private void ed_Changed(object sender, RoutedEventArgs e)
         {
-            
-        }
+            // Avoids npe on startup
+            if (config == null)
+                return;
+
+            int mask = 0;
+
+            // Could be done with data bindings but why bother when bits are so much fun?
+            mask |= chk1.IsChecked.Value ? 1 << 0 : 0;
+            mask |= chk2.IsChecked.Value ? 1 << 1 : 0;
+            mask |= chk3.IsChecked.Value ? 1 << 2 : 0;
+            mask |= chk4.IsChecked.Value ? 1 << 3 : 0;
+            mask |= chk5.IsChecked.Value ? 1 << 4 : 0;
+            mask |= chk6.IsChecked.Value ? 1 << 5 : 0;
+            mask |= chk7.IsChecked.Value ? 1 << 6 : 0;
+
+            config.EnableMask = (byte)mask;
+        } 
+
     }
+    
 }

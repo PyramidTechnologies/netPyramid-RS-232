@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("NET Pyramid RS-232")]
-[assembly: AssemblyDescription("RS-232 API by Pyramid Technologies")]
+[assembly: AssemblyTitle("API_Test")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Pyramid Technologies Inc")]
-[assembly: AssemblyProduct("NET Pyramid RS-232")]
-[assembly: AssemblyCopyright("© Pyramid Technologies Inc. 2015")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("API_Test")]
+[assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("380ac9e2-635d-4547-a090-4e0e25663de9")]
+[assembly: Guid("4681deb4-b35c-4be8-a264-cc4d89b60051")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,5 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-[assembly : InternalsVisibleTo("API_Test")]
