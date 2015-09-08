@@ -109,8 +109,19 @@ namespace Apex7000_BillValidator
         }        
     }
 
+    /// <summary>
+    /// The origin of this debug entry
+    /// </summary>
     public enum Flows {
+
+        /// <summary>
+        /// Sent by master
+        /// </summary>
         Master,
+
+        /// <summary>
+        /// Sent by slave
+        /// </summary>
         Slave
     }
 }
