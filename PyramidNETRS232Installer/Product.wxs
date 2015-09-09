@@ -3,7 +3,7 @@
 <!-- NEVER EVER CHANGE THE UPGRADE CODE -->
 <?define UpgradeCode = "{5976a455-fa1f-44d2-91fa-53cc2beca27f}" ?>
 
-<?define Version = "1.0.0.1" ?>
+<?define Version = "1.0.1" ?>
 <?define BetaProductVersion="1.0.0" ?>
 <?define Name="Pyramid NET RS-232" ?>
 <?define Description="Pyramid NET RS-232 Installer" ?>
@@ -37,14 +37,10 @@
       </Custom>
     </InstallExecuteSequence>
     <CustomAction Id="IsPrivileged" Error="You must be an admin to install this product" />
-    
-    <Upgrade Id="$(var.UpgradeCode)">
-      <UpgradeVersion Property="OLDVERSIONFOUND" IncludeMinimum="no" Minimum="$(var.BetaProductVersion)" Maximum="$(var.Version)" />
-    </Upgrade>
-    
-    <InstallExecuteSequence>
-      <RemoveExistingProducts After="InstallInitialize" />
-    </InstallExecuteSequence>    
+
+    <MajorUpgrade
+      Schedule="afterInstallInitialize"
+      DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/> 
       
 		<Feature Id="ProductFeature" Title="PyramidNETRS232Installer" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
