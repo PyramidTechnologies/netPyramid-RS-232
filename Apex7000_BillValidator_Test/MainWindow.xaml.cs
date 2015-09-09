@@ -70,6 +70,21 @@ namespace PyramidNETRS232_TestApp
             mask |= chk7.IsChecked.Value ? 1 << 6 : 0;
 
             config.EnableMask = (byte)mask;
+        }
+
+        private void sldPoll_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            // Do not allow updating until we're connected
+            if (config == null || txtPoll == null)
+            {
+                return;
+            }
+
+
+            int val = (int)e.NewValue;
+            config.PollRate = val;
+            txtPoll.Text = string.Format("{0}", val);
+
         } 
 
     }

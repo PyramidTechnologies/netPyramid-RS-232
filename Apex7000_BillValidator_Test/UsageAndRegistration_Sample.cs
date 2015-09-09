@@ -43,7 +43,6 @@ namespace PyramidNETRS232_TestApp
 
             // Create a new instance using the specified port and in escrow mode
             config = new RS232Config(PortName, IsEscrowMode);
-            config.EscrowTimeoutSeconds = 12;
             validator = new PyramidAcceptor(config);
 
             // Configure logging - see DebugData_Sample.cs
