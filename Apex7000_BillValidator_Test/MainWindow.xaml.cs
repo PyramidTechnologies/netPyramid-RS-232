@@ -1,17 +1,14 @@
-﻿using Apex7000_BillValidator;
-using System;
-using System.Collections.Generic;
+﻿using PyramidNETRS232;
 using System.Windows;
-using System.Windows.Controls;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ApexValidator validator;
+        private PyramidAcceptor validator;
         private RS232Config config;
 
 
@@ -47,12 +44,12 @@ namespace Apex7000_BillValidator_Test
 
         private void AvailablePorts_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            AvailablePorts.ItemsSource = ApexValidator.GetAvailablePorts();
+            AvailablePorts.ItemsSource = PyramidAcceptor.GetAvailablePorts();
         }
 
         private void AvailablePorts_Loaded(object sender, RoutedEventArgs e)
         {
-            AvailablePorts.ItemsSource = ApexValidator.GetAvailablePorts();
+            AvailablePorts.ItemsSource = PyramidAcceptor.GetAvailablePorts();
         }
 
         private void ed_Changed(object sender, RoutedEventArgs e)

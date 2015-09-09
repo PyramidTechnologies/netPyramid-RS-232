@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// The main class that does the actual "talking" the acceptor. In the context of documentation,
     /// this object what is referred to as the master and the acceptor is the slave device.
     /// </summary>
-    public partial class ApexValidator : IDisposable
+    public partial class PyramidAcceptor : IDisposable
     {
       
         private readonly object mutex = new object();
@@ -66,10 +66,10 @@ namespace Apex7000_BillValidator
         #endregion
 
         /// <summary>
-        /// Creates a new ApexValidator using the specified configuration
+        /// Creates a new PyramidAcceptor using the specified configuration
         /// </summary>
         /// <param name="config">Operating RS-232 parameters</param>
-        public ApexValidator(RS232Config config)
+        public PyramidAcceptor(RS232Config config)
         {
             this.config = config;
         }

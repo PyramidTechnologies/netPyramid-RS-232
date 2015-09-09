@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// Properties of a state change event

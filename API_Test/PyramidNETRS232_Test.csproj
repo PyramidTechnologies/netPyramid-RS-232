@@ -6,8 +6,8 @@
     <ProjectGuid>{71DEAB9A-CC67-4BD8-9FEC-C5E59ED2A75F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>API_Test</RootNamespace>
-    <AssemblyName>API_Test</AssemblyName>
+    <RootNamespace>PyramidNETRS232_Test</RootNamespace>
+    <AssemblyName>PyramidNETRS232_Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -54,9 +54,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Apex7000_BillValidator\Apex7000_BillValidator.csproj">
+    <ProjectReference Include="..\Apex7000_BillValidator\PyramidNETRS232.csproj">
       <Project>{735220bb-d8e8-4e21-80d9-aea6e41b13ed}</Project>
-      <Name>Apex7000_BillValidator</Name>
+      <Name>PyramidNETRS232</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

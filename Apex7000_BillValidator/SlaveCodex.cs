@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// Used internally to quickly translate between bytes and the string meaning

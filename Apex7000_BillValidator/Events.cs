@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
-    public partial class ApexValidator
+    public partial class PyramidAcceptor
     {
         /// <summary>
         /// Raised when the acceptor reports any event. Events are transient

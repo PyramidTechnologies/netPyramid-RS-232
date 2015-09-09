@@ -1,7 +1,7 @@
-﻿using Apex7000_BillValidator;
+﻿using PyramidNETRS232;
 using System;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     /// <summary>
     /// This class demonstrates how to handle the OnCredit Event

@@ -1,4 +1,4 @@
-﻿using Apex7000_BillValidator;
+﻿using PyramidNETRS232;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     internal enum TagTypes
     {

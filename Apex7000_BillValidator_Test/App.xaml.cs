@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -1,4 +1,4 @@
-﻿<Application x:Class="Apex7000_BillValidator_Test.App"
+﻿<Application x:Class="PyramidNETRS232_TestApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">

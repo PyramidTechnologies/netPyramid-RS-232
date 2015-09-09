@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// Define the operating parameters of your bill acceptor

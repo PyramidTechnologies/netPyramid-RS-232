@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apex7000_BillValidator", "Apex7000_BillValidator\Apex7000_BillValidator.csproj", "{735220BB-D8E8-4E21-80D9-AEA6E41B13ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PyramidNETRS232", "Apex7000_BillValidator\PyramidNETRS232.csproj", "{735220BB-D8E8-4E21-80D9-AEA6E41B13ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Apex7000_BillValidator_Test", "Apex7000_BillValidator_Test\Apex7000_BillValidator_Test.csproj", "{AB3A48C8-4996-4E45-8DE9-2F960D22C27F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PyramidNETRS232_TestApp", "Apex7000_BillValidator_Test\PyramidNETRS232_TestApp.csproj", "{AB3A48C8-4996-4E45-8DE9-2F960D22C27F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API_Test", "API_Test\API_Test.csproj", "{71DEAB9A-CC67-4BD8-9FEC-C5E59ED2A75F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PyramidNETRS232_Test", "API_Test\PyramidNETRS232_Test.csproj", "{71DEAB9A-CC67-4BD8-9FEC-C5E59ED2A75F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

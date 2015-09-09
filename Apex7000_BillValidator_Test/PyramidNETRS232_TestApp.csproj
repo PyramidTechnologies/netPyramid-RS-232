@@ -7,8 +7,8 @@
     <ProjectGuid>{AB3A48C8-4996-4E45-8DE9-2F960D22C27F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Apex7000_BillValidator_Test</RootNamespace>
-    <AssemblyName>Apex7000_BillValidator_Test</AssemblyName>
+    <RootNamespace>PyramidNETRS232_TestApp</RootNamespace>
+    <AssemblyName>PyramidNETRS232_TestApp</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,8 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.3\lib\net35-full\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
@@ -106,9 +106,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Apex7000_BillValidator\Apex7000_BillValidator.csproj">
+    <ProjectReference Include="..\Apex7000_BillValidator\PyramidNETRS232.csproj">
       <Project>{735220bb-d8e8-4e21-80d9-aea6e41b13ed}</Project>
-      <Name>Apex7000_BillValidator</Name>
+      <Name>PyramidNETRS232</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
