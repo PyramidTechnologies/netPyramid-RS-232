@@ -1,14 +1,30 @@
-﻿using Apex7000_BillValidator;
+﻿using PyramidNETRS232;
 using System;
+using System.Windows;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     /// <summary>
     /// This class demonstrates how to handle the OnCredit Event
     /// </summary>
     partial class MainWindow
     {
-
+        /// <summary>
+        /// All of this mess is the make the the async manual accept/reject buttons work
+        /// </summary>
+        private static object manualLock = new object();
+        private bool actionTaken = false;
+        private bool enableManualButtons = false;
+        public bool EnableManualButtons
+        {
+            get { return enableManualButtons; }
+            set
+            {
+                enableManualButtons = value;
+                NotifyPropertyChanged("EnableManualButtons");
+            }
+        }
+        private int lastIndex = 0;
 
         /// <summary>
         /// If in escrow mode, check that we have the specified index enabled
@@ -17,16 +33,10 @@ namespace Apex7000_BillValidator_Test
         /// <param name="index"></param>
         private void validator_OnEscrow(object sender, EscrowArgs e)
         {
-            var index = e.Index;
+            lastIndex = e.Index;
 
             DoOnUIThread(() =>
             {
-
-                string action = "";
-
-                // If bill is enabled by our mask, stack the note
-                bool isEnabled = checkEnableMask(index);
-
                 // Here you could also a call to check the user's account balance to make sure they're not
                 // exceeding a specified amount. Remember, returns and rejects can be triggered by a few things:
                 // 1) Reject : Invalid note
@@ -34,29 +44,64 @@ namespace Apex7000_BillValidator_Test
                 // 3) Return : Note disabled by E/D mask
                 // 4) Return : Host manually send return message because a check failed (e.g. too much money on user account etc.)
 
-
-                if (isEnabled)
+                
+                // If we're already taken action, clear the actionTaken flag. Otherwise enable our
+                // manual buttons so an action can be taken.
+                lock (manualLock)
                 {
-                    // Pass Escrow state to UI
-                    State = States.Escrowed;
-                    action = "Escrowed";
-                    validator.Stack();
+                    if (!actionTaken && lastIndex != 0)
+                        EnableManualButtons = true;
+                    else
+                        actionTaken = false;
                 }
-                else
-                {
-                    action = "Rejected";
-                    validator.Reject();
-                }
-
-
-                if (currencyMap.ContainsKey(index))
-                    Console.WriteLine("{0} ${1}", action, currencyMap[index]);
-                else
-                    Console.WriteLine("{0} Unknown denomination index: {1}", action, index);
-
 
             });
         }
+
+
+
+        private void btnAccept_Click(object sender, RoutedEventArgs e)
+        {
+            validator.Stack();
+
+
+            if (currencyMap.ContainsKey(lastIndex))
+                Console.WriteLine("Escrowed ${0}", currencyMap[lastIndex]);
+            else
+                Console.WriteLine("Escrowed Unknown denomination index: {0}", lastIndex);
+
+
+            lock (manualLock)
+            {
+                lastIndex = 0;
+
+                actionTaken = true;
+                EnableManualButtons = false;
+            }
+        }
+
+
+
+        private void btnReject_Click(object sender, RoutedEventArgs e)
+        {
+
+            validator.Reject();
+
+
+            if (currencyMap.ContainsKey(lastIndex))
+                Console.WriteLine("Rejected ${0}", currencyMap[lastIndex]);
+            else
+                Console.WriteLine("Rejected Unknown denomination index: {0}", lastIndex);
+
+            lock (manualLock)
+            {
+                lastIndex = 0;
+                actionTaken = true;
+                EnableManualButtons = false;
+            }
+        }
+      
+
 
 
 

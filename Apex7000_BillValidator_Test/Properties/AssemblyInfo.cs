@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("API Test")]
+[assembly: AssemblyTitle("Pyramid NET RS-232 Test App")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Pyramid Technologies Inc")]
-[assembly: AssemblyProduct("API Test")]
+[assembly: AssemblyProduct("Pyramid NET RS-232 Test App")]
 [assembly: AssemblyCopyright("© Pyramid Technologies Inc. 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -58,3 +58,4 @@ using System.Windows;
 
 // Remember to activate our logger
 [assembly: log4net.Config.XmlConfigurator]
+[assembly: GuidAttribute("333C81CA-4E1A-4609-89C1-1F086D64A7AE")]

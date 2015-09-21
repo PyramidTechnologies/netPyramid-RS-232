@@ -1,11 +1,9 @@
-﻿using Apex7000_BillValidator;
+﻿using PyramidNETRS232;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     /// <summary>
     /// Demonstrates how to make use of the debug data

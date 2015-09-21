@@ -1,5 +1,5 @@
 ﻿
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// The bill acceptor will pass through a series of "States" during bill processing. The acceptor will always 

@@ -1,5 +1,5 @@
 ﻿
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// \internal

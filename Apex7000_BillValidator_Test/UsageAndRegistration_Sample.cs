@@ -1,11 +1,7 @@
-﻿using Apex7000_BillValidator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using PyramidNETRS232;
 using System.Windows;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     /// <summary>
     /// This class shows how to instantiate and register events for the RS-232 bill acceptor
@@ -47,8 +43,7 @@ namespace Apex7000_BillValidator_Test
 
             // Create a new instance using the specified port and in escrow mode
             config = new RS232Config(PortName, IsEscrowMode);
-            config.EscrowTimeoutSeconds = 12;
-            validator = new ApexValidator(config);
+            validator = new PyramidAcceptor(config);
 
             // Configure logging - see DebugData_Sample.cs
             validator.OnSerialData += config_OnSerialData;

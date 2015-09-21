@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// Helper entry for describing serial communication transactions

@@ -1,13 +1,12 @@
-﻿<Window x:Class="Apex7000_BillValidator_Test.MainWindow"
+﻿<Window x:Class="PyramidNETRS232_TestApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="RS-232 Sample Application" Height="650" Width="800" SnapsToDevicePixels="True">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        Title="RS-232 Sample Application 1.0.1" Height="650" Width="800" SnapsToDevicePixels="True" Icon="icon.ico">
     <Window.Resources>
         <ResourceDictionary Source="Themes/purple.xaml"/>
     </Window.Resources>
     <DockPanel LastChildFill="true">
         <DockPanel.Resources>
-            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource button_flat_round}"/>
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource GroupHeader_TextBlock}"/>
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource GroupHeader_Label}"/>
         </DockPanel.Resources>
@@ -49,7 +48,7 @@
             </StatusBarItem>
             <StatusBarItem Grid.Column="5">
                 <Button x:Name="btnReset" Content="Reset" Height="25" Width="100" Click="btnReset_Click" Visibility="Hidden" />
-            </StatusBarItem>            
+            </StatusBarItem>
             <StatusBarItem Grid.Column="6">
                 <TextBlock>State:</TextBlock>
             </StatusBarItem>
@@ -72,7 +71,7 @@
             </Grid.ColumnDefinitions>
 
             <TabControl>
-                <TabItem Header="Bill Bank">
+                <TabItem Header="Bank">
                     <Grid Name="NoteBack" Margin="5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
@@ -108,7 +107,7 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="Enable/Disable" IsEnabled="{Binding Path=IsEscrowMode,Mode=OneWay,IsAsync=True}">
+                <TabItem Header="Enabled" IsEnabled="{Binding Path=IsEscrowMode,Mode=OneWay,IsAsync=True}">
                     <Grid Background="#FFE5E5E5">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
@@ -130,10 +129,39 @@
                         <CheckBox x:Name="chk7" Content="Bill 7" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="2" IsChecked="True" Checked="ed_Changed" Unchecked="ed_Changed"/>
                     </Grid>
                 </TabItem>
+                <TabItem Header="Misc.">
+                    <Grid Background="#FFE5E5E5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Poll Rate (ms)" VerticalAlignment="Top"/>
+                        <Slider x:Name="sldPoll" Minimum="50" Maximum="2000" Value="98" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Bottom" VerticalAlignment="Bottom" Grid.ColumnSpan="2" ValueChanged="sldPoll_ValueChanged" />
+                        <TextBox x:Name="txtPoll" Grid.Column="1"  TextWrapping="Wrap" VerticalAlignment="Top" Padding="0" Margin="0,5,0,0" IsReadOnly="True" Text="100" HorizontalContentAlignment="Right" />
+
+                        <TextBlock Text="Manual Controls" VerticalAlignment="Top" Grid.Row="1" Grid.ColumnSpan="2" TextWrapping="Wrap" HorizontalAlignment="Center"/>
+
+                        <TextBlock Text="Requires note in escrow and enabled escrow mode" VerticalAlignment="Bottom" Grid.Row="1" Grid.ColumnSpan="2" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
+
+                        <Button x:Name="btnAccept" Content="Accept" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Width="75" IsEnabled="{Binding Path=EnableManualButtons,Mode=OneWay,IsAsync=True}" Background="#FF48C748" Click="btnAccept_Click"/>
+                        <Button x:Name="btnReject" Content="Reject" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Width="75" IsEnabled="{Binding Path=EnableManualButtons,Mode=OneWay,IsAsync=True}"  Background="#FFDA4A4A" Click="btnReject_Click"/>
+
+                    </Grid>
+                </TabItem>
             </TabControl>
 
 
             <Grid Name="StateMachine" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,25,0,12">
+                <Grid.Resources>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource button_flat_round}"/>
+                </Grid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>

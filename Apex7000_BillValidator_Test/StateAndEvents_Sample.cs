@@ -1,11 +1,8 @@
-﻿using Apex7000_BillValidator;
+﻿using PyramidNETRS232;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 
-namespace Apex7000_BillValidator_Test
+namespace PyramidNETRS232_TestApp
 {
     /// <summary>
     /// Show how to handle the state and event message if you have subscribed to them

@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// The main class that does the actual "talking" the acceptor. In the context of documentation,
     /// this object what is referred to as the master and the acceptor is the slave device.
     /// </summary>
-    public partial class ApexValidator : IDisposable
+    public partial class PyramidAcceptor : IDisposable
     {
       
         private readonly object mutex = new object();
@@ -66,10 +66,10 @@ namespace Apex7000_BillValidator
         #endregion
 
         /// <summary>
-        /// Creates a new ApexValidator using the specified configuration
+        /// Creates a new PyramidAcceptor using the specified configuration
         /// </summary>
         /// <param name="config">Operating RS-232 parameters</param>
-        public ApexValidator(RS232Config config)
+        public PyramidAcceptor(RS232Config config)
         {
             this.config = config;
         }
@@ -369,15 +369,15 @@ namespace Apex7000_BillValidator
             // Toggle message number (ack #) if last message was okay and not a re-send request.
             data[2] = (byte)(0x10 | Ack);
 
+            // Get enable mask from client configuration. On next message, the acceptor
+            // will update itself and not escrow any notes that are disabled in this mask.
+            data[3] = config.EnableMask;
 
 
             if(!config.IsEscrowMode)
             {
 
-                // Not escrow mode, all notes are enabled by default
-                data[3] = 0x7F;
-
-                // Clear escrow mode bit
+                  // Clear escrow mode bit
                 data[4] = 0x00;
 
                 if (NoteIsEscrowed)
@@ -386,10 +386,6 @@ namespace Apex7000_BillValidator
             } 
             else
             {
-
-                // Get enable mask from client configuration. On next message, the acceptor
-                // will update itself and not escrow any notes that are disabled in this mask.
-                data[3] = config.EnableMask;
 
                 // Set escrow mode bit
                 data[4] = 1 << 4;

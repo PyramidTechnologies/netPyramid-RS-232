@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PyramidNETRS232_Test")]
+[assembly: AssemblyTitle("PyramidNETRS232_TestApp_Simple")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PyramidNETRS232_Test")]
+[assembly: AssemblyProduct("PyramidNETRS232_TestApp_Simple")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("4681deb4-b35c-4be8-a264-cc4d89b60051")]
+[assembly: Guid("4b7009da-2a03-474a-862a-b1692196505f")]
 
 // Version information for an assembly consists of the following four values:
 //

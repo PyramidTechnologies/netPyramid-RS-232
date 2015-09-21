@@ -1,7 +1,7 @@
 ﻿
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
-    public partial class ApexValidator
+    public partial class PyramidAcceptor
     {
         /// <summary>
         /// Issue a stack command to the acceptor. Note that the acceptor must

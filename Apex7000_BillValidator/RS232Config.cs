@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Apex7000_BillValidator
+namespace PyramidNETRS232
 {
     /// <summary>
     /// Define the operating parameters of your bill acceptor
@@ -22,10 +22,8 @@ namespace Apex7000_BillValidator
         /// </summary>
         /// <seealso cref="RS232Config.IsEscrowMode"/>
         /// <param name="commPort">String port name e.g. COM4</param>
-        public RS232Config(string commPort)
-        {
-            new RS232Config(commPort.ToString(), false);
-        }
+        public RS232Config(string commPort) : this(commPort.ToString(), false)
+        { }
 
         /// <summary>
         /// Create a new configuration to use for the Apex7000 validator class.

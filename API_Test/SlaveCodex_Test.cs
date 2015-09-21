@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Apex7000_BillValidator;
+using PyramidNETRS232;
 
-namespace API_Test
+namespace PyramidNETRS232_Test
 {
     [TestClass]
     public class SlaveCodex_Test
