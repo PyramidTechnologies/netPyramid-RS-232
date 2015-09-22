@@ -18,7 +18,7 @@ namespace PyramidNETRS232
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         #region Fields
-        private StrongPort port = null;
+        private MonoPort port = null;
         private RS232Config config;
         private bool resetRequested = false;
         #endregion
@@ -113,7 +113,7 @@ namespace PyramidNETRS232
 
                 try
                 {
-                    port = new StrongPort(config.CommPortName);
+                    port = new MonoPort(config.CommPortName);
                 }
                 catch (IOException)
                 {

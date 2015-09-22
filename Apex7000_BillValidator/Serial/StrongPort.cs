@@ -18,10 +18,10 @@ namespace PTI.Serial
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         // My prefered encoding when debugging byte buffers
-        private readonly System.Text.Encoding W1252 = System.Text.Encoding.GetEncoding("Windows-1252");
+        private static readonly System.Text.Encoding W1252 = System.Text.Encoding.GetEncoding("Windows-1252");
 
         // Lock on reading so we don't disconnect while waiting for data.
-        private static object readLock = new object();
+        private object readLock = new object();
 
         /// <summary>
         /// Creates a new strong port by correctly configuring the DCB blocks used to configured
