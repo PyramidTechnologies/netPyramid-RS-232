@@ -23,7 +23,7 @@ If you are using an Apex 7000 or Spectra, please make sure that all of your dip 
     
 ### Troubleshooting
 
-Mono runtime is untested and folks on Unity may have trouble. We're investigating workarounds and hoping to support Mono. That of course, is dependent on serial port support.
+Mono runtime is untested and folks on Unity will have trouble. We've experimented with a variety of mods on the Unity experiment branch but we just can't seem to make it work. If you have any ideas feel free to reach out to us!
 
 ### License ###
 
