@@ -262,8 +262,11 @@ namespace PyramidNETRS232
                 return;
             }
 
-            // TODO check response checksum
-
+            else if(IsBadSlaveChecksumOk(resp))
+            {
+                previouslySentMasterMsg = data;
+                return;
+            }
 
 
             // Otherwise we're all good - toggle ack and clear last sent message
@@ -539,6 +542,23 @@ namespace PyramidNETRS232
         private static bool IsBadAckNumber(byte[] resp, byte[] data)
         {
             return (resp[2] & 1) != (data[2] & 1);
+        }
+
+        private static bool IsBadSlaveChecksumOk(byte[] msg)
+        {
+
+            // If the length is incorrent, the checksum doesn't matter
+            if (msg.Length != 11)
+                return true;
+
+            // msg should be the entire message, including checksum. -2 to skip checksum
+            byte checksum = (byte)(msg[1] ^ msg[2]);
+            for (int i = 3; i < msg.Length - 2; i++)
+            {
+                checksum ^= msg[i];
+            }
+
+            return checksum != msg[10];
         }
         #endregion
         #endregion
