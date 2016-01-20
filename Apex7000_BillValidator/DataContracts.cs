@@ -200,7 +200,7 @@ namespace PyramidNETRS232
     {
                                 //   basic message   0      1      2      3      4      5    6      7
                                 //                   start, len,  ack, bills,escrow,resv'd,end, checksum
-        internal static readonly byte[] BaseMessage = { 0x02, 0x08, 0x10, 0x7F, 0x10, 0x00, 0x03 };
+        internal static readonly byte[] BaseMessage = { 0x02, 0x08, 0x60, 0x7F, 0x10, 0x00, 0x03 };
 
         internal static readonly byte[] ResetTarget = { 0x02, 0x08, 0x61, 0x7f, 0x7f, 0x7f, 0x03 };
     }  

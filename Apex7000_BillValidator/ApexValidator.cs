@@ -506,8 +506,8 @@ namespace PyramidNETRS232
         {
             byte[] reset = Request.ResetTarget;
             // Toggle message number (ack #) if last message was okay and not a re-send request.
-            reset[2] = (byte)(0x10 | Ack);
-            Checksum(reset);
+            reset[2] = (byte)((Ack == 0) ? 0x60 : 0x61);
+            reset = Checksum(reset);
             WriteWrapper(reset);
 
             // Toggle ACK number
