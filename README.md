@@ -17,7 +17,7 @@ If you are using an Apex 7000 or Spectra, please make sure that all of your dip 
 * Highly Configurable
 * Very lightweight library (small dll and low memory consumption)
 
-### Dependencies if you prefer to not use Gradle
+### Dependencies
 
 * [log4net](https://www.nuget.org/packages/log4net/1.2.10)
     
