@@ -196,7 +196,7 @@
             </Grid>
 
             <!-- Max height calculated as the largest area that shows 13 packets without empty area -->
-            <ListView x:Name="ConsoleLoggerMaster" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single" ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <ListView x:Name="ConsoleLoggerMaster" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single" ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SelectionChanged="ConsoleLoggerMaster_SelectionChanged">
                 <ListView.Resources>
                     <Style TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -211,6 +211,14 @@
                             <!--Slave Color-->
                             <DataTrigger Binding="{Binding Flow}" Value="1">
                                 <Setter Property="Background" Value="#FFD2B4FD" />
+                            </DataTrigger>
+                            <!-- Selected Color -->
+                            <DataTrigger
+                                 Binding="{Binding
+                                    RelativeSource={RelativeSource Mode=Self},
+                                    Path=IsSelected}"
+                                    Value="True">
+                                <Setter Property="Background" Value="Gray"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -225,7 +233,7 @@
             </ListView>
 
             <!-- Max height calculated as the largest area that shows 13 packets without empty area -->
-            <ListView x:Name="ConsoleLoggerSlave" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="2" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single"  ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <ListView x:Name="ConsoleLoggerSlave" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="2" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single"  ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SelectionChanged="ConsoleLoggerSlave_SelectionChanged">
                 <ListView.Resources>
                     <Style TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -241,6 +249,14 @@
                             <DataTrigger Binding="{Binding Flow}" Value="1">
                                 <Setter Property="Background" Value="#FFD2B4FD" />
                             </DataTrigger>
+                            <!-- Selected Color -->
+                            <DataTrigger
+                                 Binding="{Binding
+                                    RelativeSource={RelativeSource Mode=Self},
+                                    Path=IsSelected}"
+                                    Value="True">
+                                <Setter Property="Background" Value="Gray"/>
+                            </DataTrigger>                            
                         </Style.Triggers>
                     </Style>
                 </ListView.Resources>

@@ -85,7 +85,23 @@ namespace PyramidNETRS232_TestApp
             config.PollRate = val;
             txtPoll.Text = string.Format("{0}", val);
 
-        } 
+        }
+
+        private void HighlightSequence(int index)
+        {
+            ConsoleLoggerMaster.SelectedIndex = index;
+            ConsoleLoggerSlave.SelectedIndex = index;
+        }
+
+        private void ConsoleLoggerMaster_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            HighlightSequence(ConsoleLoggerMaster.SelectedIndex);
+        }
+
+        private void ConsoleLoggerSlave_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            HighlightSequence(ConsoleLoggerSlave.SelectedIndex);
+        }
 
     }
     
