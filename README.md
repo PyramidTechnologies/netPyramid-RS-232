@@ -1,3 +1,5 @@
+[![NuGet](https://img.shields.io/nuget/v/PyramidNETRS232.svg)](https://www.nuget.org/packages/PyramidNETRS232/)
+
 Pyramid C# .NET RS-232 API
 =========================
 
@@ -6,6 +8,10 @@ Overview
 
 This library is for OEMs and software developers looking to quickly and easily integrate an RS-232 bill validator
 into their system. Get up and running quickly without having to worry about the low-level bit twiddling.
+
+PyramidNETRS232 is available on NuGet
+
+    Install-Package PyramidNETRS232
 
 ## Important
 If you are using an Apex 7000 or Spectra, please make sure that all of your dip switches are in the off position. The unit msust be in RS-232 mode to use this library. For more information about configuration, please see our [faq](http://pyramidacceptors.com/support/faq/).
@@ -19,7 +25,7 @@ If you are using an Apex 7000 or Spectra, please make sure that all of your dip 
 
 ### Dependencies
 
-* [log4net](https://www.nuget.org/packages/log4net/1.2.10)
+* [log4net](https://www.nuget.org/packages/log4net/2.0.5)
     
 ### Troubleshooting
 
