@@ -3,7 +3,7 @@
 <!-- NEVER EVER CHANGE THE UPGRADE CODE -->
 <?define UpgradeCode = "{5976a455-fa1f-44d2-91fa-53cc2beca27f}" ?>
 
-<?define Version = "1.2.0" ?>
+<?define Version = "1.2.1" ?>
 <?define BetaProductVersion="1.0.0" ?>
 <?define Name="Pyramid NET RS-232" ?>
 <?define Description="Pyramid NET RS-232 Installer" ?>

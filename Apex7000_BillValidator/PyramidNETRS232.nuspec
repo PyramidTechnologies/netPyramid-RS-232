@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>1.3.7</version>
+    <title>$title$</title>
+    <authors>Cory Todd</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/PyramidTechnologies/netPyramid-RS-232/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/PyramidTechnologies/netPyramid-RS-232</projectUrl>
+    <iconUrl>https://dev.pyramidacceptors.com/images/logo_solo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>
+	In escrow mode, the escrow state now treated as event instead of state change. 
+	Fix log log4net dependency resolution
+	</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>RS-232 BillValidator Pyramid PTI</tags>
+    <dependencies>
+      <dependency id="log4net" version="[2.0.5]" />
+    </dependencies>	
+  </metadata>
+</package>
