@@ -190,7 +190,22 @@ namespace PyramidNETRS232
         /// <summary>
         /// Issues the reject command during the next message loop
         /// </summary>
-        Reject
+        Reject,
+
+        /// <summary>
+        /// Escrow message needs to be sent to client
+        /// </summary>
+        Notify,
+
+        /// <summary>
+        /// Escrow message has been sent to client, awaiting stack or return command
+        /// </summary>
+        Awaiting,
+
+        /// <summary>
+        /// Client has acted on the escrow command, escrow events will be raised on next poll loop
+        /// </summary>
+        Acknowledged
     }
 
     /// <summary>

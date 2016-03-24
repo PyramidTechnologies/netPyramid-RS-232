@@ -13,7 +13,6 @@ namespace PyramidNETRS232_TestApp
         /// All of this mess is the make the the async manual accept/reject buttons work
         /// </summary>
         private static object manualLock = new object();
-        private bool actionTaken = false;
         private bool enableManualButtons = false;
         public bool EnableManualButtons
         {
@@ -24,6 +23,10 @@ namespace PyramidNETRS232_TestApp
                 NotifyPropertyChanged("EnableManualButtons");
             }
         }
+
+        /// <summary>
+        /// Index for bill crediting
+        /// </summary>
         private int lastIndex = 0;
 
         /// <summary>
@@ -34,6 +37,8 @@ namespace PyramidNETRS232_TestApp
         private void validator_OnEscrow(object sender, EscrowArgs e)
         {
             lastIndex = e.Index;
+
+            Console.WriteLine("Event raised for {0}", lastIndex);
 
             DoOnUIThread(() =>
             {
@@ -49,10 +54,7 @@ namespace PyramidNETRS232_TestApp
                 // manual buttons so an action can be taken.
                 lock (manualLock)
                 {
-                    if (!actionTaken && lastIndex != 0)
-                        EnableManualButtons = true;
-                    else
-                        actionTaken = false;
+                    EnableManualButtons = true;
                 }
 
             });
@@ -74,8 +76,6 @@ namespace PyramidNETRS232_TestApp
             lock (manualLock)
             {
                 lastIndex = 0;
-
-                actionTaken = true;
                 EnableManualButtons = false;
             }
         }
@@ -96,7 +96,6 @@ namespace PyramidNETRS232_TestApp
             lock (manualLock)
             {
                 lastIndex = 0;
-                actionTaken = true;
                 EnableManualButtons = false;
             }
         }

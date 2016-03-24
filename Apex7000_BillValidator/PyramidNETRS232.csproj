@@ -49,6 +49,7 @@
     <Compile Include="DebugBuffer.cs" />
     <Compile Include="EventArgs.cs" />
     <Compile Include="Events.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="MasterCodex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RS232Config.cs" />

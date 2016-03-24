@@ -395,24 +395,13 @@ namespace PyramidNETRS232
 
                 if(NoteIsEscrowed)
                 {
-                    // Perform timeout check and set reject flag is timeout exceeded
-                    if(config.EscrowTimeoutSeconds > 0)
+                    // Note is in escrow, we have not yet notified the client, and we did not just stack
+                    // a note. Due to the polling loop, we will always send an escrow message immediately
+                    // after a stack because we are really reporting on state during the prior poll.                    
+                    if (EscrowCommand == EscrowCommands.None)
                     {
-
-                        if(escrowStart == DateTime.MinValue)
-                        {
-                            escrowStart = DateTime.Now;
-                        }
-
-                        var delta = DateTime.Now - escrowStart;
-                        if (delta.TotalSeconds > config.EscrowTimeoutSeconds)
-                        {
-                            EscrowCommand = EscrowCommands.Reject;
-                            
-                            escrowStart = DateTime.MinValue;
-                        }
+                        EscrowCommand = EscrowCommands.Notify;
                     }
-
 
                     // Otherwise do what the host tells us to do.
                     switch (EscrowCommand)
@@ -420,17 +409,46 @@ namespace PyramidNETRS232
                         case EscrowCommands.Stack:
                             // set stack bit
                             data[4] |= 0x20;
-                            EscrowCommand = EscrowCommands.None;
+                            EscrowCommand = EscrowCommands.Acknowledged;
                             break;
 
                         case EscrowCommands.Reject:
                             // set reject bit
                             data[4] |= 0x40;
+                            EscrowCommand = EscrowCommands.Acknowledged;
+                            break;
+
+                        case EscrowCommands.Notify:
+                            // notify client we have a bill in escrow
+                            NotifyEscrow(Credit);
+                            EscrowCommand = EscrowCommands.Awaiting;
+                            break;
+
+                        case EscrowCommands.Awaiting:
+                            // Perform timeout check and set reject flag is timeout exceeded if we are awaiting stack/return command
+                            if (config.EscrowTimeoutSeconds > 0)
+                            {
+                                if (escrowStart == DateTime.MinValue)
+                                {
+                                    escrowStart = DateTime.Now;
+                                }
+
+                                var delta = DateTime.Now - escrowStart;
+                                if (delta.TotalSeconds > config.EscrowTimeoutSeconds)
+                                {
+                                    EscrowCommand = EscrowCommands.Reject;
+
+                                    escrowStart = DateTime.MinValue;
+                                }
+                            }
+                            break;
+
+                        case EscrowCommands.Acknowledged:
                             EscrowCommand = EscrowCommands.None;
                             break;
 
                         case EscrowCommands.None:
-                            NotifyEscrow(Credit);
+                            // do nothing
                             break;
                     }
                 }
