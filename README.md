@@ -12,6 +12,18 @@ into their system. Get up and running quickly without having to worry about the 
 PyramidNETRS232 is available on NuGet
 
     Install-Package PyramidNETRS232
+	
+## New Features
+
+* Pause and Resume acceptor
+
+We have found that a lot of developers prefer to start and stop the bill acceptor between sessions. We have made
+this even easier by adding simple ResumeAcceptance and PauseAcceptance methods.
+
+* Update configuration at runtime.
+
+Previously, the configuratoin for an acceptor was set for the life of the connection. This can now
+be changed on the fly via the Config property of your ApexValidator instance.
 
 ## Important
 If you are using an Apex 7000 or Spectra, please make sure that all of your dip switches are in the off position. The unit msust be in RS-232 mode to use this library. For more information about configuration, please see our [faq](http://pyramidacceptors.com/support/faq/).
