@@ -10,7 +10,7 @@ namespace PyramidNETRS232
         /// </summary>
         public void Stack()
         {
-            if (!config.IsEscrowMode)
+            if (!Config.IsEscrowMode)
                 log.Error("Not in escrow mode, stack command ignored!");
 
             // Set flag to accept
@@ -26,7 +26,7 @@ namespace PyramidNETRS232
         /// </summary>
         public void Reject()
         {
-            if (!config.IsEscrowMode)
+            if (!Config.IsEscrowMode)
                 log.Error("Not in escrow mode, reject command ignored!");
 
             // Set flag to reject

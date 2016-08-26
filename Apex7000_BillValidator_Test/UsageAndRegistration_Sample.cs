@@ -64,7 +64,20 @@ namespace PyramidNETRS232_TestApp
 
             // This starts the acceptor - REQUIRED!!
             validator.Connect();
+        }
 
+        private void btnResumePause_Click(object sender, RoutedEventArgs e)
+        {
+            if (validator.IsPaused)
+            {
+                validator.ResmeAcceptance();
+                btnResumePause.Content = "Pause";
+            } 
+            else
+            {
+                validator.PauseAcceptance();
+                btnResumePause.Content = "Resume";
+            }
         }
     }
 }

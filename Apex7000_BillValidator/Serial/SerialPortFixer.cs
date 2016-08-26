@@ -106,7 +106,15 @@ namespace PTI.Serial
 
         private static int MakeHrFromErrorCode(int errorCode)
         {
-            return (int)(0x80070000 | (uint)errorCode);
+            try
+            {
+                return (int)(0x80070000 | (uint)errorCode);
+            }
+            catch(OverflowException)
+            {
+                // In some unusual cases, the above can overflow. Catch this simply return  -1
+                return -1;
+            }
         }
 
         private static void WinIoError()

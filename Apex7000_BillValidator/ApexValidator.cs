@@ -19,8 +19,12 @@ namespace PyramidNETRS232
 
         #region Fields
         private StrongPort port = null;
-        private RS232Config config;
         private bool resetRequested = false;
+
+        /// <summary>
+        /// Stores the prior enable/disable pattern, used with the Enable/Disable calls
+        /// </summary>
+        private byte lastEnablePattern = 0;
         #endregion
 
 
@@ -63,6 +67,19 @@ namespace PyramidNETRS232
         /// Returns true if the communication thread is running normally
         /// </summary>
         public bool IsRunning { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the RS232 Configuration
+        /// </summary>
+        public RS232Config Config { get; set; }
+
+        /// <summary>
+        /// Gets the current pause state. If the acceptor 
+        /// is running and at least 1 bill is enabled, the acceptor
+        /// is not paused. Otherwise, the acceptor is considered
+        /// paused.
+        /// </summary>
+        public bool IsPaused { get; private set; }
         #endregion
 
         /// <summary>
@@ -71,7 +88,8 @@ namespace PyramidNETRS232
         /// <param name="config">Operating RS-232 parameters</param>
         public PyramidAcceptor(RS232Config config)
         {
-            this.config = config;
+            this.Config = config;
+            lastEnablePattern = config.EnableMask;
         }
 
 
@@ -87,6 +105,7 @@ namespace PyramidNETRS232
 
         /// <summary>
         /// Stop talking to the slave and release the underlying commm port.
+        /// <remarks>Do not use this to disable the bill acceptor: use PauseAcceptance()</remarks>
         /// </summary>
         public void Close()
         {
@@ -95,9 +114,50 @@ namespace PyramidNETRS232
 
             if(port != null)
                 port.Disconnect();
+
+            lock(mutex)
+            {
+                IsPaused = true;
+            }
         }
 
+        /// <summary>
+        /// Disables the bill acceptor within the time period defined by the poll rate.
+        /// The poll rate (RS232Config.PollRate, default 50 ms) is the maximum time
+        /// between poll packets from master to slave. This command does not disconnect
+        /// the serial port. Use Close() for that effect.
+        /// 
+        /// This effectively tells the acceptor to stop accepting bill but keep reporting status.
+        /// The acceptor's lights will turn off after this call takes effect.
+        /// <seealso cref="ResmeAcceptance"/>
+        /// </summary>
+        public void PauseAcceptance()
+        {
+            lastEnablePattern = Config.EnableMask;
+            Config.EnableMask = 0;
 
+            lock (mutex)
+            {
+                IsPaused = true;
+            }
+        }
+
+        /// <summary>
+        /// Returns the acceptor to bill accepting mode. This command
+        /// has no effect if the acceptor is already running and accepting.
+        /// The acceptor's lights will turn on after this command takes effect.
+        /// The command will take up to Config.PollRate ms to take effect.
+        /// <seealso cref="PauseAcceptance"/>
+        /// </summary>
+        public void ResmeAcceptance()
+        {
+            Config.EnableMask = lastEnablePattern;
+
+            lock (mutex)
+            {
+                IsPaused = false;
+            }
+        }       
 
         /// <summary>
         /// Connect to the device and begin speaking rs232
@@ -113,7 +173,7 @@ namespace PyramidNETRS232
 
                 try
                 {
-                    port = new StrongPort(config.CommPortName);
+                    port = new StrongPort(Config.CommPortName);
                 }
                 catch (IOException)
                 {
@@ -132,6 +192,8 @@ namespace PyramidNETRS232
 
                     // Only start if we connect without error
                     startRS232Loop();
+
+                    IsPaused = false;
 
                 }
                 catch (Exception e)
@@ -209,7 +271,7 @@ namespace PyramidNETRS232
                     else
                         speakToSlave();                  
 
-                    Thread.Sleep(config.PollRate);
+                    Thread.Sleep(Config.PollRate);
                 }
 
             });
@@ -374,10 +436,10 @@ namespace PyramidNETRS232
 
             // Get enable mask from client configuration. On next message, the acceptor
             // will update itself and not escrow any notes that are disabled in this mask.
-            data[3] = config.EnableMask;
+            data[3] = Config.EnableMask;
 
 
-            if(!config.IsEscrowMode)
+            if(!Config.IsEscrowMode)
             {
 
                   // Clear escrow mode bit
@@ -426,7 +488,7 @@ namespace PyramidNETRS232
 
                         case EscrowCommands.Awaiting:
                             // Perform timeout check and set reject flag is timeout exceeded if we are awaiting stack/return command
-                            if (config.EscrowTimeoutSeconds > 0)
+                            if (Config.EscrowTimeoutSeconds > 0)
                             {
                                 if (escrowStart == DateTime.MinValue)
                                 {
@@ -434,7 +496,7 @@ namespace PyramidNETRS232
                                 }
 
                                 var delta = DateTime.Now - escrowStart;
-                                if (delta.TotalSeconds > config.EscrowTimeoutSeconds)
+                                if (delta.TotalSeconds > Config.EscrowTimeoutSeconds)
                                 {
                                     EscrowCommand = EscrowCommands.Reject;
 

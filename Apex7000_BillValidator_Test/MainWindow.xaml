@@ -46,6 +46,9 @@
             <StatusBarItem Grid.Column="3">
                 <CheckBox x:Name="chkEscrowMode" Content="Escrow Mode" IsChecked="{Binding IsEscrowMode,Mode=OneWay, IsAsync=True}" Checked="chkEscrowMode_Checked" Unchecked="chkEscrowMode_Unchecked"/>
             </StatusBarItem>
+            <StatusBarItem Grid.Column="4">
+                <Button x:Name="btnResumePause" Content="Pause"  Click="btnResumePause_Click"  Height="25" Width="100" IsEnabled="{Binding IsConnected,Mode=OneWay, IsAsync=True}"/>
+            </StatusBarItem>
             <StatusBarItem Grid.Column="5">
                 <Button x:Name="btnReset" Content="Reset" Height="25" Width="100" Click="btnReset_Click" />
             </StatusBarItem>
@@ -84,8 +87,8 @@
                             <RowDefinition Height="1*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="3*"/>
-                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="134"/>
+                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Bill 1" Grid.Row="0"/>
                         <TextBlock Text="Bill 2" Grid.Row="1"/>
@@ -256,7 +259,7 @@
                                     Path=IsSelected}"
                                     Value="True">
                                 <Setter Property="Background" Value="Gray"/>
-                            </DataTrigger>                            
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </ListView.Resources>
