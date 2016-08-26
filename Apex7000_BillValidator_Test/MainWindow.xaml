@@ -1,7 +1,7 @@
 ﻿<Window x:Class="PyramidNETRS232_TestApp.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        Title="RS-232 Sample Application 1.2.1" Height="650" Width="800" SnapsToDevicePixels="True" Icon="icon.ico">
+        Title="RS-232 Sample Application 1.2.2" Height="650" Width="800" SnapsToDevicePixels="True" Icon="icon.ico">
     <Window.Resources>
         <ResourceDictionary Source="Themes/purple.xaml"/>
     </Window.Resources>
