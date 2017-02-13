@@ -13,6 +13,8 @@ Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PyramidNETRS232Installer", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PyramidNETRS232_TestApp_Simple", "PyramidNETRS232_TestApp_Simple\PyramidNETRS232_TestApp_Simple.csproj", "{4B9840DE-6444-405E-A866-FB2075F13426}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PauseResumeCLI", "PauseResumeCLI\PauseResumeCLI.csproj", "{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,16 @@ Global
 		{4B9840DE-6444-405E-A866-FB2075F13426}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4B9840DE-6444-405E-A866-FB2075F13426}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4B9840DE-6444-405E-A866-FB2075F13426}.Release|x86.ActiveCfg = Release|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1EB5541A-F967-41EE-8D91-CC48B0F37FD3}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
