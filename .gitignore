@@ -15,3 +15,5 @@ packages/
 PyramidNETRS232_TestApp_Simple/bin/
 PyramidNETRS232_TestApp_Simple/obj/
 *.nupkg
+PauseResumeCLI/obj/
+PauseResumeCLI/bin/
