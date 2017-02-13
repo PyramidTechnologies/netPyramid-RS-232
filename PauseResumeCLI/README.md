@@ -14,20 +14,25 @@ These command work in either Escrow or Non-Escrow mode.
 
 1. Subscribe
 
+```
     validator.OnEscrow +=validator_OnEscrow;
+```    
 	
 2. Control your state
     
-	AppState = InternalState.Escrow;
-	
+```    
+    AppState = InternalState.Escrow;
+```
+
 3. Execute your action
 
-      // If Escrowed, prompt for stack or reject
-      else if (AppState == InternalState.Escrow)
-      {
-	      validator.Stack();	  
-	  }
-	  
+```
+    // If Escrowed, prompt for stack or reject
+    else if (AppState == InternalState.Escrow)
+    {
+        validator.Stack();	 
+    }
+```	  
 	  
 4. Emit the PauseAcceptance() or ResmeAcceptance() when the acceptor is in the Idle state. If you call PauseAcceptance()
 while stacking, the note may return immediately depending on your poll rate. It is advised that either check the state 
