@@ -26,7 +26,7 @@ Previously, the configuratoin for an acceptor was set for the life of the connec
 be changed on the fly via the Config property of your ApexValidator instance.
 
 ## Important
-If you are using an Apex 7000 or Spectra, please make sure that all of your dip switches are in the off position. The unit msust be in RS-232 mode to use this library. For more information about configuration, please see our [faq](http://pyramidacceptors.com/support/faq/).
+If you are using an Apex 7000 or Spectra, please make sure that all of your dip switches are in the off position. The unit must be in RS-232 mode to use this library. For more information about configuration, please see our [faq](http://pyramidacceptors.com/support/faq/).
 
 ## C# .NET Pyramid Device API
 
