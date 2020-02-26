@@ -167,7 +167,7 @@
                 IsPaused = false;
             }
         }
-        
+
         /// <summary>
         ///     Returns the acceptor to bill accepting mode. This command
         ///     has no effect if the acceptor is already running and accepting.
@@ -276,16 +276,25 @@
                 // Set toggle flag so we can kill this loop
                 while (IsRunning)
                 {
-                    if (_resetRequested)
+                    try
                     {
-                        ResetAcceptor();
-                    }
-                    else
-                    {
-                        ReadAcceptorResp();
-                    }
+                        if (_resetRequested)
+                        {
+                            ResetAcceptor();
+                        }
+                        else
+                        {
+                            ReadAcceptorResp();
+                        }
 
-                    Thread.Sleep(Config.PollRate);
+                        Thread.Sleep(Config.PollRate);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("RS232 Loop port error", ex);
+                        NotifyError(Errors.PortError);
+                        IsRunning = false;
+                    }
                 }
             }) {IsBackground = true};
 
