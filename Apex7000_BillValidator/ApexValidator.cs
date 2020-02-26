@@ -137,7 +137,7 @@
         ///     the serial port. Use Close() for that effect.
         ///     This effectively tells the acceptor to stop accepting bill but keep reporting status.
         ///     The acceptor's lights will turn off after this call takes effect.
-        ///     <seealso cref="ResmeAcceptance" />
+        ///     <seealso cref="ResumeAcceptance" />
         /// </summary>
         public void PauseAcceptance()
         {
@@ -159,6 +159,23 @@
         /// </summary>
         [Obsolete("Use ResumeAcceptance instead (spelled correctly)")]
         public void ResmeAcceptance()
+        {
+            Config.EnableMask = _lastEnablePattern;
+
+            lock (_mutex)
+            {
+                IsPaused = false;
+            }
+        }
+        
+        /// <summary>
+        ///     Returns the acceptor to bill accepting mode. This command
+        ///     has no effect if the acceptor is already running and accepting.
+        ///     The acceptor's lights will turn on after this command takes effect.
+        ///     The command will take up to Config.PollRate ms to take effect.
+        ///     <seealso cref="PauseAcceptance" />
+        /// </summary>
+        public void ResumeAcceptance()
         {
             Config.EnableMask = _lastEnablePattern;
 
