@@ -199,7 +199,7 @@
             </Grid>
 
             <!-- Max height calculated as the largest area that shows 13 packets without empty area -->
-            <ListView x:Name="ConsoleLoggerMaster" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single" ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SelectionChanged="ConsoleLoggerMaster_SelectionChanged">
+            <ListView x:Name="ConsoleLoggerMaster" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" FontFamily="Consolas" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single" ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SelectionChanged="ConsoleLoggerMaster_SelectionChanged">
                 <ListView.Resources>
                     <Style TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -228,7 +228,7 @@
                 </ListView.Resources>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Timestamp" Width="75" DisplayMemberBinding="{Binding Timestamp}"/>
+                        <GridViewColumn Header="Timestamp" Width="85" DisplayMemberBinding="{Binding Timestamp}"/>
                         <GridViewColumn Header="Data" Width="150" DisplayMemberBinding="{Binding PrintableData}"/>
                         <GridViewColumn Header="Decoded" Width="400" DisplayMemberBinding="{Binding DecodedData}"/>
                     </GridView>
@@ -236,7 +236,7 @@
             </ListView>
 
             <!-- Max height calculated as the largest area that shows 13 packets without empty area -->
-            <ListView x:Name="ConsoleLoggerSlave" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="2" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single"  ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SelectionChanged="ConsoleLoggerSlave_SelectionChanged">
+            <ListView x:Name="ConsoleLoggerSlave" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="2" FontFamily="Consolas" Background="WhiteSmoke" Margin="0,5,0,0" SelectionMode="Single"  ToolTip="Enable to manually select Enable/Disable pattern. When unchecked, all valid bills are accepted." ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled" SelectionChanged="ConsoleLoggerSlave_SelectionChanged">
                 <ListView.Resources>
                     <Style TargetType="{x:Type GridViewColumnHeader}">
                         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -265,7 +265,7 @@
                 </ListView.Resources>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Timestamp" Width="75" DisplayMemberBinding="{Binding Timestamp}"/>
+                        <GridViewColumn Header="Timestamp" Width="85" DisplayMemberBinding="{Binding Timestamp}"/>
                         <GridViewColumn Header="Data" Width="190" DisplayMemberBinding="{Binding PrintableData}"/>
                         <GridViewColumn Header="Decoded" Width="400" DisplayMemberBinding="{Binding DecodedData}"/>
                     </GridView>
