@@ -18,7 +18,7 @@ namespace TestApp.Installer
 #endif
             const string guid = "5976a455-fa1f-44d2-91fa-53cc2beca27f";     // Change for every product!
             const string outdir = "build";                                  // directory is relative to solution root
-            const string product = "RS-232 Test App";
+            const string product = "Pyramid RS-232 Test App";
             const string company = "Pyramid Technologies Inc";
             const string binname = "PyramidNETRS232_TestApp.exe";
             const string config = "PyramidNETRS232_TestApp.exe.config";

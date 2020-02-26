@@ -21,3 +21,5 @@ PauseResumeCLI/bin/
 /TestApp.Installer/bin/
 /TestApp.Installer/obj/
 *.msi
+/TestApp.Installer/build/
+*.wixpdb
