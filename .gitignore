@@ -18,3 +18,8 @@ PyramidNETRS232_TestApp_Simple/obj/
 PauseResumeCLI/obj/
 PauseResumeCLI/bin/
 /.idea/
+/TestApp.Installer/bin/
+/TestApp.Installer/obj/
+*.msi
+/TestApp.Installer/build/
+*.wixpdb
