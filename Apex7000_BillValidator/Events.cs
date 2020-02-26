@@ -1,6 +1,7 @@
 ﻿namespace PyramidNETRS232
 {
     using System;
+    using System.Collections.Generic;
 
     public partial class PyramidAcceptor
     {

@@ -1,6 +1,7 @@
 ﻿namespace PyramidNETRS232
 {
     using System;
+    using PTI.Serial;
 
     /// <summary>
     ///     Define the operating parameters of your bill acceptor
@@ -93,6 +94,19 @@
         {
             get => _enableMask;
             set => _enableMask = (byte) (0x7F & value);
+        }
+
+        /// <summary>
+        /// Create a new comm port using this configuration.
+        /// By default, this library uses the internal StrongPort type.
+        /// If you want to use a different implementation, create a
+        /// class that extends ICommPort and override this class to
+        /// return your type.
+        /// </summary>
+        /// <returns>ICommPort</returns>
+        public virtual ICommPort GetCommPort()
+        {
+            return new StrongPort(CommPortName);
         }
     }
 }

@@ -18,17 +18,17 @@
 
         private readonly object _mutex = new object();
 
+        // Time at which escrow starts
+        private DateTime _escrowStart = DateTime.MinValue;
+
         /// <summary>
         ///     Stores the prior enable/disable pattern, used with the Enable/Disable calls
         /// </summary>
         private byte _lastEnablePattern;
 
 
-        private StrongPort _port;
+        private ICommPort _port;
         private bool _resetRequested;
-
-        // Time at which escrow starts
-        private DateTime _escrowStart = DateTime.MinValue;
 
         /// <summary>
         ///     Creates a new PyramidAcceptor using the specified configuration
@@ -90,8 +90,6 @@
         /// </summary>
         public bool IsPaused { get; private set; }
 
-        #region IDisposable
-
         /// <summary>
         ///     Releases comm port and related managed resources.
         /// </summary>
@@ -99,8 +97,6 @@
         {
             _port?.Dispose();
         }
-
-        #endregion
 
 
         /// <summary>
@@ -196,7 +192,7 @@
             {
                 try
                 {
-                    _port = new StrongPort(Config.CommPortName);
+                    _port = Config.GetCommPort();
                 }
                 catch (IOException)
                 {
