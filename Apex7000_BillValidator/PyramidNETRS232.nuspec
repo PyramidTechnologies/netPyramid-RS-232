@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>$id$</id>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <title>$title$</title>
     <authors>Pyramid Technologies Inc., Cory Todd</authors>
     <owners>$author$</owners>
@@ -12,8 +12,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
-	In escrow mode, the escrow state now treated as event instead of state change. 
-	Fix log log4net dependency resolution
+	Add extra error handling in RS-232 comm loop thread 
+	Add support for custom ICommPort injection
+	Cleanup Nuget listing
 	</releaseNotes>
     <copyright>Copyright 2020</copyright>
     <tags>RS-232 BillValidator Pyramid PTI</tags>
