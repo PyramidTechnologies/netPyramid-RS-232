@@ -12,26 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.IO;
-using System.IO.Ports;
-using System.Runtime.InteropServices;
-using System.Text;
-using Microsoft.Win32.SafeHandles;
-using System.Security.Permissions;
-
 namespace PTI.Serial
 {
+    using System;
+    using System.IO;
+    using System.Runtime.InteropServices;
+    using System.Security.Permissions;
+    using System.Text;
+    using Microsoft.Win32.SafeHandles;
+
     /// \internal
     internal class SerialPortFixer : IDisposable
     {
-        [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
-        internal static void Execute(string portName)
-        {
-            using (new SerialPortFixer(portName))
-            {
-            }
-        }
         #region IDisposable Members
 
         public void Dispose()
@@ -45,6 +37,38 @@ namespace PTI.Serial
 
         #endregion
 
+        [EnvironmentPermissionAttribute(SecurityAction.LinkDemand, Unrestricted = true)]
+        internal static void Execute(string portName)
+        {
+            using (new SerialPortFixer(portName))
+            {
+            }
+        }
+
+        internal static class NativeMethods
+        {
+            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            internal static extern int FormatMessage(int dwFlags, HandleRef lpSource, int dwMessageId, int dwLanguageId,
+                StringBuilder lpBuffer, int nSize, IntPtr arguments);
+
+            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            internal static extern bool GetCommState(SafeFileHandle hFile, ref Dcb lpDcb);
+
+            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            internal static extern bool SetCommState(SafeFileHandle hFile, ref Dcb lpDcb);
+
+            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+            internal static extern bool ClearCommError(SafeFileHandle hFile, ref int lpErrors, ref Comstat lpStat);
+
+            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+            internal static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, int dwShareMode,
+                IntPtr securityAttrs, int dwCreationDisposition,
+                int dwFlagsAndAttributes, IntPtr hTemplateFile);
+
+            [DllImport("kernel32.dll", SetLastError = true)]
+            internal static extern int GetFileType(SafeFileHandle hFile);
+        }
+
         #region Implementation
 
         private const int DcbFlagAbortOnError = 14;
@@ -54,25 +78,28 @@ namespace PTI.Serial
         private SerialPortFixer(string portName)
         {
             const int dwFlagsAndAttributes = 0x40000000;
-            const int dwAccess = unchecked((int)0xC0000000);
+            const int dwAccess = unchecked((int) 0xC0000000);
 
             if (string.IsNullOrEmpty(portName))
             {
                 throw new ArgumentException("Invalid Serial Port", "portName");
             }
-            SafeFileHandle hFile = NativeMethods.CreateFile(@"\\.\" + portName, dwAccess, 0, IntPtr.Zero, 3, dwFlagsAndAttributes,
-                                              IntPtr.Zero);
+
+            var hFile = NativeMethods.CreateFile(@"\\.\" + portName, dwAccess, 0, IntPtr.Zero, 3, dwFlagsAndAttributes,
+                IntPtr.Zero);
             if (hFile.IsInvalid)
             {
                 WinIoError();
             }
+
             try
             {
-                int fileType = NativeMethods.GetFileType(hFile);
-                if ((fileType != 2) && (fileType != 0))
+                var fileType = NativeMethods.GetFileType(hFile);
+                if (fileType != 2 && fileType != 0)
                 {
                     throw new ArgumentException("Invalid Serial Port", "portName");
                 }
+
                 m_Handle = hFile;
                 InitializeDcb();
             }
@@ -86,7 +113,7 @@ namespace PTI.Serial
 
         private void InitializeDcb()
         {
-            Dcb dcb = new Dcb();
+            var dcb = new Dcb();
             GetCommStateNative(ref dcb);
             dcb.Flags &= ~(1u << DcbFlagAbortOnError);
             SetCommStateNative(ref dcb);
@@ -94,13 +121,15 @@ namespace PTI.Serial
 
         private static string GetMessage(int errorCode)
         {
-            StringBuilder lpBuffer = new StringBuilder(0x200);
+            var lpBuffer = new StringBuilder(0x200);
             if (
-                NativeMethods.FormatMessage(0x3200, new HandleRef(null, IntPtr.Zero), errorCode, 0, lpBuffer, lpBuffer.Capacity,
-                              IntPtr.Zero) != 0)
+                NativeMethods.FormatMessage(0x3200, new HandleRef(null, IntPtr.Zero), errorCode, 0, lpBuffer,
+                    lpBuffer.Capacity,
+                    IntPtr.Zero) != 0)
             {
                 return lpBuffer.ToString();
             }
+
             return "Unknown Error";
         }
 
@@ -108,9 +137,9 @@ namespace PTI.Serial
         {
             try
             {
-                return (int)(0x80070000 | (uint)errorCode);
+                return (int) (0x80070000 | (uint) errorCode);
             }
-            catch(OverflowException)
+            catch (OverflowException)
             {
                 // In some unusual cases, the above can overflow. Catch this simply return  -1
                 return -1;
@@ -119,25 +148,27 @@ namespace PTI.Serial
 
         private static void WinIoError()
         {
-            int errorCode = Marshal.GetLastWin32Error();
+            var errorCode = Marshal.GetLastWin32Error();
             throw new IOException(GetMessage(errorCode), MakeHrFromErrorCode(errorCode));
         }
 
         private void GetCommStateNative(ref Dcb lpDcb)
         {
-            int commErrors = 0;
-            Comstat comStat = new Comstat();
+            var commErrors = 0;
+            var comStat = new Comstat();
 
-            for (int i = 0; i < CommStateRetries; i++)
+            for (var i = 0; i < CommStateRetries; i++)
             {
                 if (!NativeMethods.ClearCommError(m_Handle, ref commErrors, ref comStat))
                 {
                     WinIoError();
                 }
+
                 if (NativeMethods.GetCommState(m_Handle, ref lpDcb))
                 {
                     break;
                 }
+
                 if (i == CommStateRetries - 1)
                 {
                     WinIoError();
@@ -147,19 +178,21 @@ namespace PTI.Serial
 
         private void SetCommStateNative(ref Dcb lpDcb)
         {
-            int commErrors = 0;
-            Comstat comStat = new Comstat();
+            var commErrors = 0;
+            var comStat = new Comstat();
 
-            for (int i = 0; i < CommStateRetries; i++)
+            for (var i = 0; i < CommStateRetries; i++)
             {
                 if (!NativeMethods.ClearCommError(m_Handle, ref commErrors, ref comStat))
                 {
                     WinIoError();
                 }
+
                 if (NativeMethods.SetCommState(m_Handle, ref lpDcb))
                 {
                     break;
                 }
+
                 if (i == CommStateRetries - 1)
                 {
                     WinIoError();
@@ -204,29 +237,5 @@ namespace PTI.Serial
         #endregion
 
         #endregion
-
-        internal static class NativeMethods
-        {
-            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-            internal static extern int FormatMessage(int dwFlags, HandleRef lpSource, int dwMessageId, int dwLanguageId,
-                                                    StringBuilder lpBuffer, int nSize, IntPtr arguments);
-
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            internal static extern bool GetCommState(SafeFileHandle hFile, ref Dcb lpDcb);
-
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            internal static extern bool SetCommState(SafeFileHandle hFile, ref Dcb lpDcb);
-
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-            internal static extern bool ClearCommError(SafeFileHandle hFile, ref int lpErrors, ref Comstat lpStat);
-
-            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-            internal static extern SafeFileHandle CreateFile(string lpFileName, int dwDesiredAccess, int dwShareMode,
-                                                            IntPtr securityAttrs, int dwCreationDisposition,
-                                                            int dwFlagsAndAttributes, IntPtr hTemplateFile);
-
-            [DllImport("kernel32.dll", SetLastError = true)]
-            internal static extern int GetFileType(SafeFileHandle hFile);
-        }
     }
 }

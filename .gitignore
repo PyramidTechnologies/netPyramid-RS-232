@@ -17,3 +17,4 @@ PyramidNETRS232_TestApp_Simple/obj/
 *.nupkg
 PauseResumeCLI/obj/
 PauseResumeCLI/bin/
+/.idea/

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace PTI.Serial
+﻿namespace PTI.Serial
 {
+    using System;
+    using System.Runtime.Serialization;
+
     /// \internal
     internal enum ExceptionTypes
     {
@@ -16,10 +16,7 @@ namespace PTI.Serial
     [SerializableAttribute]
     internal class PortException : Exception, ISerializable
     {
-        public ExceptionTypes ErrorType { get; private set; }
-
         public PortException(ExceptionTypes type)
-            : base() 
         {
             ErrorType = type;
         }
@@ -38,6 +35,10 @@ namespace PTI.Serial
 
         // This constructor is needed for serialization.
         protected PortException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
+            : base(info, context)
+        {
+        }
+
+        public ExceptionTypes ErrorType { get; private set; }
     }
 }
