@@ -8,7 +8,7 @@
     <owners>$author$</owners>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/PyramidTechnologies/netPyramid-RS-232</projectUrl>
-    <icon>icon.ico</icon>
+    <icon>icon.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <releaseNotes>
@@ -22,6 +22,6 @@
     </dependencies>	
   </metadata>
   <files>
-    <file src="icon.ico" target="" />
+    <file src="icon.png" target="" />
   </files>
 </package>
