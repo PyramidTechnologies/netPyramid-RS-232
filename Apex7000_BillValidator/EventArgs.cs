@@ -1,7 +1,8 @@
 ﻿namespace PyramidNETRS232
 {
     using System;
-
+    using Serial;
+    
     /// <summary>
     ///     Properties of a state change event
     /// </summary>
@@ -145,5 +146,25 @@
         ///     a translation and some timing information.
         /// </summary>
         public DebugBufferEntry Entry { get; }
+    }
+
+    /// <summary>
+    /// Properties of a validator event
+    /// </summary>
+    public class ProtocolViolationEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Protocol violation event describes a protocol violation event
+        /// </summary>
+        /// <param name="validator"></param>
+        public ProtocolViolationEventArgs(BaseDataValidator validator)
+        {
+            Validator = validator;
+        }
+
+        /// <summary>
+        /// The validator that caught the protocol violation
+        /// </summary>
+        public BaseDataValidator Validator { get; }
     }
 }
