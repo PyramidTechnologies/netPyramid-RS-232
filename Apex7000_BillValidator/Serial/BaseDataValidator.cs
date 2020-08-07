@@ -8,37 +8,46 @@
     /// </summary>
     public abstract class BaseDataValidator
     {
-        /// <summary>
-        /// Creates a new Base Data Validator
-        /// </summary>
-        /// <param name="rawData">Raw data received</param>
-        protected BaseDataValidator(byte[] rawData)
-        {
-            RawData = rawData;
-        }
+        private byte[] _rawData;
+        private bool _isValid;
         
         /// <summary>
         /// Data portion of the raw bytes received
         /// </summary>
-        public byte[] Data { get; set; }
+        public byte[] Data { get; protected set; }
         
         /// <summary>
         /// Raw bytes received
         /// </summary>
-        public byte[] RawData { get;  }
+        public byte[] RawData {
+            get
+            {
+                return _rawData;
+            }
+            set
+            {
+                _rawData = value;
+                _isValid = ValidateSerialData();
+            }
+        }
 
         /// <summary>
         /// true iff the data received does not violate protocol
         /// </summary>
-        public virtual bool IsValid => ValidateSerialData();
+        public virtual bool IsValid => _isValid;
         
         /// <summary>
         /// Returns true if the calculated checksum matches the checksum
-        /// sentwith the raw bytes
+        /// sent with the raw bytes
         /// </summary>
         /// <returns></returns>
         protected bool CheckChecksum()
         {
+            if (RawData.Length < 3)
+            {
+                return false;
+            }
+            
             var actual = 0;
             var expected = RawData.Last();
 

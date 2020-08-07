@@ -314,7 +314,7 @@
             // Blocks until all 11 bytes are read or we give up
             var resp = ReadWrapper();
 
-            var validator = new SlaveDataValidator(resp);
+            var validator = new SlaveDataValidator {RawData = resp};
 
             if (!validator.IsValid)
             {

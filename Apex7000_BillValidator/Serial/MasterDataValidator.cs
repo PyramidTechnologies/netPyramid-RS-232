@@ -6,18 +6,8 @@
     /// <summary>
     /// Validator for master data
     /// </summary>
-    public class MasterDataValidator : BaseDataValidator
+    internal class MasterDataValidator : BaseDataValidator
     {
-        private static readonly List<string> Enables = new List<string> {"$1", "$2", "$5", "$10", "$20", "$50", "$100"};
-
-        /// <summary>
-        /// Creates a new master data validator
-        /// </summary>
-        /// <param name="rawData">Raw data received</param>
-        public MasterDataValidator(byte[] rawData) : base(rawData)
-        {
-        }
-        
         /// <summary>
         /// List of disables indicated by the Disable byte
         /// </summary>
@@ -28,19 +18,18 @@
         /// property with every disable that is parsed. Adds a validation message fragment
         /// indicating what disabled bills were parsed from the raw data.
         /// </summary>
-        protected void CheckDisables()
+        private void CheckDisables()
         {
-            var disables = new List<string>();
-            for (int b = 0; b < Enables.Count; b++)
+            var enables = new List<string> {"$1", "$2", "$5", "$10", "$20", "$50", "$100"};
+            
+            for (int b = 0; b < enables.Count; b++)
             {
                 if ((Data[0] & 1 << b) == 1 << b)
                 {
-                    disables.Add(Enables[b]);
+                    Disabled.Add(enables[b]);
                 }
             }
-
-            Disabled = disables;
-
+            
             if (Disabled.Any())
             {
                 var disableString = $"Disables: {string.Join(",", Disabled.ToArray())}";
@@ -73,11 +62,13 @@
             ValidationMessageFragments.Add($"ACK {RawData[2] & 0b00001111}");
             
             Data = RawData.Skip(3).Take(3).ToArray();
+
+            var valid = true;
             
             if (!CheckChecksum())
             {
                 ValidationMessageFragments.Add("Bad checksum");
-                return false;
+                valid = false;
             }
             
             CheckDisables();
@@ -85,7 +76,7 @@
             if ((Data[1] & 0b00000001) == 1)
             {
                 ValidationMessageFragments.Add("Reserved bit set: Byte 0 Bit 0");
-                return false;
+                valid = false;
             }
 
             var security = Data[1] & 0b00000010;
@@ -94,8 +85,8 @@
             
             if ((security > 0) | (orientation1 > 0) | (orientation2 > 0))
             {
-                ValidationMessageFragments.Add("Reserved features are in use.");
-                return false;
+                ValidationMessageFragments.Add("Reserved bits of data byte 1 are not all 0.");
+                valid = false;
             }
 
             var escorw_enabled = $"escrow={(Data[1] & 0b00010000) == 0b00010000}";
@@ -119,11 +110,11 @@
 
             if (Data[2] != 0)
             {
-                ValidationMessageFragments.Add("Reserved bit set: byte 2");
-                return false;
+                ValidationMessageFragments.Add("Reserved data byte 2 is not set to zero.");
+                valid = false;
             }
 
-            return true;
+            return valid;
 
         }
     }
