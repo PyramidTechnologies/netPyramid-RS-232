@@ -53,9 +53,12 @@
     <Compile Include="MasterCodex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RS232Config.cs" />
+    <Compile Include="Serial\BaseDataValidator.cs" />
     <Compile Include="Serial\ICommPort.cs" />
+    <Compile Include="Serial\MasterDataValidator.cs" />
     <Compile Include="Serial\PortException.cs" />
     <Compile Include="Serial\SerialPortFixer.cs" />
+    <Compile Include="Serial\SlaveDataValidator.cs" />
     <Compile Include="Serial\StrongPort.cs" />
     <Compile Include="SlaveCodex.cs" />
   </ItemGroup>
@@ -68,9 +71,7 @@
   <Target Name="BeforeBuild">
   </Target>-->
   <Target Name="AfterBuild" Condition=" '$(Configuration)' == 'Release'">
-
-    <Exec Command="nuget pack $(ProjectFileName) -Prop Configuration=Release"></Exec>
-
+    <Exec Command="nuget pack $(ProjectFileName) -Prop Configuration=Release">
+    </Exec>
   </Target>
-  
 </Project>
