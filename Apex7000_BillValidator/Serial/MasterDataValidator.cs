@@ -1,9 +1,8 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Debug
+﻿namespace PyramidNETRS232.Serial
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     /// <summary>
     /// Validator for master data
     /// </summary>
@@ -44,7 +43,7 @@ namespace Debug
 
             if (Disabled.Any())
             {
-                var disableString = $"Disables: {string.Join(",", Disabled)}";
+                var disableString = $"Disables: {string.Join(",", Disabled.ToArray())}";
                 ValidationMessageFragments.Add(disableString);
             }
         }

@@ -1,4 +1,4 @@
-﻿﻿namespace Debug
+﻿ namespace PyramidNETRS232.Serial
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -60,7 +60,7 @@
         /// Message indicating any protocol violations, states, errors and events
         /// parsed from the raw data
         /// </summary>
-        public string ValidationMessage => string.Join(",", ValidationMessageFragments);
+        public string ValidationMessage => string.Join(",", ValidationMessageFragments.ToArray());
 
         /// <summary>
         /// Validates the serial data received

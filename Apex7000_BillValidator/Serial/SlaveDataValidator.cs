@@ -1,9 +1,9 @@
-﻿﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Debug
+﻿namespace PyramidNETRS232.Serial
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
     /// <summary>
     /// Validator for slave data
     /// </summary>
@@ -70,7 +70,7 @@ namespace Debug
 
             if (States.Any())
             {
-                var stateString = $"States: {string.Join(",", States)}";
+                var stateString = $"States: {string.Join(",", States.ToArray())}";
                 ValidationMessageFragments.Add(stateString);
             }
         }
@@ -95,7 +95,7 @@ namespace Debug
 
             if (Events.Any())
             {
-                var stateString = $"Events: {string.Join(",", Events)}";
+                var stateString = $"Events: {string.Join(",", Events.ToArray())}";
                 ValidationMessageFragments.Add(stateString);
             }
         }
@@ -122,7 +122,7 @@ namespace Debug
 
             if (Errors.Any())
             {
-                var errorString = $"Errors: {string.Join(",", Errors)}";
+                var errorString = $"Errors: {string.Join(",", Errors.ToArray())}";
                 ValidationMessageFragments.Add(errorString);
             }
         }

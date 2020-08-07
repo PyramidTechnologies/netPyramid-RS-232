@@ -1,7 +1,7 @@
 ﻿namespace PyramidNETRS232
 {
     using System;
-    using System.Collections.Generic;
+    using Serial;
 
     public partial class PyramidAcceptor
     {
@@ -93,12 +93,27 @@
         /// </summary>
         public event EventHandler OnCashboxAttached;
 
+        /// <summary>
+        /// Raised when a protocol violation is found in raw serial data
+        /// </summary>
+        public event EventHandler<ProtocolViolationEventArgs> OnProtocolViolation;
 
+        /// <summary>
+        /// notify subscriber that a protocol violation has occured
+        /// </summary>
+        /// <param name="validator">The validator that has flagged the protocol violation</param>
+        internal virtual void NotifyProtocolViolation(BaseDataValidator validator)
+        {
+            var handler = OnProtocolViolation;
+            handler?.Invoke(this, new ProtocolViolationEventArgs(validator));
+        }
+        
         /// <summary>
         ///     Subscribe to serial data received and transmission events. Useful for debugging.
         /// </summary>
         public event EventHandler<DebugEntryArgs> OnSerialData;
-
+        
+        
         /// <summary>
         ///     Notify subsriber that data is available for debugging
         /// </summary>

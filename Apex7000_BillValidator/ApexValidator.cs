@@ -7,6 +7,8 @@
     using System.Threading;
     using log4net;
     using PTI.Serial;
+    using Serial;
+
 
     /// <summary>
     ///     The main class that does the actual "talking" the acceptor. In the context of documentation,
@@ -312,6 +314,12 @@
             // Blocks until all 11 bytes are read or we give up
             var resp = ReadWrapper();
 
+            var validator = new SlaveDataValidator(resp);
+
+            if (!validator.IsValid)
+            {
+                NotifyProtocolViolation(validator);
+            }
 
             // Extract only the states and events
             NotifySerialData(DebugBufferEntry.AsSlave(resp));
