@@ -3,6 +3,15 @@
 Pyramid C# .NET RS-232 API
 =========================
 
+Deprecation Notice
+-------------------------------------
+
+A new RS-232 library has been built to support dotnet core users. In addition to better documentation, it provides more granular logging and a more testable interface.  
+
+[PTI.Rs232Validator](https://github.com/PyramidTechnologies/PTI.Rs232Validator)
+
+This .NET framework version will be deprecated after the release of .NET 5.0.
+
 Overview
 --------
 
